@@ -69,18 +69,19 @@ export function Footer(): JSX.Element {
                 <div className="flex-grow space-y-6">
                   <Link className="inline-block" href="/">
                     <img
-                      className="h-10 w-10"
-                      src="/bcoyerlogo_dark.svg"
-                      alt="Braydon's Logo"
+                      className="h-12 w-12"
+                      src="/syed_logo.png"
+                      alt="Syed's Logo"
                     />
                   </Link>
                   <p className="w-60 leading-5 text-gray-500">
-                    I&apos;m Braydon - a senior front-end developer, blogger and
-                    public speaker. Thanks for checking out my site!
+                    I&apos;m Syed — a Software & AI Engineer and Full-Stack
+                    Developer. Thanks for stopping by my corner of the
+                    internet!
                   </p>
                 </div>
                 <p className="mt-6 text-gray-500">
-                  © {new Date().getFullYear()} Braydon Coyer
+                  © {new Date().getFullYear()} Abushaid Islam (Syed)
                 </p>
               </div>
               <div className="flex w-full items-end justify-end pr-16">
