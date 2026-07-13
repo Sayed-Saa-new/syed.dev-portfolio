@@ -28,12 +28,12 @@ const softwareData: SoftwareDataItem[] = [
   },
   {
     title: "ChatGPT",
-    imgSrc: "https://cdn.openai.com/API/logo-openai.svg",
+    imgSrc: "/chatgpt_logo.png",
     link: "https://chat.openai.com/",
   },
   {
     title: "Claude",
-    imgSrc: "https://claude.ai/favicon.ico",
+    imgSrc: "/claude_logo.png",
     link: "https://claude.ai/",
   },
   {
@@ -95,10 +95,10 @@ const softwareData: SoftwareDataItem[] = [
 
 const hardwareData: HardwareDataItem[] = [
   {
-    title: "MacBook Pro (M-series)",
+    title: "Asus Vivobook 15",
     description:
       "My daily driver for shipping AI-powered apps, full-stack builds, and long coding sessions.",
-    link: "https://www.apple.com/shop/buy-mac/macbook-pro",
+    link: "https://www.asus.com/laptops/for-home/vivobook/",
   },
   {
     title: "External 27\" Monitor",
