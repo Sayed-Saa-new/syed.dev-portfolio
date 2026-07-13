@@ -118,7 +118,7 @@ export default async function Home() {
             </GridWrapper>
             <GridWrapper>
               <h2 className="mx-auto max-w-lg text-center text-3xl font-medium leading-10 tracking-tighter text-text-primary md:text-4xl">
-                I like sharing my experiments && knowledge with others
+                Notes on AI, engineering && the things I&apos;m building
               </h2>
             </GridWrapper>
           </div>
