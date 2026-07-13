@@ -37,9 +37,8 @@ export default async function Home() {
                 delay={HEADING_DELAY}
                 className="mx-auto max-w-2xl text-center text-4xl font-medium leading-tight tracking-tighter text-text-primary md:text-6xl md:leading-[64px]"
               >
-                Hey, I&apos;m Syed! <br /> Welcome to my corner of the
-                internet!
-
+                Hey, I&apos;m Syed! <br /> I build AI-powered products &
+                modern web experiences.
               </AnimatedText>
             </GridWrapper>
             <GridWrapper>
@@ -49,10 +48,10 @@ export default async function Home() {
                   delay={PARAGRAPH_DELAY}
                   className="leading-8 text-text-secondary"
                 >
-                  I&apos;m a front-end developer with a love for design and a
-                  knack for tinkering. This site is intentionally
-                  over-engineered and serves as my playground for experimenting
-                  with new ideas and seeing what sticks!
+                  I&apos;m a Software & AI Engineer and Full-Stack Developer
+                  crafting AI-powered products, secure authentication systems,
+                  and modern web experiences. This site is my corner of the
+                  internet — where I share what I build, learn, and explore.
                 </AnimatedText>
               </div>
             </GridWrapper>
@@ -79,7 +78,7 @@ export default async function Home() {
             </GridWrapper>
             <GridWrapper>
               <h2 className="mx-auto max-w-lg text-balance text-center text-3xl font-medium leading-10 tracking-tight text-text-primary md:text-4xl">
-                Here&apos;s what sets me apart and makes me unique
+                A bit about how I build and what I care about
               </h2>
             </GridWrapper>
           </div>
@@ -119,7 +118,7 @@ export default async function Home() {
             </GridWrapper>
             <GridWrapper>
               <h2 className="mx-auto max-w-lg text-center text-3xl font-medium leading-10 tracking-tighter text-text-primary md:text-4xl">
-                I like sharing my experiments && knowledge with others
+                Notes on AI, engineering && the things I&apos;m building
               </h2>
             </GridWrapper>
           </div>
@@ -162,7 +161,7 @@ export default async function Home() {
             </GridWrapper>
             <GridWrapper>
               <h2 className="text-center text-3xl font-medium leading-10 tracking-tighter text-text-primary md:mx-auto md:max-w-lg md:text-4xl">
-                My site is a playful sandbox. Explore, experiment, && say hello
+                Explore my work, experiments && say hello
               </h2>
             </GridWrapper>
           </div>
