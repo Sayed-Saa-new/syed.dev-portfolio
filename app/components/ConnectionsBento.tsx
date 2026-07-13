@@ -96,56 +96,48 @@ export function ConnectionsBento({
                 </defs>
               </svg>
               <img
-                className="absolute left-1/2 top-1/2 h-[100px] w-[100px] -translate-x-1/2 -translate-y-1/2 transform rounded-full"
-                src="/braydon_headshot_3.jpg"
-                alt=""
+                className="absolute left-1/2 top-1/2 h-[100px] w-[100px] -translate-x-1/2 -translate-y-1/2 transform rounded-full object-cover"
+                src="/syed_headshot_3.png"
+                alt="Syed"
               />
             </div>
           </span>
 
           <span className="hidden md:block">
-            {/* Amy */}
+            {/* Placeholder empty circles — network coming soon */}
             <AnimatedConnectionCircle
-              src="/amy_dutton.jpg"
+              src=""
               top="55%"
               left="23%"
               delay={0.1}
               sizeClass="w-12 h-12"
               controls={controls}
             />
-
-            {/* James Q Quick */}
             <AnimatedConnectionCircle
-              src="/james_q_quick.jpg"
+              src=""
               top="53%"
               left="67%"
               delay={0.3}
               controls={controls}
             />
-
-            {/* Colby */}
             <AnimatedConnectionCircle
-              src="/colby_fayock.jpg"
+              src=""
               top="4%"
               left="32%"
               delay={0.2}
               sizeClass="w-14 h-14"
               controls={controls}
             />
-
-            {/* Sarah */}
             <AnimatedConnectionCircle
-              src="/sarah_drasner.jpg"
+              src=""
               top="15%"
               left="78%"
               delay={0.4}
               sizeClass="w-10 h-10"
               controls={controls}
             />
-
-            {/* Shashi */}
             <AnimatedConnectionCircle
-              src="/shashi_lo.jpg"
+              src=""
               top="5%"
               left="7%"
               delay={0.5}
@@ -160,41 +152,25 @@ export function ConnectionsBento({
               sizeClass="w-10 h-10"
               className="absolute left-4 top-6 md:left-24"
             >
-              <img
-                className="rounded-full"
-                src="/shashi_lo.jpg"
-                alt="Connection"
-              />
+              <div className="h-full w-full rounded-full bg-[#EDEEF0]" />
             </ConnectionCircle>
             <ConnectionCircle
               sizeClass="w-12 h-12"
               className="absolute bottom-20 left-14 md:left-52"
             >
-              <img
-                className="rounded-full"
-                src="/amy_dutton.jpg"
-                alt="Connection"
-              />
+              <div className="h-full w-full rounded-full bg-[#EDEEF0]" />
             </ConnectionCircle>
             <ConnectionCircle
               sizeClass="w-14 h-14"
               className="absolute right-16 top-4 md:right-52"
             >
-              <img
-                className="rounded-full"
-                src="/james_q_quick.jpg"
-                alt="Connection"
-              />
+              <div className="h-full w-full rounded-full bg-[#EDEEF0]" />
             </ConnectionCircle>
             <ConnectionCircle
               sizeClass="w-11 h-11"
               className="absolute bottom-20 right-4 md:right-12"
             >
-              <img
-                className="rounded-full"
-                src="/colby_fayock.jpg"
-                alt="Connection"
-              />
+              <div className="h-full w-full rounded-full bg-[#EDEEF0]" />
             </ConnectionCircle>
           </span>
         </div>
@@ -345,7 +321,11 @@ function AnimatedConnectionCircle({
       className={`absolute ${sizeClass} ${paddingClass} z-10`}
     >
       <ConnectionCircle sizeClass={sizeClass} paddingClass={paddingClass}>
-        <img className="rounded-full" src={src} alt="Connection" />
+        {src ? (
+          <img className="rounded-full" src={src} alt="Connection" />
+        ) : (
+          <div className="h-full w-full rounded-full bg-[#EDEEF0]" />
+        )}
       </ConnectionCircle>
     </motion.div>
   );
