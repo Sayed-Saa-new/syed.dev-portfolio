@@ -104,9 +104,8 @@ export function ConnectionsBento({
           </span>
 
           <span className="hidden md:block">
-            {/* Placeholder empty circles — network coming soon */}
             <AnimatedConnectionCircle
-              src=""
+              src="/avatars/avatar_1.png"
               top="55%"
               left="23%"
               delay={0.1}
@@ -114,14 +113,14 @@ export function ConnectionsBento({
               controls={controls}
             />
             <AnimatedConnectionCircle
-              src=""
+              src="/avatars/avatar_2.png"
               top="53%"
               left="67%"
               delay={0.3}
               controls={controls}
             />
             <AnimatedConnectionCircle
-              src=""
+              src="/avatars/avatar_3.png"
               top="4%"
               left="32%"
               delay={0.2}
@@ -129,7 +128,7 @@ export function ConnectionsBento({
               controls={controls}
             />
             <AnimatedConnectionCircle
-              src=""
+              src="/avatars/avatar_4.png"
               top="15%"
               left="78%"
               delay={0.4}
@@ -137,7 +136,7 @@ export function ConnectionsBento({
               controls={controls}
             />
             <AnimatedConnectionCircle
-              src=""
+              src="/avatars/avatar_5.png"
               top="5%"
               left="7%"
               delay={0.5}
@@ -145,6 +144,7 @@ export function ConnectionsBento({
               controls={controls}
             />
           </span>
+
 
           {/* mobile & tablet circle */}
           <span className="lg:hidden">
