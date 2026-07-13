@@ -62,7 +62,7 @@ export function SpeakingBento() {
               stiffness: 150,
             }}
           >
-            <SecondaryPhoto imgSrc="/braydon_speaking_head_3.jpeg" />
+            <SecondaryPhoto imgSrc="/syed_headshot_4.png" />
           </motion.span>
         </div>
         {/* Gradient overlay */}
@@ -71,7 +71,7 @@ export function SpeakingBento() {
           <div className="col-1 row-start-2 text-balance">
             <h2 className="mb-2 font-medium">Speaking</h2>
             <p className="text-text-secondary">
-              Talks, podcasts, tutorials and more
+              Talks, workshops & sharing what I build
             </p>
           </div>
         </div>
