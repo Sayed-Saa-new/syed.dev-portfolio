@@ -1,10 +1,13 @@
-import { Changelog } from "@/.velite";
-import { fetchAndSortChangelogEntrees } from "app/lib/utils";
 import { BentoCard } from "./BentoCard";
 
-export function ChangelogBento() {
-  const changelogItems = fetchAndSortChangelogEntrees().slice(0, 4);
+const changelogItems = [
+  { title: "Rebranded portfolio as Syed", publishedAt: "2026-07-13" },
+  { title: "Added new AI toolbox stack", publishedAt: "2026-07-10" },
+  { title: "Refreshed About & Speaking pages", publishedAt: "2026-07-08" },
+  { title: "Launched syed.flinkeo.online", publishedAt: "2026-07-05" },
+];
 
+export function ChangelogBento() {
   const getTopPosition = (index: number) => {
     const basePosition = -30;
     const spacing = 60;
@@ -39,7 +42,7 @@ export function ChangelogBento() {
         <div className="col-1 row-start-2">
           <h2 className="mb-2 font-medium">Changelog</h2>
           <p className="text-text-secondary">
-            Here&apos;s what&apos;s new on my site
+            Recent updates to my portfolio
           </p>
         </div>
       </div>
@@ -48,16 +51,19 @@ export function ChangelogBento() {
 }
 
 function EntreeCard({
-  title = "A new entree!",
-  publishedAt = "2022-12-13",
-}: Partial<Changelog>) {
+  title,
+  publishedAt,
+}: {
+  title: string;
+  publishedAt: string;
+}) {
   return (
     <div className="z-10 inline-block w-[160px] space-y-px rounded-xl border border-border-primary bg-white px-3 py-2.5 text-xs">
       <p className="overflow-hidden text-ellipsis whitespace-nowrap font-semibold text-text-secondary">
         {title}
       </p>
       <time dateTime={publishedAt}>
-        {new Date(publishedAt as string).toLocaleDateString("en-US", {
+        {new Date(publishedAt).toLocaleDateString("en-US", {
           month: "long",
           day: "numeric",
           year: "numeric",
