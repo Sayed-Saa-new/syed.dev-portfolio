@@ -1,4 +1,3 @@
-import "server-only";
 
 export type CurrentlyPlaying = {
   albumImageUrl: string;
