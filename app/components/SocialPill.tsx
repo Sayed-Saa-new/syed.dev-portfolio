@@ -20,52 +20,18 @@ export function SocialPill() {
         </svg>
         <span className="sr-only">Twitter</span>
       </a>
-      <a href={siteMetadata.linkedin}>
+      <a href={siteMetadata.facebook} target="_blank" rel="noopener noreferrer">
         <svg
           className="h-6 w-6 text-gray-400 hover:text-gray-300"
           viewBox="0 0 24 24"
-          fill="none"
+          fill="currentColor"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <path
-            d="M4.75 7.75C4.75 6.09315 6.09315 4.75 7.75 4.75H16.25C17.9069 4.75 19.25 6.09315 19.25 7.75V16.25C19.25 17.9069 17.9069 19.25 16.25 19.25H7.75C6.09315 19.25 4.75 17.9069 4.75 16.25V7.75Z"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          ></path>
-          <path
-            d="M10.75 16.25V14C10.75 12.7574 11.7574 11.75 13 11.75C14.2426 11.75 15.25 12.7574 15.25 14V16.25"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          ></path>
-          <path
-            d="M10.75 11.75V16.25"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          ></path>
-          <path
-            d="M7.75 11.75V16.25"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          ></path>
-          <path
-            d="M7.75 8.75V9.25"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          ></path>
+          <path d="M13.5 21v-7.5h2.5l.5-3h-3V8.5c0-.87.24-1.5 1.5-1.5H17V4.3c-.3-.04-1.3-.14-2.4-.14-2.4 0-4.1 1.47-4.1 4.15V10.5H8v3h2.5V21h3z" />
         </svg>
-        <span className="sr-only">LinkedIn</span>
+        <span className="sr-only">Facebook</span>
       </a>
-      <a href={siteMetadata.github}>
+      <a href={siteMetadata.github} target="_blank" rel="noopener noreferrer">
         <svg
           className="h-6 w-6 text-gray-400 hover:text-gray-300"
           viewBox="0 0 24 24"
