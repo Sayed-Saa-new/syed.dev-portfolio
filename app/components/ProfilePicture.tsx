@@ -11,6 +11,10 @@ export function ProfilePicture() {
     setIsChanging(true);
     const images = [
       "/syed_headshot_1.jpg",
+      "/syed_headshot_2.png",
+      "/syed_headshot_3.png",
+      "/syed_headshot_4.png",
+      "/syed_headshot_5.png",
     ];
     const availableImages = images.filter((img) => img !== imageSrc);
     if (availableImages.length === 0) return;
