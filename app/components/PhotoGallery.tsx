@@ -77,9 +77,9 @@ export const PhotoGallery = ({
       order: 0,
       x: "-320px",
       y: "15px",
-      zIndex: 50, // Highest z-index (on top)
+      zIndex: 50,
       direction: "left" as Direction,
-      src: "/braydon_headshot_3.jpg",
+      src: "/syed_headshot_2.png",
     },
     {
       id: 2,
@@ -88,7 +88,7 @@ export const PhotoGallery = ({
       y: "32px",
       zIndex: 40,
       direction: "left" as Direction,
-      src: "/braydon_speaking_photo.jpeg",
+      src: "/syed_headshot_3.png",
     },
     {
       id: 3,
@@ -97,7 +97,7 @@ export const PhotoGallery = ({
       y: "8px",
       zIndex: 30,
       direction: "right" as Direction,
-      src: "/braydon_headshot_1.jpeg",
+      src: "/syed_headshot_1.jpg",
     },
     {
       id: 4,
@@ -106,16 +106,16 @@ export const PhotoGallery = ({
       y: "22px",
       zIndex: 20,
       direction: "right" as Direction,
-      src: "/braydon_headshot_6.jpeg",
+      src: "/syed_headshot_4.png",
     },
     {
       id: 5,
       order: 4,
       x: "320px",
       y: "44px",
-      zIndex: 10, // Lowest z-index (at bottom)
+      zIndex: 10,
       direction: "left" as Direction,
-      src: "/braydon_react_miami_headshot.jpg",
+      src: "/syed_headshot_5.png",
     },
   ];
 
