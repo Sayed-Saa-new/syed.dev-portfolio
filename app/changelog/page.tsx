@@ -8,11 +8,11 @@ export default async function ChangelogPage() {
 
   return (
     <div className="w-full space-y-16">
-      <title>Changelog | Braydon Coyer</title>
+      <title>Changelog | Syed</title>
       <div className="mx-auto text-balance pt-14 md:pt-16">
         <GridWrapper>
           <h1 className="mx-auto max-w-2xl text-center text-4xl font-medium leading-tight tracking-tighter text-text-primary md:text-6xl md:leading-[64px]">
-            Here&apos;s what&apos;s new && exciting on my site.
+            Fresh start — new updates coming soon.
           </h1>
         </GridWrapper>
       </div>
