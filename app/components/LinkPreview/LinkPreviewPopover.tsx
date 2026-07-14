@@ -57,7 +57,6 @@ export const LinkPreviewPopover = forwardRef<
     <div
       ref={ref}
       id={id}
-      // @ts-expect-error - popover is a valid HTML attribute
       popover="manual"
       role="tooltip"
       className={`link-preview-popover${anchorName ? ' anchor-positioned' : ''}`}
