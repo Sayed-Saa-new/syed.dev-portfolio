@@ -95,22 +95,26 @@ export default function SpeakingPage() {
     <div className="relative">
       <title>Speaking | Braydon Coyer</title>
       <div className="relative space-y-16">
-        <GridWrapper>
-          <h1 className="max-w-3/5 mx-auto mt-16 text-balance text-center text-4xl font-medium leading-tight tracking-tighter text-text-primary md:text-6xl md:leading-[64px]">
-            My conference talks, podcast && video appearances.
-          </h1>
-        </GridWrapper>
-
-        <div className="text-center">
-          <GridWrapper className="py-4">
-            <Button
-              variant="primary"
-              href="https://forms.gle/hyhqN12A2BGForzq6"
-            >
-              Invite me to speak
-            </Button>
+        <MotionFadeIn duration={0.8} y={40}>
+          <GridWrapper>
+            <h1 className="max-w-3/5 mx-auto mt-16 text-balance text-center text-4xl font-medium leading-tight tracking-tighter text-text-primary md:text-6xl md:leading-[64px]">
+              My conference talks, podcast && video appearances.
+            </h1>
           </GridWrapper>
-        </div>
+        </MotionFadeIn>
+
+        <MotionFadeIn delay={0.15} y={20}>
+          <div className="text-center">
+            <GridWrapper className="py-4">
+              <Button
+                variant="primary"
+                href="https://forms.gle/hyhqN12A2BGForzq6"
+              >
+                Invite me to speak
+              </Button>
+            </GridWrapper>
+          </div>
+        </MotionFadeIn>
 
         <div>
           {/* Photos — fan effect */}
