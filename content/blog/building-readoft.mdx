@@ -1,0 +1,29 @@
+---
+title: "Building Readoft — an AI Reading Companion"
+publishedAt: "2026-10-04"
+summary: "Why I started Readoft, the reader problems it solves, and what I learned wiring an LLM to a personal library."
+imageName: "readoft_story.jpg"
+categories: ["ai", "projects"]
+---
+
+I read a lot. I also forget a lot. [Readoft](https://github.com/abushaidislam/ReadOft-N) started as a personal fix for the second problem.
+
+## The pitch
+
+Highlight a passage in whatever you're reading. Readoft summarises it, links it to other passages you highlighted before, and quizzes you on it a week later. It's Anki plus a librarian plus a search engine over your own reading history.
+
+## The interesting problems
+
+- **Chunking** — books don't respect token limits. Splitting on paragraphs beats splitting on characters every time.
+- **Retrieval** — vector search finds "similar wording", but readers want "similar idea". A hybrid of embeddings + keyword + tag filter gave much better results than any single approach.
+- **Quiz generation** — the model happily generates trivia. Getting it to generate *useful* recall prompts required an example bank and a hard word limit.
+
+## Stack
+
+- Next.js + Supabase (pgvector)
+- OpenAI embeddings, Claude for generation
+- A tiny React Native wrapper for on-the-go highlighting
+
+## What's next
+
+Public reading lists, shared annotations for study groups, and offline-first sync. If you're a heavy reader and want early access — reach out.

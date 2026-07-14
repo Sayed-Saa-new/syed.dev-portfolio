@@ -1,0 +1,31 @@
+---
+title: "A Practical Guide to Supabase Row Level Security"
+publishedAt: "2026-06-04"
+summary: "The RLS patterns I actually use in production — and the pitfalls that will catch you the first time."
+imageName: "supabase_rls.jpg"
+categories: ["supabase", "security", "engineering"]
+---
+
+RLS is Supabase's superpower and its biggest footgun. Here's what I've learned shipping it in production.
+
+## Enable it. Always.
+
+Every table in `public` schema gets `alter table ... enable row level security;`. No exceptions. A missing RLS enable is a data leak waiting for someone to notice.
+
+## Grants are separate from policies
+
+This one bit me. RLS policies are checked *after* PostgreSQL grants. If `authenticated` doesn't have `SELECT` on the table, the policy never gets a chance. Every `create table` needs a matching `grant` block.
+
+## Never check roles inside a policy that queries the same table
+
+You'll get infinite recursion. Put role checks in a `security definer` function like `has_role(user_id, role)` and call that from your policy.
+
+## `auth.uid()` is your friend
+
+The simplest useful policy: `using (auth.uid() = user_id)`. Start here. Get fancy later.
+
+## Test policies as the actual role
+
+Use `set role authenticated;` and `set request.jwt.claims` in a psql session. Don't assume — verify.
+
+RLS pays back the time you invest in it tenfold the first time a client-side bug tries to over-fetch and gets nothing.
