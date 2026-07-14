@@ -4,66 +4,47 @@ import { Timeline } from "./Timeline";
 const resumeData: ResumeData = {
   experiences: [
     {
-      company: "LogicGate",
-      period: "2022 - Present",
+      company: "Open to Opportunities",
+      period: "2026 — Present",
       positions: [
         {
-          title: "Frontend Developer III",
+          title: "Software & AI Engineer · Full-Stack Developer",
           description: [
-            "I lead feature development on a team by analyzing requirements, designing solutions, and assist in evolving the frontend chapter of our organization.",
-          ],
-        },
-        {
-          title: "Frontend Developer II",
-          description: [
-            "I joined LogicGate and immediately took charge of feature development on my team while also assisting other frontend developers in the organization.",
+            "Actively looking for full-time roles, internships, and freelance collaborations focused on AI-powered products, secure authentication systems, and modern full-stack web experiences.",
+            "Comfortable across the stack — React, TypeScript, Node, Supabase, Postgres, Web Crypto, and modern AI tooling (Claude, GPT, RAG, agents).",
           ],
         },
       ],
     },
     {
-      company: "Cognizant",
-      period: "2019 - 2021",
+      company: "Aegis Authenticator",
+      period: "2025 — 2026",
       positions: [
         {
-          title: "Senior Fullstack Developer",
+          title: "Founder · Solo Engineer",
           description: [
-            "I designed and developed full-stack RESTful microservices using Netflix OSS, Java, Spring Boot, SQL, Angular, React, and Vue.",
-            "I led development teams, utilizing extreme programming principles such as agile, test-driven development, and paired programming.",
-            "I spearheaded the information architecture and developed a reusable UI component library for healthcare clients.",
-            "I led over 650 developers through a monthly enablement process, training them for client work on the Digital Engineering stack.",
+            "Designed and built a zero-knowledge, end-to-end encrypted TOTP authenticator as a PWA, Chrome extension, and Windows desktop app — a privacy-first alternative to Google Authenticator and Authy.",
+            "Implemented the full crypto stack (AES-GCM, PBKDF2, Argon2id, X25519) using the Web Crypto API, with Supabase (Postgres + Auth + RLS + Edge Functions) as the encrypted sync layer.",
+            "Shipped a Stripe-powered subscription model, cross-platform sync via IndexedDB and Service Workers, and an Electron desktop build.",
           ],
         },
       ],
     },
     {
-      company: "projekt202",
-      period: "2018 - 2019",
+      company: "Independent Projects & Freelance",
+      period: "2024 — Present",
       positions: [
         {
-          title: "UI Developer",
+          title: "Full-Stack & AI Engineer",
           description: [
-            "I assisted in developing a reusable UI component library and worked closely with a multi-million dollar airline client to gather requirements.",
-            "My responsibility included developing solutions for enterprise clients worth millions of dollars, using Angular 7 for the frontend.",
-          ],
-        },
-      ],
-    },
-    {
-      company: "Major 4 Apps",
-      period: "2018 - 2019",
-      positions: [
-        {
-          title: "Founder & Developer",
-          description: [
-            "I developed custom applications for clients, designed, developed, tested, and supported mobile applications on iOS and Android platforms.",
-            "My mobile game ranked among the top 200 on the Amazon App Store.",
+            "Building AI-powered products, portfolio sites, and internal tools using React, TanStack Start, Next.js, Tailwind, and Supabase.",
+            "Focus areas: authentication systems, encrypted user data, LLM integrations (Claude / GPT), and clean, minimal UI.",
           ],
         },
       ],
     },
   ],
-  avatarUrl: "/braydon_headshot_1.jpeg",
+  avatarUrl: "/syed_headshot_1.jpg",
 };
 
 export function Resume() {
