@@ -71,7 +71,7 @@ export default async function Home() {
         {/* About Section */}
         <section className="relative space-y-10 md:space-y-16">
           {/* <AboutPattern /> */}
-          <div className="space-y-4">
+          <MotionFadeIn className="space-y-4">
             <GridWrapper>
               <div className="text-center text-sm font-medium text-indigo-600">
                 <span>About</span>
@@ -82,27 +82,29 @@ export default async function Home() {
                 A bit about how I build and what I care about
               </h2>
             </GridWrapper>
-          </div>
+          </MotionFadeIn>
 
-          <GridWrapper>
-            <div className="grid grid-cols-1 gap-2 md:grid-cols-12 lg:grid-rows-[14]">
-              <div className="col-span-1 md:col-span-5 lg:col-span-5 lg:row-span-6">
-                <AboutMeBento linkTo="/about" />
-              </div>
+          <MotionFadeIn delay={0.1} y={30}>
+            <GridWrapper>
+              <div className="grid grid-cols-1 gap-2 md:grid-cols-12 lg:grid-rows-[14]">
+                <div className="col-span-1 md:col-span-5 lg:col-span-5 lg:row-span-6">
+                  <AboutMeBento linkTo="/about" />
+                </div>
 
-              <div className="md:col-span-12 lg:col-span-7 lg:row-span-8">
-                <ConnectionsBento linkTo="/connections" />
-              </div>
+                <div className="md:col-span-12 lg:col-span-7 lg:row-span-8">
+                  <ConnectionsBento linkTo="/connections" />
+                </div>
 
-              <div className="md:col-span-7 md:row-start-1 lg:col-span-5 lg:row-span-7">
-                <ToolboxBento linkTo="/toolbox" />
-              </div>
+                <div className="md:col-span-7 md:row-start-1 lg:col-span-5 lg:row-span-7">
+                  <ToolboxBento linkTo="/toolbox" />
+                </div>
 
-              <div className="md:col-span-12 lg:col-span-7 lg:row-span-5">
-                <CalendarBento />
+                <div className="md:col-span-12 lg:col-span-7 lg:row-span-5">
+                  <CalendarBento />
+                </div>
               </div>
-            </div>
-          </GridWrapper>
+            </GridWrapper>
+          </MotionFadeIn>
         </section>
 
         {/* Blog Section */}
