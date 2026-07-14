@@ -94,13 +94,22 @@ export function CurrentlyPlayingBento() {
               </span>
             </p>
           </div>
-          <div className="user-select-none pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 transition-all duration-300 group-hover:-bottom-1">
+          <button
+            type="button"
+            aria-label="View full album cover"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsOpen(true);
+            }}
+            className="user-select-none absolute -bottom-8 left-1/2 z-20 -translate-x-1/2 cursor-pointer transition-all duration-300 group-hover:-bottom-1"
+          >
             <Record
               albumImageUrl={currentTrack.albumImageUrl}
               isPlaying={isCurrentlyPlaying}
             />
-          </div>
-          <div className="absolute -bottom-32 left-1/2 -translate-x-1/2">
+          </button>
+          <div className="pointer-events-none absolute -bottom-32 left-1/2 -translate-x-1/2">
             <div
               className="h-[210px] w-[210px] rounded-sm bg-cover bg-center shadow-md"
               style={{ backgroundImage: `url(${currentTrack.albumImageUrl})` }}
@@ -111,6 +120,42 @@ export function CurrentlyPlayingBento() {
           <CirclePattern />
         </span>
       </div>
+
+      {isOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${currentTrack.title} album cover`}
+          onClick={() => setIsOpen(false)}
+          className="fixed inset-0 z-[999] flex items-center justify-center bg-black/80 p-4 backdrop-blur-md animate-in fade-in duration-200"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative flex max-h-[90vh] max-w-[90vw] flex-col items-center gap-4"
+          >
+            <img
+              src={currentTrack.albumImageUrl}
+              alt={`${currentTrack.title} by ${currentTrack.artist}`}
+              className="max-h-[75vh] w-auto rounded-lg object-contain shadow-2xl"
+            />
+            <div className="text-center text-white">
+              <h3 className="text-2xl font-semibold">{currentTrack.title}</h3>
+              <p className="text-white/70">{currentTrack.artist}</p>
+            </div>
+            <button
+              type="button"
+              aria-label="Close"
+              onClick={() => setIsOpen(false)}
+              className="absolute -right-2 -top-2 flex h-10 w-10 items-center justify-center rounded-full bg-white text-black shadow-lg transition-transform hover:scale-110"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
     </BentoCard>
   );
 }
