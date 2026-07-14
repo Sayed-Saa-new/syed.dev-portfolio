@@ -207,6 +207,9 @@ export async function toggleReaction(slug: string, reactionType: ReactionType) {
     });
     
     revalidatePath(`/blog/${slug}`);
+    revalidatePath(`/stats`);
+    revalidateTag("article-reactions");
+    revalidateTag("server-stats");
     
     return { 
       success: true, 
