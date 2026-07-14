@@ -44,7 +44,12 @@ export function CurrentlyPlayingBento() {
 
   return (
     <BentoCard height="h-[300px]">
-      <div className="flex flex-col">
+      <div
+        className="user-select-none pointer-events-none absolute inset-0 z-0 bg-cover bg-center opacity-30 blur-2xl transition-opacity duration-300 group-hover:opacity-50"
+        style={{ backgroundImage: `url(${currentTrack.albumImageUrl})` }}
+      />
+      <div className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-t from-bg-primary via-bg-primary/70 to-transparent" />
+      <div className="relative flex flex-col">
         <div className="z-10 h-full">
           <div className="flex h-full flex-col justify-between">
             <h2 className="mb-2 text-base font-medium">
