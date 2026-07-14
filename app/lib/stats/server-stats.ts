@@ -116,5 +116,5 @@ export const getServerStats = unstable_cache(
     }
   },
   ["server-stats"],
-  { revalidate: 3600 } // Revalidate every hour
+  { revalidate: 60, tags: ["server-stats", "article-reactions", "article-views"] }
 );
