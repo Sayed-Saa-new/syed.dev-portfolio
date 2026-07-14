@@ -3,6 +3,7 @@ import { NewsletterSignUp } from "@/app/components/NewsletterSignUp";
 import { hardwareData, softwareData } from "app/data/toolbox";
 import { HorizontalLine } from "@/app/components/HorizontalLine";
 import { GridWrapper } from "@/app/components/GridWrapper";
+import { StaggeredAppsGrid } from "@/app/components/StaggeredAppsGrid";
 
 export default function ToolboxPage() {
   return (
@@ -33,35 +34,7 @@ export default function ToolboxPage() {
         </div>
         {/* List */}
         <GridWrapper>
-          <div className="relative grid grid-cols-3 place-items-center md:grid-cols-4 lg:grid-cols-8 lg:gap-6">
-            {softwareData.map((item) => (
-              <a
-                key={item.title}
-                href={item.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group no-underline transition-all duration-500 group-hover:-translate-y-3"
-              >
-                <div className="group inline-block text-center">
-                  <div className="h-28 w-28 rounded-[20px] border border-border-primary bg-bg-primary p-2 transition-all duration-300 group-hover:-translate-y-3 group-hover:border-indigo-400">
-                    <div
-                      className="grid h-full place-items-center rounded-xl border-2 border-[#A5AEB81F]/10 bg-[#EDEEF0]"
-                      style={{ boxShadow: "0px 2px 1.5px 0px #A5AEB852 inset" }}
-                    >
-                      <img
-                        className="h-10 w-10"
-                        alt={item.title}
-                        src={item.imgSrc}
-                      />
-                    </div>
-                  </div>
-                  {item.title ? (
-                    <p className="mt-3 text-sm text-gray-500">{item.title}</p>
-                  ) : null}
-                </div>
-              </a>
-            ))}
-          </div>
+          <StaggeredAppsGrid items={softwareData} columns={8} />
         </GridWrapper>
         {/* Hardware */}
         <div className="relative">
