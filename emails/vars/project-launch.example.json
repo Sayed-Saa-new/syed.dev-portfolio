@@ -1,0 +1,14 @@
+{
+  "previewText": "Aegis Authenticator is live — secure 2FA that syncs across your devices.",
+  "heroUrl": "https://syed.flinkeo.online/aegis-cover.jpg",
+  "projectName": "Aegis Authenticator",
+  "tagline": "Secure, encrypted 2FA that finally syncs across every device you own.",
+  "projectUrl": "https://aegis.syed.flinkeo.online",
+  "feature1Title": "End-to-end encrypted",
+  "feature1Body": "Your secrets never leave your device unencrypted.",
+  "feature2Title": "Cross-device sync",
+  "feature2Body": "Add a code on your phone, use it on desktop instantly.",
+  "feature3Title": "Import from anywhere",
+  "feature3Body": "One-tap import from Google, Authy, 2FAS.",
+  "unsubscribeUrl": "{{unsubscribe}}"
+}

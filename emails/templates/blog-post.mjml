@@ -1,0 +1,55 @@
+<mjml>
+  <mj-head>
+    <mj-title>New post on syed.flinkeo.online</mj-title>
+    <mj-preview>{{previewText}}</mj-preview>
+    <mj-font name="Inter" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
+    <mj-attributes>
+      <mj-all font-family="Inter, Arial, sans-serif" />
+      <mj-text color="#1a1a1a" font-size="16px" line-height="24px" />
+      <mj-button background-color="#0f172a" color="#ffffff" border-radius="999px" font-weight="600" font-size="14px" inner-padding="14px 28px" />
+      <mj-section background-color="#ffffff" />
+    </mj-attributes>
+    <mj-style>
+      a { color: #0f172a; }
+      .muted { color: #6b7280 !important; }
+      .tag { background:#f1f5f9; color:#0f172a; padding:4px 10px; border-radius:999px; font-size:12px; font-weight:600; letter-spacing:0.02em; }
+    </mj-style>
+  </mj-head>
+
+  <mj-body background-color="#f4f4f5" width="600px">
+    <!-- Brand header -->
+    <mj-section padding="24px 24px 8px">
+      <mj-column>
+        <mj-text font-size="14px" font-weight="700" letter-spacing="0.1em">SYED — ABUSHAID ISLAM</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Card -->
+    <mj-section background-color="#ffffff" border-radius="16px" padding="0">
+      <mj-column>
+        <mj-image src="{{coverUrl}}" alt="{{title}}" border-radius="16px 16px 0 0" padding="0" />
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="#ffffff" border-radius="0 0 16px 16px" padding="32px 32px 40px">
+      <mj-column>
+        <mj-text css-class="tag" align="left">NEW BLOG POST</mj-text>
+        <mj-text font-size="28px" font-weight="700" line-height="34px" padding-top="12px">{{title}}</mj-text>
+        <mj-text css-class="muted" padding-top="4px">{{readingTime}} min read · {{publishedDate}}</mj-text>
+        <mj-text padding-top="20px">{{excerpt}}</mj-text>
+        <mj-button href="{{postUrl}}" padding-top="24px" align="left">Read the post →</mj-button>
+      </mj-column>
+    </mj-section>
+
+    <!-- Footer -->
+    <mj-section padding="24px">
+      <mj-column>
+        <mj-divider border-color="#e5e7eb" border-width="1px" />
+        <mj-text css-class="muted" font-size="12px" align="center" padding-top="16px">
+          You're getting this because you subscribed at <a href="https://syed.flinkeo.online">syed.flinkeo.online</a>.<br/>
+          <a href="{{unsubscribeUrl}}">Unsubscribe</a> · <a href="https://syed.flinkeo.online">Portfolio</a> · <a href="https://github.com/abushaidislam">GitHub</a>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
