@@ -183,7 +183,7 @@ export function NewsletterSignUp({
             </p>
             <motion.div
               aria-hidden="true"
-              className="pointer-events-none absolute right-[80px] top-1/2 z-10 hidden h-[320px] w-[320px] -translate-y-1/2 lg:block"
+              className="pointer-events-none absolute bottom-[80px] right-[80px] z-10 hidden h-[120px] w-[120px] lg:block"
               style={{
                 maskImage: "url(/syed_logo_mark.png)",
                 WebkitMaskImage: "url(/syed_logo_mark.png)",
@@ -193,11 +193,10 @@ export function NewsletterSignUp({
                 WebkitMaskRepeat: "no-repeat",
                 maskPosition: "center",
                 WebkitMaskPosition: "center",
-                filter: "drop-shadow(0 8px 24px rgba(0,0,0,0.35))",
               }}
               animate={{
                 backgroundColor: formState.isSuccess ? "#6C47FF" : "#4B4B4F",
-                opacity: formState.isSuccess ? 0.95 : 0.45,
+                opacity: formState.isSuccess ? 0.95 : 0.6,
                 rotate: formState.isSuccess ? 8 : 0,
               }}
               transition={{ duration: 0.6, ease: "easeOut" }}
