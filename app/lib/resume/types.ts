@@ -9,7 +9,15 @@ export interface Experience {
   positions: Position[];
 }
 
+export interface Education {
+  school: string;
+  period: string;
+  degree: string;
+  description?: string;
+}
+
 export interface ResumeData {
   experiences: Experience[];
+  education?: Education[];
   avatarUrl: string;
 }

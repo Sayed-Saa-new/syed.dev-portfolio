@@ -4,44 +4,54 @@ import { Timeline } from "./Timeline";
 const resumeData: ResumeData = {
   experiences: [
     {
-      company: "Open to Opportunities",
-      period: "2026 — Present",
-      positions: [
-        {
-          title: "Software & AI Engineer · Full-Stack Developer",
-          description: [
-            "Actively looking for full-time roles, internships, and freelance collaborations focused on AI-powered products, secure authentication systems, and modern full-stack web experiences.",
-            "Comfortable across the stack — React, TypeScript, Node, Supabase, Postgres, Web Crypto, and modern AI tooling (Claude, GPT, RAG, agents).",
-          ],
-        },
-      ],
-    },
-    {
-      company: "Aegis Authenticator",
-      period: "2025 — 2026",
-      positions: [
-        {
-          title: "Founder · Solo Engineer",
-          description: [
-            "Designed and built a zero-knowledge, end-to-end encrypted TOTP authenticator as a PWA, Chrome extension, and Windows desktop app — a privacy-first alternative to Google Authenticator and Authy.",
-            "Implemented the full crypto stack (AES-GCM, PBKDF2, Argon2id, X25519) using the Web Crypto API, with Supabase (Postgres + Auth + RLS + Edge Functions) as the encrypted sync layer.",
-            "Shipped a Stripe-powered subscription model, cross-platform sync via IndexedDB and Service Workers, and an Electron desktop build.",
-          ],
-        },
-      ],
-    },
-    {
-      company: "Independent Projects & Freelance",
+      company: "Personal Projects",
       period: "2024 — Present",
       positions: [
         {
-          title: "Full-Stack & AI Engineer",
+          title: "Software Engineer & AI Product Builder",
           description: [
-            "Building AI-powered products, portfolio sites, and internal tools using React, TanStack Start, Next.js, Tailwind, and Supabase.",
-            "Focus areas: authentication systems, encrypted user data, LLM integrations (Claude / GPT), and clean, minimal UI.",
+            "Building modern full-stack web applications using Next.js, TypeScript, React, Supabase, and PostgreSQL.",
+            "Designing secure authentication systems with a strong focus on privacy, encryption, and user experience.",
+            "Creating AI-powered products, developer tools, and scalable SaaS applications.",
+            "Continuously exploring modern web technologies, UI/UX, and cloud deployment.",
           ],
         },
       ],
+    },
+    {
+      company: "FirstOrder AI Authenticator",
+      period: "2025 — Present",
+      positions: [
+        {
+          title: "Founder & Developer",
+          description: [
+            "Developing an enterprise-grade 2FA authenticator with TOTP/HOTP support.",
+            "Implementing AES-256 encryption, Argon2 password protection, QR scanning, encrypted backup, and modern security features.",
+            "Focusing on premium UI/UX and cross-platform architecture.",
+          ],
+        },
+      ],
+    },
+    {
+      company: "Portfolio & Open Source",
+      period: "2024 — Present",
+      positions: [
+        {
+          title: "Independent Developer",
+          description: [
+            "Building a personal portfolio with Next.js, Notion CMS, and Framer Motion.",
+            "Developing projects such as Readoft, DMailova, and other experimental AI/web applications.",
+            "Learning and applying modern software engineering best practices through real-world projects.",
+          ],
+        },
+      ],
+    },
+  ],
+  education: [
+    {
+      school: "Dhaka Commerce College",
+      period: "2024 — 2026 (Expected)",
+      degree: "Higher Secondary Certificate (HSC) — Science",
     },
   ],
   avatarUrl: "/syed_headshot_1.jpg",
@@ -92,6 +102,31 @@ export function Resume() {
             <Timeline avatarUrl={resumeData.avatarUrl} />
           </div>
         </div>
+
+        {resumeData.education && resumeData.education.length > 0 && (
+          <div className="mt-20 border-t border-gray-100 pt-12">
+            <h3 className="mb-8 text-2xl font-bold">Education</h3>
+            <div className="space-y-8">
+              {resumeData.education.map((edu) => (
+                <div
+                  key={edu.school}
+                  className="grid grid-cols-1 gap-4 md:grid-cols-[2fr,4fr]"
+                >
+                  <div>
+                    <h4 className="text-xl font-bold">{edu.school}</h4>
+                    <p className="text-sm text-gray-600">{edu.period}</p>
+                  </div>
+                  <div>
+                    <p className="text-lg font-semibold">{edu.degree}</p>
+                    {edu.description && (
+                      <p className="mt-2 text-gray-600">{edu.description}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
