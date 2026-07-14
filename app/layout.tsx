@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     description: siteMetadata.description,
     images: [
       {
-        url: "/braydon_coyer_blogfolio_og.jpg", // Your default OG image
+        url: "/syed_og.jpg",
         width: 1200,
         height: 630,
         alt: siteMetadata.title,
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: siteMetadata.title,
     description: siteMetadata.description,
-    images: ["/braydon_coyer_blogfolio_og.jpg"],
+    images: ["/syed_og.jpg"],
   },
 };
 
