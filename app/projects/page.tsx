@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { GridWrapper } from "@/app/components/GridWrapper";
 import { BentoCard } from "@/app/components/BentoCard";
+import { MotionFadeIn } from "@/app/components/MotionFadeIn";
 
 interface Project {
   title: string;
@@ -40,16 +41,20 @@ export default function ProjectPage() {
     <div className="relative space-y-16 pb-24">
       <title>Projects | Syed</title>
 
-      <GridWrapper>
-        <h1 className="mx-auto mt-16 max-w-2xl text-balance text-center text-4xl font-medium leading-tight tracking-tighter text-text-primary md:text-6xl md:leading-[64px]">
-          A collection of my favorite works.
-        </h1>
-      </GridWrapper>
+      <MotionFadeIn duration={0.8} y={40}>
+        <GridWrapper>
+          <h1 className="mx-auto mt-16 max-w-2xl text-balance text-center text-4xl font-medium leading-tight tracking-tighter text-text-primary md:text-6xl md:leading-[64px]">
+            A collection of my favorite works.
+          </h1>
+        </GridWrapper>
+      </MotionFadeIn>
 
       <GridWrapper>
         <div className="mx-auto max-w-6xl space-y-8 px-4">
-          {projects.map((project) => (
-            <ProjectBentoCard key={project.title} project={project} />
+          {projects.map((project, i) => (
+            <MotionFadeIn key={project.title} delay={0.1 + i * 0.1} y={40}>
+              <ProjectBentoCard project={project} />
+            </MotionFadeIn>
           ))}
         </div>
       </GridWrapper>
