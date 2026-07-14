@@ -183,7 +183,7 @@ export function NewsletterSignUp({
             </p>
             <motion.div
               aria-hidden="true"
-              className="pointer-events-none absolute -top-6 right-8 z-10 hidden h-[360px] w-[360px] lg:block"
+              className="pointer-events-none absolute right-16 top-1/2 z-10 hidden h-[320px] w-[320px] -translate-y-1/2 lg:block"
               style={{
                 maskImage: "url(/syed_logo_mark.png)",
                 WebkitMaskImage: "url(/syed_logo_mark.png)",
