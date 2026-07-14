@@ -2,17 +2,28 @@ import { BentoCard } from "./BentoCard";
 
 export function CurrentlyReadingBento() {
   return (
-    <BentoCard height="h-full" className="group !p-0">
-      <div className="p-6 pb-2">
-        <h2 className="font-medium">Currently Reading</h2>
+    <BentoCard height="h-full" className="group">
+      <h2 className="mb-2 font-medium">Currently Reading</h2>
+      <div className="relative h-full">
+        <div className="absolute left-10 top-6 h-full origin-bottom-left transition-transform duration-300 ease-in-out group-hover:-rotate-3">
+          <BookCover />
+        </div>
       </div>
-      <div className="relative h-full w-full flex-1 overflow-hidden">
-        <img
-          src="/surrounded_by_idiots_cover.png"
-          alt="Surrounded by Idiots book cover"
-          className="absolute -right-16 -top-6 h-[420px] w-auto max-w-none rotate-[12deg] drop-shadow-2xl transition-transform duration-500 ease-out group-hover:rotate-[8deg] group-hover:scale-[1.03]"
-        />
-      </div>
+      {/* Gradient overlay */}
+      <div className="absolute inset-0 h-full w-full bg-gradient-to-t from-white via-transparent to-transparent"></div>
     </BentoCard>
+  );
+}
+
+function BookCover() {
+  return (
+    <div className="relative aspect-video h-full w-96 overflow-hidden rounded">
+      <div className="absolute left-5 h-full w-2 bg-slate-900/20 blur-sm"></div>
+      <img
+        src="/surrounded_by_idiots_cover.png"
+        alt="Surrounded by Idiots book cover"
+        className="h-full"
+      />
+    </div>
   );
 }
