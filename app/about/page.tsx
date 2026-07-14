@@ -92,6 +92,7 @@ export default function AboutPage() {
             </div>
 
             {/* Section 1 */}
+            <MotionFadeIn y={30}>
             <div className="grid grid-cols-1 gap-8 py-12 pr-12 lg:grid-cols-2 lg:items-center lg:justify-between lg:py-32 lg:pb-20 xl:py-32">
               <div className="flex flex-col items-center text-left lg:order-2 lg:items-start">
                 <div className="mb-8 lg:hidden">
@@ -127,8 +128,10 @@ export default function AboutPage() {
                 </div>
               </div>
             </div>
+            </MotionFadeIn>
 
             {/* Section 2 */}
+            <MotionFadeIn y={30}>
             <div className="grid grid-cols-1 gap-8 py-24 lg:grid-cols-2 lg:items-center lg:justify-between lg:pl-12">
               <div className="flex flex-col items-center text-left lg:items-start">
                 <div className="mb-8 lg:hidden">
@@ -163,8 +166,10 @@ export default function AboutPage() {
                 </div>
               </div>
             </div>
+            </MotionFadeIn>
 
             {/* Section 3 */}
+            <MotionFadeIn y={30}>
             <div className="grid grid-cols-1 gap-8 pr-12 lg:grid-cols-2 lg:items-center lg:justify-between xl:py-24">
               <div className="flex flex-col items-center text-left lg:order-2 lg:items-start">
                 <div className="mb-8 lg:hidden">
@@ -202,8 +207,10 @@ export default function AboutPage() {
                 </div>
               </div>
             </div>
+            </MotionFadeIn>
 
             {/* Section 4 */}
+            <MotionFadeIn y={30}>
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-center lg:justify-between lg:py-32 lg:pl-12 xl:py-24">
               <div className="flex flex-col items-center text-left lg:items-start">
                 <div className="mb-8 lg:hidden">
@@ -242,6 +249,7 @@ export default function AboutPage() {
                 </div>
               </div>
             </div>
+            </MotionFadeIn>
           </div>
         </div>
 
