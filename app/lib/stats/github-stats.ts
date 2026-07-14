@@ -89,7 +89,9 @@ async function fetchUserRepoTotals(headers: HeadersInit): Promise<{ stars: numbe
 
 export const getGitHubStats = unstable_cache(
   async (): Promise<GitHubStats> => {
-    const token = process.env.GITHUB_TOKEN;
+    const token =
+      process.env.GITHUB_FINE_GRAINED_PERSONAL_ACCESS_TOKEN ||
+      process.env.GITHUB_TOKEN;
 
     const empty: GitHubStats = { stars: 0, forks: 0, commits: 0, contributions: null };
 
