@@ -4,7 +4,8 @@ import Link from "next/link";
 import { SocialPill } from "./SocialPill";
 import { usePathname } from "next/navigation";
 import { CloseButton, Dialog, DialogPanel } from "@headlessui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { animate } from "framer-motion";
 
 type NavigationLink = {
   name: string;
@@ -31,10 +32,84 @@ const Navbar: React.FC = () => {
 
 function DesktopNav() {
   const path = usePathname();
+  const navRef = useRef<HTMLUListElement | null>(null);
+  const spotlightX = useRef(0);
+  const ambienceX = useRef(0);
 
-  const determineActiveClass = (link: string): string => {
-    return path === link ? "text-text-primary" : "text-gray-500";
-  };
+  const activeIndex = Math.max(
+    0,
+    navigationLinks.findIndex((l) => l.link === path),
+  );
+
+  // Move ambience (active pill glow) whenever active index changes
+  useEffect(() => {
+    const nav = navRef.current;
+    if (!nav) return;
+    const activeItem = nav.querySelector<HTMLElement>(
+      `[data-index="${activeIndex}"]`,
+    );
+    if (!activeItem) return;
+
+    const navRect = nav.getBoundingClientRect();
+    const itemRect = activeItem.getBoundingClientRect();
+    const targetX = itemRect.left - navRect.left + itemRect.width / 2;
+
+    animate(ambienceX.current, targetX, {
+      type: "spring",
+      stiffness: 200,
+      damping: 20,
+      onUpdate: (v) => {
+        ambienceX.current = v;
+        nav.style.setProperty("--ambience-x", `${v}px`);
+      },
+    });
+
+    // Initialize spotlight to sit on active item on first render
+    if (spotlightX.current === 0) {
+      spotlightX.current = targetX;
+      nav.style.setProperty("--spotlight-x", `${targetX}px`);
+    }
+  }, [activeIndex]);
+
+  // Mouse tracking for spotlight
+  useEffect(() => {
+    const nav = navRef.current;
+    if (!nav) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = nav.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      spotlightX.current = x;
+      nav.style.setProperty("--spotlight-x", `${x}px`);
+    };
+
+    const handleMouseLeave = () => {
+      const activeItem = nav.querySelector<HTMLElement>(
+        `[data-index="${activeIndex}"]`,
+      );
+      if (!activeItem) return;
+      const navRect = nav.getBoundingClientRect();
+      const itemRect = activeItem.getBoundingClientRect();
+      const targetX = itemRect.left - navRect.left + itemRect.width / 2;
+
+      animate(spotlightX.current, targetX, {
+        type: "spring",
+        stiffness: 200,
+        damping: 20,
+        onUpdate: (v) => {
+          spotlightX.current = v;
+          nav.style.setProperty("--spotlight-x", `${v}px`);
+        },
+      });
+    };
+
+    nav.addEventListener("mousemove", handleMouseMove);
+    nav.addEventListener("mouseleave", handleMouseLeave);
+    return () => {
+      nav.removeEventListener("mousemove", handleMouseMove);
+      nav.removeEventListener("mouseleave", handleMouseLeave);
+    };
+  }, [activeIndex]);
 
   return (
     <nav
@@ -43,28 +118,55 @@ function DesktopNav() {
     >
       <div className="w-[104px]">
         <Link href="/" aria-label="Home">
-          <img
-            className="h-8 w-8"
-            src="/syed_logo.png"
-            alt="Syed's Logo"
-          />
+          <img className="h-8 w-8" src="/syed_logo.png" alt="Syed's Logo" />
         </Link>
       </div>
-      <ul className="flex place-items-center space-x-4 rounded-full border border-border-primary px-5 py-2 text-sm text-gray-500">
-        {navigationLinks.map((link) => (
-          <li key={link.name}>
-            <Link
-              href={link.link}
-              prefetch={true}
-              className={`${determineActiveClass(
-                link.link,
-              )} font-medium hover:text-text-primary`}
-            >
-              {link.name}
-            </Link>
-          </li>
-        ))}
+
+      <ul
+        ref={navRef}
+        className="spotlight-nav relative flex place-items-center gap-1 overflow-hidden rounded-full border border-border-primary bg-white/60 px-2 py-1.5 text-sm backdrop-blur-md"
+      >
+        {/* Ambience: soft glow under active item */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute top-1/2 h-16 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-60 blur-2xl"
+          style={{
+            left: "var(--ambience-x, -200px)",
+            background:
+              "radial-gradient(circle, rgba(108,71,255,0.35), transparent 60%)",
+          }}
+        />
+        {/* Spotlight: follows cursor */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute top-1/2 h-12 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-70 blur-xl"
+          style={{
+            left: "var(--spotlight-x, -200px)",
+            background:
+              "radial-gradient(circle, rgba(108,71,255,0.5), transparent 70%)",
+          }}
+        />
+
+        {navigationLinks.map((link, idx) => {
+          const isActive = idx === activeIndex;
+          return (
+            <li key={link.name} data-index={idx} className="relative z-10">
+              <Link
+                href={link.link}
+                prefetch={true}
+                className={`relative rounded-full px-4 py-1.5 font-medium transition-colors duration-200 ${
+                  isActive
+                    ? "text-text-primary"
+                    : "text-gray-500 hover:text-text-primary"
+                }`}
+              >
+                {link.name}
+              </Link>
+            </li>
+          );
+        })}
       </ul>
+
       <SocialPill />
     </nav>
   );
@@ -136,11 +238,7 @@ interface NavLogoProps {
 const NavLogo: React.FC<NavLogoProps> = ({ onClickCallback }) => {
   return (
     <Link href="/" onClick={() => onClickCallback(false)} aria-label="Home">
-      <img
-        className="h-9 w-9"
-        src="/syed_logo.png"
-        alt="Syed's Logo"
-      />
+      <img className="h-9 w-9" src="/syed_logo.png" alt="Syed's Logo" />
     </Link>
   );
 };

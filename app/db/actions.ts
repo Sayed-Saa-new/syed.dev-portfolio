@@ -1,7 +1,7 @@
 "use server";
 
 import { createSupabaseAdminClient } from "../lib/supabase/server";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 import { v4 as uuidv4 } from "uuid";
 import { type CurrentlyPlaying, getCurrentlyPlaying as getSpotifyCurrentlyPlaying } from "./spotify";
@@ -207,6 +207,9 @@ export async function toggleReaction(slug: string, reactionType: ReactionType) {
     });
     
     revalidatePath(`/blog/${slug}`);
+    revalidatePath(`/stats`);
+    revalidateTag("article-reactions");
+    revalidateTag("server-stats");
     
     return { 
       success: true, 

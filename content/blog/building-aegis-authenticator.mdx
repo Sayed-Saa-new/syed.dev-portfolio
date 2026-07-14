@@ -1,0 +1,34 @@
+---
+title: "Building Aegis — a Zero-Knowledge TOTP Authenticator"
+publishedAt: "2026-03-14"
+summary: "Why I started Aegis, the security model behind zero-knowledge sync, and the engineering decisions that shaped v1."
+imageName: "building_aegis.jpg"
+categories: ["security", "engineering", "projects"]
+---
+
+Most TOTP apps either lock you into one device or sync your secrets through servers that can technically read them. I wanted something in the middle — cross-device sync **without** the provider ever seeing my codes. That's how [Aegis](https://github.com/abushaidislam/Aegis-Secure) started.
+
+## The threat model
+
+Aegis assumes the server is hostile. Anything that leaves the device is:
+
+- encrypted with a key derived from the user's passphrase (Argon2id → AES-GCM)
+- opaque to the sync layer — the server only sees ciphertext blobs
+- versioned, so a compromised device can't silently overwrite good data
+
+The passphrase never leaves the device. Lose it and the data is gone; that's the tradeoff for zero-knowledge.
+
+## Stack
+
+- **TypeScript** end to end
+- **WebCrypto** for AES-GCM + PBKDF2 fallback where Argon2 isn't available
+- **IndexedDB** for local encrypted vault
+- **Supabase** as a dumb sync backend (RLS + ciphertext only)
+
+## What I learned
+
+1. Key derivation params matter more than the algorithm choice. I benched Argon2id on mid-range Android and settled on `m=64MB, t=3, p=1`.
+2. Cross-device conflict resolution is the actual hard part — not the crypto.
+3. Users don't read security copy. The UX has to make the safe path the default path.
+
+Aegis is still evolving. If you're building something similar, or want to break mine, open an issue.
