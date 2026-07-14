@@ -14,8 +14,7 @@ const favorite: CurrentlyPlaying = {
   albumId: "",
   artistId: "",
   title: "Sei Tumi",
-  albumImageUrl:
-    "https://i.scdn.co/image/ab67616d0000b273f0f1b6a3b8f5d5c5d5d5d5d5",
+  albumImageUrl: "/album_sei_tumi.jpg",
   songUrl: "https://open.spotify.com/search/sei%20tumi%20ayub%20bachchu",
   isPlaying: false,
 };
