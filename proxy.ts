@@ -10,7 +10,7 @@ const GONE_URLS = [
   "/blog/hello-world!",
 ];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   // Return 410 Gone for URLs that never existed (tells Google to stop crawling)
