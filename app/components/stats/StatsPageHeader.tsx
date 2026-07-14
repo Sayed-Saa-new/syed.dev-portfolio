@@ -7,63 +7,55 @@ import { usePerformanceMode } from "@/app/hooks/usePerformanceMode";
 export function StatsPageHeader() {
   const { shouldReduceAnimations } = usePerformanceMode();
 
-  // Mobile: Plain divs (zero animation overhead)
   if (shouldReduceAnimations) {
     return (
       <section>
-        <GridWrapper>
-          <div className="text-center">
+        <GridWrapper className="py-8 sm:py-10">
+          <div className="mx-auto max-w-2xl px-2 text-center sm:px-4">
             <span className="text-sm font-medium text-indigo-600">Stats</span>
+            <h1 className="mt-3 text-balance text-3xl font-medium leading-tight tracking-tighter text-text-primary sm:text-4xl md:text-5xl">
+              Building in public
+            </h1>
+            <p className="mx-auto mt-4 max-w-xl text-balance text-base leading-7 text-text-secondary sm:text-lg sm:leading-8">
+              GitHub activity, shipped projects, and a live snapshot of what
+              I&apos;m building.
+            </p>
           </div>
-        </GridWrapper>
-        <GridWrapper>
-          <h1 className="mx-auto mt-4 max-w-2xl text-balance text-center text-4xl font-medium leading-tight tracking-tighter text-text-primary md:text-5xl">
-            Building in public
-          </h1>
-        </GridWrapper>
-        <GridWrapper>
-          <p className="mx-auto mt-4 max-w-xl text-center leading-8 text-text-secondary">
-            GitHub activity, shipped projects, and a live snapshot of what
-            I&apos;m building.
-          </p>
         </GridWrapper>
       </section>
     );
   }
 
-  // Desktop: Full Framer Motion animations
   return (
     <section>
-      <GridWrapper>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center"
-        >
-          <span className="text-sm font-medium text-indigo-600">Stats</span>
-        </motion.div>
-      </GridWrapper>
-      <GridWrapper>
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="mx-auto mt-4 max-w-2xl text-balance text-center text-4xl font-medium leading-tight tracking-tighter text-text-primary md:text-5xl"
-        >
-          Building in public
-        </motion.h1>
-      </GridWrapper>
-      <GridWrapper>
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="mx-auto mt-4 max-w-xl text-center leading-8 text-text-secondary"
-        >
-          GitHub activity, shipped projects, and a live snapshot of what
-          I&apos;m building.
-        </motion.p>
+      <GridWrapper className="py-8 sm:py-10">
+        <div className="mx-auto max-w-2xl px-2 text-center sm:px-4">
+          <motion.span
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="block text-sm font-medium text-indigo-600"
+          >
+            Stats
+          </motion.span>
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="mt-3 text-balance text-3xl font-medium leading-tight tracking-tighter text-text-primary sm:text-4xl md:text-5xl"
+          >
+            Building in public
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="mx-auto mt-4 max-w-xl text-balance text-base leading-7 text-text-secondary sm:text-lg sm:leading-8"
+          >
+            GitHub activity, shipped projects, and a live snapshot of what
+            I&apos;m building.
+          </motion.p>
+        </div>
       </GridWrapper>
     </section>
   );
