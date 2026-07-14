@@ -201,10 +201,13 @@ export function NewsletterSignUp({
           animate={{
             backgroundColor: formState.isSuccess ? "#6C47FF" : "#A5AEB8",
             opacity: formState.isSuccess ? 1 : 0.6,
+            rotate: formState.isSuccess ? [0, -8, 8, 0] : 0,
+            scale: formState.isSuccess ? [1, 1.25, 1] : 1,
           }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
         />
       </span>
+
 
       <span className="absolute bottom-6 right-8">
         <svg
