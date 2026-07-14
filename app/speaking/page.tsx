@@ -8,6 +8,7 @@ import { AnimatedMobilePhotos } from "@/app/components/AnimatedMobilePhotos";
 import { PageSection } from "../components/PageSection";
 import { ContentLink } from "../components/ContentLink";
 import { VideoCard } from "../components/VideoCard";
+import { MotionFadeIn } from "@/app/components/MotionFadeIn";
 
 interface TalkEvent {
   event: string;
@@ -94,22 +95,26 @@ export default function SpeakingPage() {
     <div className="relative">
       <title>Speaking | Braydon Coyer</title>
       <div className="relative space-y-16">
-        <GridWrapper>
-          <h1 className="max-w-3/5 mx-auto mt-16 text-balance text-center text-4xl font-medium leading-tight tracking-tighter text-text-primary md:text-6xl md:leading-[64px]">
-            My conference talks, podcast && video appearances.
-          </h1>
-        </GridWrapper>
-
-        <div className="text-center">
-          <GridWrapper className="py-4">
-            <Button
-              variant="primary"
-              href="https://forms.gle/hyhqN12A2BGForzq6"
-            >
-              Invite me to speak
-            </Button>
+        <MotionFadeIn duration={0.8} y={40}>
+          <GridWrapper>
+            <h1 className="max-w-3/5 mx-auto mt-16 text-balance text-center text-4xl font-medium leading-tight tracking-tighter text-text-primary md:text-6xl md:leading-[64px]">
+              My conference talks, podcast && video appearances.
+            </h1>
           </GridWrapper>
-        </div>
+        </MotionFadeIn>
+
+        <MotionFadeIn delay={0.15} y={20}>
+          <div className="text-center">
+            <GridWrapper className="py-4">
+              <Button
+                variant="primary"
+                href="https://forms.gle/hyhqN12A2BGForzq6"
+              >
+                Invite me to speak
+              </Button>
+            </GridWrapper>
+          </div>
+        </MotionFadeIn>
 
         <div>
           {/* Photos — fan effect */}
@@ -237,133 +242,141 @@ export default function SpeakingPage() {
 
         <div className="relative space-y-32">
           <div className="space-y-16">
-            <PageSection title={<h2>Talks && Presentations</h2>}>
-              <p className="text-sm/8 text-text-primary">
-                An arrangement of live and virtual conference and meetup
-                presentations.
-              </p>
-              <div className="mt-8 max-w-2xl space-y-10 text-balance">
-                {talksAndPresentations.map((talk) => (
-                  <ContentLink
-                    key={talk.title}
-                    title={talk.title}
-                    description={talk.description}
-                    links={talk.events
-                      ? talk.events.map((e) => ({ label: e.event, href: e.url }))
-                      : talk.url ? [{ label: talk.event, href: talk.url }] : undefined
-                    }
-                  />
-                ))}
-              </div>
-            </PageSection>
+            <MotionFadeIn y={30}>
+              <PageSection title={<h2>Talks && Presentations</h2>}>
+                <p className="text-sm/8 text-text-primary">
+                  An arrangement of live and virtual conference and meetup
+                  presentations.
+                </p>
+                <div className="mt-8 max-w-2xl space-y-10 text-balance">
+                  {talksAndPresentations.map((talk) => (
+                    <ContentLink
+                      key={talk.title}
+                      title={talk.title}
+                      description={talk.description}
+                      links={talk.events
+                        ? talk.events.map((e) => ({ label: e.event, href: e.url }))
+                        : talk.url ? [{ label: talk.event, href: talk.url }] : undefined
+                      }
+                    />
+                  ))}
+                </div>
+              </PageSection>
+            </MotionFadeIn>
 
-            <PageSection title={<h2>Videos && Podcasts</h2>}>
-              <p className="text-sm/8 text-text-primary">
-                A combination of podcast recordings and educational videos.
-              </p>
-              <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-3">
-                <VideoCard
-                  title="Build a Devious Web Video Player in 4 Hours"
-                  subtitle="Web Dev Challenge"
-                  url="https://youtu.be/bF32laUxoK0?si=UW3OGEQ4dYVSzhBV"
-                  target="_blank"
-                  thumbnailUrl="/web_dev_challenge.jpeg"
-                  duration={2108}
-                />
-                <VideoCard
-                  title="Homeless to Software Developer! TailwindCSS Usage and Best Practices!"
-                  subtitle="Commit Your Code: Ep9"
-                  url="https://youtu.be/eQsedvVk9sE?si=11dVYMIoHl-R85o4"
-                  target="_blank"
-                  thumbnailUrl="/commit_your_code_ep_9.jpeg"
-                  duration={2731}
-                />
-              </div>
-            </PageSection>
+            <MotionFadeIn y={30}>
+              <PageSection title={<h2>Videos && Podcasts</h2>}>
+                <p className="text-sm/8 text-text-primary">
+                  A combination of podcast recordings and educational videos.
+                </p>
+                <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-3">
+                  <VideoCard
+                    title="Build a Devious Web Video Player in 4 Hours"
+                    subtitle="Web Dev Challenge"
+                    url="https://youtu.be/bF32laUxoK0?si=UW3OGEQ4dYVSzhBV"
+                    target="_blank"
+                    thumbnailUrl="/web_dev_challenge.jpeg"
+                    duration={2108}
+                  />
+                  <VideoCard
+                    title="Homeless to Software Developer! TailwindCSS Usage and Best Practices!"
+                    subtitle="Commit Your Code: Ep9"
+                    url="https://youtu.be/eQsedvVk9sE?si=11dVYMIoHl-R85o4"
+                    target="_blank"
+                    thumbnailUrl="/commit_your_code_ep_9.jpeg"
+                    duration={2731}
+                  />
+                </div>
+              </PageSection>
+            </MotionFadeIn>
           </div>
 
           {/* Biography */}
-          <GridWrapper>
-            <section className="relative px-4">
-              <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
-                <div className="relative col-span-7 flex flex-col space-y-8">
-                  {/* Title */}
-                  <div className="col-span-5 flex w-3/4 flex-col items-start space-y-3 text-balance">
-                    <div className="text-left text-sm font-medium text-indigo-600">
-                      <span>Biography</span>
-                    </div>
-                    <h2 className="text-3xl font-semibold text-text-primary">
-                      Here are a few options for speaker bios
-                    </h2>
-                  </div>
-
-                  <Tabs defaultTab="first-person">
-                    <TabList>
-                      <Tab id="first-person" label="First person" />
-                      <Tab id="third-person" label="Third person" />
-                    </TabList>
-                    <TabPanels className="mt-8">
-                      <TabPanel id="first-person">
-                        <p className="text-base leading-7 text-text-secondary">
-                          I am Braydon Coyer, a Senior Frontend Engineer at
-                          LogicGate, where I play a key role in developing an
-                          automated Governance, Risk, and Compliance (GRC)
-                          platform. As a creative developer, blogger, and
-                          designer, I enjoy tinkering and sharing my projects
-                          with the public. I live in Texas with my wife and two
-                          daughters.
-                        </p>
-                      </TabPanel>
-                      <TabPanel id="third-person">
-                        <p className="text-base leading-7 text-text-secondary">
-                          Braydon Coyer is a Senior Frontend Engineer at
-                          LogicGate, where he plays a key role in developing an
-                          automated Governance, Risk, and Compliance (GRC)
-                          platform. As a creative developer, blogger, and
-                          designer, he enjoys tinkering and sharing his projects
-                          with the public. Braydon lives in Texas with his wife
-                          and two daughters.
-                        </p>
-                      </TabPanel>
-                    </TabPanels>
-                  </Tabs>
-                </div>
-                <div className="col-span-5 flex flex-col items-start space-y-8">
-                  <div className="flex flex-col items-start space-y-4">
-                    <div className="text-left text-sm font-medium text-indigo-600">
-                      <span>Headshots</span>
-                    </div>
-                    <h2 className="text-3xl font-semibold text-text-primary">
-                      A variety of photos great for speaker headshots
-                    </h2>
-                  </div>
-                  <div className="mt-12 flex w-full space-x-4">
-                    <div className="relative">
-                      <ShadowBox width={200} height={200}></ShadowBox>
-                      <img
-                        className="absolute left-1 top-2 h-[186px] w-[186px] rotate-[9deg] rounded-lg object-cover shadow"
-                        src="/braydon_headshot_3.jpg"
-                        alt=""
-                      />
+          <MotionFadeIn y={30}>
+            <GridWrapper>
+              <section className="relative px-4">
+                <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
+                  <div className="relative col-span-7 flex flex-col space-y-8">
+                    {/* Title */}
+                    <div className="col-span-5 flex w-3/4 flex-col items-start space-y-3 text-balance">
+                      <div className="text-left text-sm font-medium text-indigo-600">
+                        <span>Biography</span>
+                      </div>
+                      <h2 className="text-3xl font-semibold text-text-primary">
+                        Here are a few options for speaker bios
+                      </h2>
                     </div>
 
-                    <div className="relative">
-                      <ShadowBox width={200} height={200}></ShadowBox>
-                      <img
-                        className="absolute left-1 top-2 h-[186px] w-[186px] rotate-[-8deg] rounded-lg object-cover shadow"
-                        src="/braydon_headshot_6.jpeg"
-                        alt=""
-                      />
+                    <Tabs defaultTab="first-person">
+                      <TabList>
+                        <Tab id="first-person" label="First person" />
+                        <Tab id="third-person" label="Third person" />
+                      </TabList>
+                      <TabPanels className="mt-8">
+                        <TabPanel id="first-person">
+                          <p className="text-base leading-7 text-text-secondary">
+                            I am Braydon Coyer, a Senior Frontend Engineer at
+                            LogicGate, where I play a key role in developing an
+                            automated Governance, Risk, and Compliance (GRC)
+                            platform. As a creative developer, blogger, and
+                            designer, I enjoy tinkering and sharing my projects
+                            with the public. I live in Texas with my wife and two
+                            daughters.
+                          </p>
+                        </TabPanel>
+                        <TabPanel id="third-person">
+                          <p className="text-base leading-7 text-text-secondary">
+                            Braydon Coyer is a Senior Frontend Engineer at
+                            LogicGate, where he plays a key role in developing an
+                            automated Governance, Risk, and Compliance (GRC)
+                            platform. As a creative developer, blogger, and
+                            designer, he enjoys tinkering and sharing his projects
+                            with the public. Braydon lives in Texas with his wife
+                            and two daughters.
+                          </p>
+                        </TabPanel>
+                      </TabPanels>
+                    </Tabs>
+                  </div>
+                  <div className="col-span-5 flex flex-col items-start space-y-8">
+                    <div className="flex flex-col items-start space-y-4">
+                      <div className="text-left text-sm font-medium text-indigo-600">
+                        <span>Headshots</span>
+                      </div>
+                      <h2 className="text-3xl font-semibold text-text-primary">
+                        A variety of photos great for speaker headshots
+                      </h2>
+                    </div>
+                    <div className="mt-12 flex w-full space-x-4">
+                      <div className="relative">
+                        <ShadowBox width={200} height={200}></ShadowBox>
+                        <img
+                          className="absolute left-1 top-2 h-[186px] w-[186px] rotate-[9deg] rounded-lg object-cover shadow"
+                          src="/braydon_headshot_3.jpg"
+                          alt=""
+                        />
+                      </div>
+
+                      <div className="relative">
+                        <ShadowBox width={200} height={200}></ShadowBox>
+                        <img
+                          className="absolute left-1 top-2 h-[186px] w-[186px] rotate-[-8deg] rounded-lg object-cover shadow"
+                          src="/braydon_headshot_6.jpeg"
+                          alt=""
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </section>
-          </GridWrapper>
+              </section>
+            </GridWrapper>
+          </MotionFadeIn>
         </div>
 
         {/* Newsletter */}
-        <NewsletterSignUp />
+        <MotionFadeIn y={30}>
+          <NewsletterSignUp />
+        </MotionFadeIn>
       </div>
     </div>
   );

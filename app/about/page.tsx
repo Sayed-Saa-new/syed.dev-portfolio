@@ -12,6 +12,7 @@ import { CurrentlyReadingBento } from "@/app/components/CurrentlyReadingBento";
 import { GridWrapper } from "@/app/components/GridWrapper";
 import { AboutTrackPattern } from "@/app/components/AboutTrackPattern";
 import { Photo } from "@/app/components/Photo";
+import { MotionFadeIn } from "@/app/components/MotionFadeIn";
 
 export default function AboutPage() {
   const timeOfDayGreeting = getTimeOfDayGreeting();
@@ -73,7 +74,7 @@ export default function AboutPage() {
 
         {/* About */}
         <div className="relative space-y-8 text-center">
-          <div className="space-y-4">
+          <MotionFadeIn className="space-y-4">
             <GridWrapper>
               <div className="text-center text-sm font-medium text-indigo-600">
                 <span>About</span>
@@ -84,13 +85,14 @@ export default function AboutPage() {
                 Here&apos;s a quick intro about me and what I love to do
               </h2>
             </GridWrapper>
-          </div>
+          </MotionFadeIn>
           <div className="relative h-fit w-full overflow-hidden">
             <div className="absolute left-0 top-0 w-full md:left-4 lg:left-[355px] xl:left-[455px]">
               <AboutTrackPattern />
             </div>
 
             {/* Section 1 */}
+            <MotionFadeIn y={30}>
             <div className="grid grid-cols-1 gap-8 py-12 pr-12 lg:grid-cols-2 lg:items-center lg:justify-between lg:py-32 lg:pb-20 xl:py-32">
               <div className="flex flex-col items-center text-left lg:order-2 lg:items-start">
                 <div className="mb-8 lg:hidden">
@@ -126,8 +128,10 @@ export default function AboutPage() {
                 </div>
               </div>
             </div>
+            </MotionFadeIn>
 
             {/* Section 2 */}
+            <MotionFadeIn y={30}>
             <div className="grid grid-cols-1 gap-8 py-24 lg:grid-cols-2 lg:items-center lg:justify-between lg:pl-12">
               <div className="flex flex-col items-center text-left lg:items-start">
                 <div className="mb-8 lg:hidden">
@@ -162,8 +166,10 @@ export default function AboutPage() {
                 </div>
               </div>
             </div>
+            </MotionFadeIn>
 
             {/* Section 3 */}
+            <MotionFadeIn y={30}>
             <div className="grid grid-cols-1 gap-8 pr-12 lg:grid-cols-2 lg:items-center lg:justify-between xl:py-24">
               <div className="flex flex-col items-center text-left lg:order-2 lg:items-start">
                 <div className="mb-8 lg:hidden">
@@ -201,8 +207,10 @@ export default function AboutPage() {
                 </div>
               </div>
             </div>
+            </MotionFadeIn>
 
             {/* Section 4 */}
+            <MotionFadeIn y={30}>
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-center lg:justify-between lg:py-32 lg:pl-12 xl:py-24">
               <div className="flex flex-col items-center text-left lg:items-start">
                 <div className="mb-8 lg:hidden">
@@ -241,11 +249,12 @@ export default function AboutPage() {
                 </div>
               </div>
             </div>
+            </MotionFadeIn>
           </div>
         </div>
 
         {/* About */}
-        <div className="relative space-y-8 text-center">
+        <MotionFadeIn className="relative space-y-8 text-center">
           <div className="space-y-4">
             <GridWrapper>
               <div className="text-center text-sm font-medium text-indigo-600">
@@ -258,15 +267,17 @@ export default function AboutPage() {
               </h2>
             </GridWrapper>
           </div>
-        </div>
-        <div className="space-y-16">
-          <GridWrapper>
-            <Resume />
-          </GridWrapper>
-        </div>
+        </MotionFadeIn>
+        <MotionFadeIn delay={0.1} y={30}>
+          <div className="space-y-16">
+            <GridWrapper>
+              <Resume />
+            </GridWrapper>
+          </div>
+        </MotionFadeIn>
 
         <section className="relative space-y-16">
-          <div className="space-y-4">
+          <MotionFadeIn className="space-y-4">
             <GridWrapper>
               <div className="text-center text-sm font-medium text-indigo-600">
                 <span>More</span>
@@ -278,33 +289,37 @@ export default function AboutPage() {
                 Here&apos;s what sets me apart and makes me unique
               </h2>
             </GridWrapper>
-          </div>
+          </MotionFadeIn>
 
           {/* About Grid */}
-          <GridWrapper>
-            <div className="grid grid-cols-1 gap-2 lg:grid-cols-12">
-              <div className="lg:col-span-3 lg:row-span-6">
-                <CurrentlyPlayingBento />
-              </div>
-              <div className="hidden lg:col-span-7 lg:row-span-5 lg:block">
-                <ScrapbookBento />
-              </div>
-              <div className="hidden lg:col-span-2 lg:col-start-11 lg:row-span-10 lg:block lg:min-h-[50px]">
-                <CurrentlyReadingBento />
-              </div>
-              <div className="lg:col-span-7 lg:row-span-8">
-                <ConnectionsBento linkTo="/connections" />
-              </div>
+          <MotionFadeIn delay={0.1} y={30}>
+            <GridWrapper>
+              <div className="grid grid-cols-1 gap-2 lg:grid-cols-12">
+                <div className="lg:col-span-3 lg:row-span-6">
+                  <CurrentlyPlayingBento />
+                </div>
+                <div className="hidden lg:col-span-7 lg:row-span-5 lg:block">
+                  <ScrapbookBento />
+                </div>
+                <div className="hidden lg:col-span-2 lg:col-start-11 lg:row-span-10 lg:block lg:min-h-[50px]">
+                  <CurrentlyReadingBento />
+                </div>
+                <div className="lg:col-span-7 lg:row-span-8">
+                  <ConnectionsBento linkTo="/connections" />
+                </div>
 
-              <div className="lg:col-span-3 lg:row-span-4">
-                <StatsBento />
+                <div className="lg:col-span-3 lg:row-span-4">
+                  <StatsBento />
+                </div>
               </div>
-            </div>
-          </GridWrapper>
+            </GridWrapper>
+          </MotionFadeIn>
         </section>
 
         {/* Newsletter */}
-        <NewsletterSignUp />
+        <MotionFadeIn y={30}>
+          <NewsletterSignUp />
+        </MotionFadeIn>
       </div>
     </div>
   );
