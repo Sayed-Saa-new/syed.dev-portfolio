@@ -1,0 +1,45 @@
+---
+title: "Building a Simple Uptime Monitor With Cron and Postgres"
+publishedAt: "2026-07-16"
+summary: "No fancy stack. Just a pg_cron job, one table, and a Discord webhook. Enough to sleep at night."
+imageName: "uptime_monitor.jpg"
+categories: ["projects", "engineering"]
+---
+
+You don't need Datadog for a side project. Here's the setup running on my [Uptime](https://github.com/abushaidislam/Uptime) repo.
+
+## The whole schema
+
+```sql
+create table checks (
+  id uuid primary key default gen_random_uuid(),
+  url text not null,
+  expected_status int default 200,
+  interval_seconds int default 60
+);
+
+create table check_results (
+  id bigserial primary key,
+  check_id uuid references checks(id) on delete cascade,
+  status_code int,
+  latency_ms int,
+  ok boolean,
+  created_at timestamptz default now()
+);
+```
+
+## The job
+
+A single Postgres function loops through `checks`, `perform` an HTTP request via `pg_net`, records the result, and posts to Discord when `ok` flips from true to false. `pg_cron` runs it every minute.
+
+## The dashboard
+
+One Next.js page with a chart per URL. Green means alive, red means paged. That's it.
+
+## Why this is enough
+
+- No servers to babysit
+- No SDK to update
+- Alerts go where I already look
+
+Total cost: the Supabase free tier. Total code: under 200 lines. Sometimes boring wins.

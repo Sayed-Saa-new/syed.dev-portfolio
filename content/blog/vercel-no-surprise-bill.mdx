@@ -1,0 +1,31 @@
+---
+title: "Deploying to Vercel Without the Surprise Bill"
+publishedAt: "2026-08-26"
+summary: "The knobs I turn on every Vercel project to keep it fast, cheap, and predictable."
+imageName: "deploying_vercel.jpg"
+categories: ["deployment", "nextjs"]
+---
+
+Vercel is amazing until you get a $400 bandwidth bill for a personal site. Here's how I keep that from happening.
+
+## Cache aggressively at the edge
+
+`Cache-Control: public, s-maxage=3600, stale-while-revalidate=86400` on anything that isn't per-user. Vercel's edge network eats the traffic and your function invocations stay flat.
+
+## Image optimization has a quota — respect it
+
+Use `<Image>` for above-the-fold hero images. Use plain `<img>` for a giant blog post gallery. The optimization pipeline is metered and it adds up.
+
+## Set spending caps in the dashboard
+
+Every project. Every environment. Do this before you deploy, not after.
+
+## Watch the function region
+
+Serving from `iad1` when your users and your database are in Frankfurt is a slow, expensive round trip. Match your function region to your database.
+
+## Preview builds are real builds
+
+If a preview build hits your production Supabase and blows the row cap, it's still your bill. Point previews at a staging project.
+
+Vercel is generous by default. Spending five minutes on these settings keeps it that way.
