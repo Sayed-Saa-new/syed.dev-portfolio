@@ -254,7 +254,7 @@ const CircleBtn = ({
   onClickCallback,
   className = "",
   ...props
-}: CircleBtnProps): JSX.Element => {
+}: CircleBtnProps): React.JSX.Element => {
   return (
     <button
       className={`rounded-full border border-border-primary p-2 ${className}`}
