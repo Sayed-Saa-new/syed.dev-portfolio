@@ -2,291 +2,192 @@ import { ShadowBox } from "@/app/components/ShadowBox";
 import { NewsletterSignUp } from "@/app/components/NewsletterSignUp";
 import { Button } from "@/app/components/Button";
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from "@/app/components/Tabs";
-import { Photo } from "@/app/components/Photo";
 import { GridWrapper } from "@/app/components/GridWrapper";
-import { AnimatedMobilePhotos } from "@/app/components/AnimatedMobilePhotos";
 import { PageSection } from "../components/PageSection";
-import { ContentLink } from "../components/ContentLink";
-import { VideoCard } from "../components/VideoCard";
 import { MotionFadeIn } from "@/app/components/MotionFadeIn";
+import { siteMetadata } from "@/app/data/siteMetadata";
 
-interface TalkEvent {
-  event: string;
-  url: string;
-}
-
-interface Talk {
-  title: string;
-  description: string;
-  event: string;
-  url?: string;
-  events?: TalkEvent[];
-}
-
-const talksAndPresentations: Talk[] = [
+const topics = [
   {
-    title: "Behind the Scenes of Tailwind CSS",
+    title: "Building AI-powered products",
     description:
-      "Ever peeked into Tailwind's source code? You'll see exactly how thousands of utility classes get generated, the purging techniques that scan your templates to slash bundle sizes, and how JIT compilation delivers unlimited arbitrary values without tanking performance.",
-    event: "Stir Trek 2025, React Miami 2026",
-    events: [
-      { event: "React Miami 2026", url: "https://www.youtube.com/watch?v=mPcRf-wHOFQ" },
-      { event: "Stir Trek 2025", url: "https://youtu.be/qx_t3uae1o4?si=uvU6dITj1UjbBELf" },
-    ],
+      "How I design, prototype, and ship AI features — from Claude & ChatGPT workflows to production-ready assistants that don&apos;t hallucinate on real users.",
   },
   {
-    title: "What's New in Tailwind CSS v4?",
+    title: "Modern authentication & 2FA",
     description:
-      "Tailwind CSS v4 brings numerous enhancements to the developer experience. In this session, we'll explore the key changes and new features to help you prepare for the official release of v4.",
-    event: "Commit Your Code '24",
-    url: "https://www.youtube.com/live/Ils_dA_fHmY?si=Jk-2MDczcxbE95La&t=15711",
+      "Lessons from building Aegis Authenticator — secure token storage, encrypted backups, TOTP done right, and the UX side of security.",
   },
   {
-    title: "The Power of a Second Brain in a Developer's Workflow",
+    title: "Shipping full-stack side projects",
     description:
-      "Instead of using AI to solve a problem and forgetting the solution moments later, use a Second Brain to enhance memory retention and discover related information in context of your past experiences. ",
-    event: "C3 Conf",
-    url: "https://gitnation.com/contents/the-power-of-a-second-brain-in-a-developers-workflow",
+      "A pragmatic look at moving from idea to launch as a solo builder — the stack, the shortcuts, and the things worth taking slow.",
   },
   {
-    title: "Choosing Blog Topics and Boosting Content with SEO",
+    title: "Developer workflow with AI",
     description:
-      "Learn the art of selecting high-traffic article topics and mastering effective writing and formatting techniques to maximize engagement and readership.",
-    event: "THAT Conference",
-    url: "https://www.youtube.com/watch?v=VS01DHSnGV0&t",
-  },
-  {
-    title: "The Nest Big Thing in CSS: An Introduction to Native Class Nesting",
-    description:
-      "Let's explore native class nesting in CSS! We'll cover the fundamentals of nesting, its benefits, and browser support.",
-    event: "Dallas Software Developer Meetup",
-    url: "https://www.youtube.com/watch?v=4lNEn9bY-GE",
-  },
-  {
-    title:
-      "Reactivity Without the Headache - An Introduction to Angular Signals",
-    description:
-      "Learn how Angular Signals introduce a new reactive way to track state across your application. We'll refactor real code to use this new reactive pattern to simplify and minimize the codebase.",
-    event: "Lunch & Learn",
-  },
-  {
-    title: "Application Confidence - An Introduction to Testing React",
-    description:
-      "An introducing to testing React Applications with the React Testing Library!",
-    event: "Dallas Software Developer Meetup",
-  },
-  {
-    title: "Live Link Previews with Next.js",
-    description:
-      "Learn how to display a preview of an externally linked site in your Next.js application!",
-    event: "Dallas Software Developer Meetup",
-  },
-  {
-    title: "FullStack <development /> Chat",
-    description:
-      "I was invited by a Shashi Lo to be a speaker on his Twitter Space discussing Fullstack development.",
-    event: "Twitter Space",
-    url: "https://x.com/shashiwhocodes/status/1620965070183305216",
+      "How I actually use Claude, ChatGPT, Cursor, and Raycast every day — not the hype reel, the real workflow that ships code faster.",
   },
 ];
 
+const formats = [
+  { label: "Conference talk", detail: "20–40 min keynote or session" },
+  { label: "Workshop", detail: "Hands-on, 2–4 hours, small groups" },
+  { label: "Meetup / college event", detail: "Short talk + Q&A, in-person or remote" },
+  { label: "Podcast / interview", detail: "Remote, any timezone" },
+  { label: "Panel / AMA", detail: "AI, auth, or full-stack topics" },
+];
+
 export default function SpeakingPage() {
+  const mailto = `mailto:${siteMetadata.email}?subject=Speaking%20invitation`;
+
   return (
     <div className="relative">
-      <title>Speaking | Braydon Coyer</title>
-      <div className="relative space-y-16">
+      <title>Speaking | Syed</title>
+      <div className="relative space-y-20">
         <MotionFadeIn duration={0.8} y={40}>
           <GridWrapper>
-            <h1 className="max-w-3/5 mx-auto mt-16 text-balance text-center text-4xl font-medium leading-tight tracking-tighter text-text-primary md:text-6xl md:leading-[64px]">
-              My conference talks, podcast && video appearances.
+            <h1 className="max-w-3xl mx-auto mt-16 text-balance text-center text-4xl font-medium leading-tight tracking-tighter text-text-primary md:text-6xl md:leading-[64px]">
+              Available for talks, workshops && podcasts.
             </h1>
+            <p className="mx-auto mt-6 max-w-2xl text-center text-base leading-7 text-text-secondary">
+              I love talking about the things I build — AI-powered products,
+              secure authentication systems, and shipping modern web
+              experiences as a solo engineer. If you&apos;re running a
+              conference, meetup, podcast, or student event, let&apos;s make
+              something happen.
+            </p>
           </GridWrapper>
         </MotionFadeIn>
 
         <MotionFadeIn delay={0.15} y={20}>
           <div className="text-center">
             <GridWrapper className="py-4">
-              <Button
-                variant="primary"
-                href="https://forms.gle/hyhqN12A2BGForzq6"
-              >
+              <Button variant="primary" href={mailto}>
                 Invite me to speak
               </Button>
             </GridWrapper>
           </div>
         </MotionFadeIn>
 
+        {/* Photos — fan effect */}
         <div>
-          {/* Photos — fan effect */}
-          <div className="relative mx-auto mb-8 mt-8 hidden h-[250px] max-w-3xl lg:block">
-
-            {/* Stir Trek — far left */}
+          <div className="relative mx-auto mb-8 mt-8 hidden h-[260px] max-w-3xl lg:block">
             <div
               className="absolute z-10"
               style={{
                 bottom: 0,
-                left: '50%',
-                marginLeft: -440,
-                transformOrigin: 'bottom center',
-                transform: 'rotate(-18deg)',
+                left: "50%",
+                marginLeft: -360,
+                transformOrigin: "bottom center",
+                transform: "rotate(-14deg)",
               }}
             >
               <ShadowBox width={200} height={240}></ShadowBox>
-              <span className="absolute left-1 top-1">
-                <Photo
-                  width={192}
-                  height={232}
-                  src="/braydon_stir_trek.jpeg"
-                  alt="Braydon at Stir Trek 2025."
-                  direction="left"
-                />
-              </span>
+              <img
+                className="absolute left-1 top-1 h-[232px] w-[192px] rounded-lg object-cover"
+                src="/syed_headshot_2.png"
+                alt="Syed headshot"
+              />
             </div>
 
-            {/* Commit Your Code — left-center */}
-            <div
-              className="absolute z-20"
-              style={{
-                bottom: 0,
-                left: '50%',
-                marginLeft: -310,
-                transformOrigin: 'bottom center',
-                transform: 'rotate(-8deg)',
-              }}
-            >
-              <ShadowBox width={230} height={200}></ShadowBox>
-              <span className="absolute left-1 top-1">
-                <Photo
-                  width={222}
-                  height={192}
-                  src="/braydon_commit_your_code.jpeg"
-                  alt="Braydon at Commit Your Code conference."
-                  direction="left"
-                />
-              </span>
-            </div>
-
-            {/* React Miami stage — center hero */}
-            <div
-              className="absolute z-50"
-              style={{
-                bottom: 0,
-                left: '50%',
-                marginLeft: -150,
-                transformOrigin: 'bottom center',
-                transform: 'rotate(0deg)',
-              }}
-            >
-              <ShadowBox width={300} height={228}></ShadowBox>
-              <span className="absolute left-1 top-1">
-                <Photo
-                  width={292}
-                  height={220}
-                  src="/react_miami_stage.jpg"
-                  alt="Braydon on stage at React Miami 2026."
-                  direction="right"
-                />
-              </span>
-            </div>
-
-            {/* C3 speaker — right-center */}
             <div
               className="absolute z-30"
               style={{
                 bottom: 0,
-                left: '50%',
-                marginLeft: 80,
-                transformOrigin: 'bottom center',
-                transform: 'rotate(8deg)',
+                left: "50%",
+                marginLeft: -160,
+                transformOrigin: "bottom center",
+                transform: "rotate(0deg)",
               }}
             >
-              <ShadowBox width={230} height={230}></ShadowBox>
-              <span className="absolute left-1 top-1">
-                <Photo
-                  width={222}
-                  height={222}
-                  src="/c3_speaker_head.png"
-                  alt="Braydon speaking at C3 Conf."
-                  direction="right"
-                />
-              </span>
+              <ShadowBox width={260} height={240}></ShadowBox>
+              <img
+                className="absolute left-1 top-1 h-[232px] w-[252px] rounded-lg object-cover"
+                src="/syed_headshot_1.jpg"
+                alt="Syed portrait"
+              />
             </div>
 
-            {/* React Miami headshot — far right */}
             <div
               className="absolute z-20"
               style={{
                 bottom: 0,
-                left: '50%',
-                marginLeft: 240,
-                transformOrigin: 'bottom center',
-                transform: 'rotate(18deg)',
+                left: "50%",
+                marginLeft: 140,
+                transformOrigin: "bottom center",
+                transform: "rotate(14deg)",
               }}
             >
               <ShadowBox width={200} height={240}></ShadowBox>
-              <span className="absolute left-1 top-1">
-                <Photo
-                  width={192}
-                  height={232}
-                  src="/braydon_react_miami_headshot.jpg"
-                  alt="Braydon speaking at React Miami 2026."
-                  direction="right"
-                />
-              </span>
+              <img
+                className="absolute left-1 top-1 h-[232px] w-[192px] rounded-lg object-cover"
+                src="/syed_headshot_3.png"
+                alt="Syed headshot"
+              />
             </div>
-
           </div>
-          {/* Mobile Photos */}
-          <AnimatedMobilePhotos delay={0.1} />
+
+          {/* Mobile — single centered photo */}
+          <div className="flex justify-center lg:hidden">
+            <div className="relative">
+              <ShadowBox width={220} height={260}></ShadowBox>
+              <img
+                className="absolute left-1 top-1 h-[252px] w-[212px] rounded-lg object-cover"
+                src="/syed_headshot_1.jpg"
+                alt="Syed portrait"
+              />
+            </div>
+          </div>
         </div>
 
         <div className="relative space-y-32">
           <div className="space-y-16">
             <MotionFadeIn y={30}>
-              <PageSection title={<h2>Talks && Presentations</h2>}>
+              <PageSection title={<h2>Topics I love talking about</h2>}>
                 <p className="text-sm/8 text-text-primary">
-                  An arrangement of live and virtual conference and meetup
-                  presentations.
+                  Pick whichever fits your audience — or reach out with a
+                  custom angle and we&apos;ll shape a talk together.
                 </p>
-                <div className="mt-8 max-w-2xl space-y-10 text-balance">
-                  {talksAndPresentations.map((talk) => (
-                    <ContentLink
-                      key={talk.title}
-                      title={talk.title}
-                      description={talk.description}
-                      links={talk.events
-                        ? talk.events.map((e) => ({ label: e.event, href: e.url }))
-                        : talk.url ? [{ label: talk.event, href: talk.url }] : undefined
-                      }
-                    />
+                <div className="mt-8 grid max-w-3xl grid-cols-1 gap-6 sm:grid-cols-2">
+                  {topics.map((t) => (
+                    <div
+                      key={t.title}
+                      className="rounded-2xl border border-border-primary p-5"
+                    >
+                      <h3 className="text-base font-medium text-text-primary">
+                        {t.title}
+                      </h3>
+                      <p className="mt-2 text-sm leading-6 text-text-secondary">
+                        {t.description}
+                      </p>
+                    </div>
                   ))}
                 </div>
               </PageSection>
             </MotionFadeIn>
 
             <MotionFadeIn y={30}>
-              <PageSection title={<h2>Videos && Podcasts</h2>}>
+              <PageSection title={<h2>Formats</h2>}>
                 <p className="text-sm/8 text-text-primary">
-                  A combination of podcast recordings and educational videos.
+                  I&apos;m happy in almost any format — here&apos;s what works
+                  best.
                 </p>
-                <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-3">
-                  <VideoCard
-                    title="Build a Devious Web Video Player in 4 Hours"
-                    subtitle="Web Dev Challenge"
-                    url="https://youtu.be/bF32laUxoK0?si=UW3OGEQ4dYVSzhBV"
-                    target="_blank"
-                    thumbnailUrl="/web_dev_challenge.jpeg"
-                    duration={2108}
-                  />
-                  <VideoCard
-                    title="Homeless to Software Developer! TailwindCSS Usage and Best Practices!"
-                    subtitle="Commit Your Code: Ep9"
-                    url="https://youtu.be/eQsedvVk9sE?si=11dVYMIoHl-R85o4"
-                    target="_blank"
-                    thumbnailUrl="/commit_your_code_ep_9.jpeg"
-                    duration={2731}
-                  />
-                </div>
+                <ul className="mt-8 max-w-2xl divide-y divide-border-primary border-y border-border-primary">
+                  {formats.map((f) => (
+                    <li
+                      key={f.label}
+                      className="flex items-center justify-between py-4"
+                    >
+                      <span className="text-sm font-medium text-text-primary">
+                        {f.label}
+                      </span>
+                      <span className="text-sm text-text-secondary">
+                        {f.detail}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
               </PageSection>
             </MotionFadeIn>
           </div>
@@ -297,13 +198,12 @@ export default function SpeakingPage() {
               <section className="relative px-4">
                 <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
                   <div className="relative col-span-7 flex flex-col space-y-8">
-                    {/* Title */}
                     <div className="col-span-5 flex w-3/4 flex-col items-start space-y-3 text-balance">
                       <div className="text-left text-sm font-medium text-indigo-600">
                         <span>Biography</span>
                       </div>
                       <h2 className="text-3xl font-semibold text-text-primary">
-                        Here are a few options for speaker bios
+                        Speaker bios — grab whichever fits
                       </h2>
                     </div>
 
@@ -315,24 +215,24 @@ export default function SpeakingPage() {
                       <TabPanels className="mt-8">
                         <TabPanel id="first-person">
                           <p className="text-base leading-7 text-text-secondary">
-                            I am Braydon Coyer, a Senior Frontend Engineer at
-                            LogicGate, where I play a key role in developing an
-                            automated Governance, Risk, and Compliance (GRC)
-                            platform. As a creative developer, blogger, and
-                            designer, I enjoy tinkering and sharing my projects
-                            with the public. I live in Texas with my wife and two
-                            daughters.
+                            I&apos;m Syed (Abushaid Islam) — a software
+                            engineer, AI engineer, and full-stack developer
+                            based in Bangladesh. I build AI-powered products,
+                            secure authentication systems, and modern web
+                            experiences, and I&apos;m the founder of Aegis
+                            Authenticator. I write about what I ship at
+                            syed.flinkeo.online.
                           </p>
                         </TabPanel>
                         <TabPanel id="third-person">
                           <p className="text-base leading-7 text-text-secondary">
-                            Braydon Coyer is a Senior Frontend Engineer at
-                            LogicGate, where he plays a key role in developing an
-                            automated Governance, Risk, and Compliance (GRC)
-                            platform. As a creative developer, blogger, and
-                            designer, he enjoys tinkering and sharing his projects
-                            with the public. Braydon lives in Texas with his wife
-                            and two daughters.
+                            Syed (Abushaid Islam) is a software engineer, AI
+                            engineer, and full-stack developer based in
+                            Bangladesh. He builds AI-powered products, secure
+                            authentication systems, and modern web
+                            experiences, and is the founder of Aegis
+                            Authenticator. He shares what he learns at
+                            syed.flinkeo.online.
                           </p>
                         </TabPanel>
                       </TabPanels>
@@ -344,7 +244,7 @@ export default function SpeakingPage() {
                         <span>Headshots</span>
                       </div>
                       <h2 className="text-3xl font-semibold text-text-primary">
-                        A variety of photos great for speaker headshots
+                        High-res photos ready for your event page
                       </h2>
                     </div>
                     <div className="mt-12 flex w-full space-x-4">
@@ -352,8 +252,8 @@ export default function SpeakingPage() {
                         <ShadowBox width={200} height={200}></ShadowBox>
                         <img
                           className="absolute left-1 top-2 h-[186px] w-[186px] rotate-[9deg] rounded-lg object-cover shadow"
-                          src="/braydon_headshot_3.jpg"
-                          alt=""
+                          src="/syed_headshot_4.png"
+                          alt="Syed headshot"
                         />
                       </div>
 
@@ -361,8 +261,8 @@ export default function SpeakingPage() {
                         <ShadowBox width={200} height={200}></ShadowBox>
                         <img
                           className="absolute left-1 top-2 h-[186px] w-[186px] rotate-[-8deg] rounded-lg object-cover shadow"
-                          src="/braydon_headshot_6.jpeg"
-                          alt=""
+                          src="/syed_headshot_5.png"
+                          alt="Syed headshot"
                         />
                       </div>
                     </div>
@@ -373,7 +273,6 @@ export default function SpeakingPage() {
           </MotionFadeIn>
         </div>
 
-        {/* Newsletter */}
         <MotionFadeIn y={30}>
           <NewsletterSignUp />
         </MotionFadeIn>
