@@ -218,7 +218,7 @@ const Pre = ({ children, ...props }: React.HTMLAttributes<HTMLPreElement>) => {
   const childrenArray = React.Children.toArray(children);
   const code = childrenArray.find(
     (child) => React.isValidElement(child) && child.type === "code",
-  ) as React.ReactElement;
+  ) as React.ReactElement<{ className?: string }> | undefined;
 
   const className = code?.props.className || "";
   const matches = className.match(/language-(?<lang>.*)/);
@@ -414,7 +414,7 @@ function FullWidthCallout({ children, type }) {
       return true;
     }
 
-    if (React.isValidElement(child) && child.props?.children) {
+    if (React.isValidElement<{ children?: React.ReactNode }>(child) && child.props?.children) {
       return React.Children.toArray(child.props.children).some(
         (grandchild) =>
           React.isValidElement(grandchild) && grandchild.type === CustomLink,
@@ -431,7 +431,7 @@ function FullWidthCallout({ children, type }) {
           child.includes("[") &&
           child.includes("](")
         ) {
-          const segments: (string | JSX.Element)[] = [];
+          const segments: (string | React.JSX.Element)[] = [];
           let currentIndex = 0;
           const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
           let match;

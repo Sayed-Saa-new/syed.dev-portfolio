@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import Link from "next/link";
 import { SocialPill } from "./SocialPill";
 import { usePathname } from "next/navigation";
@@ -254,7 +255,7 @@ const CircleBtn = ({
   onClickCallback,
   className = "",
   ...props
-}: CircleBtnProps): JSX.Element => {
+}: CircleBtnProps): React.JSX.Element => {
   return (
     <button
       className={`rounded-full border border-border-primary p-2 ${className}`}

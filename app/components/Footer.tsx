@@ -1,3 +1,4 @@
+import React from "react";
 import Link from "next/link";
 import { SocialPill } from "./SocialPill";
 import { GridWrapper } from "./GridWrapper";
@@ -47,8 +48,8 @@ const footerSections: FooterSection[] = [
   },
 ];
 
-export function Footer(): JSX.Element {
-  const renderFooterLink = (link: FooterLink): JSX.Element => {
+export function Footer(): React.JSX.Element {
+  const renderFooterLink = (link: FooterLink): React.JSX.Element => {
     if (link.isExternal) {
       return (
         <a href={link.href} target="_blank" rel="noopener noreferrer">

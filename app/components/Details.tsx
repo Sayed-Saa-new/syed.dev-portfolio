@@ -31,7 +31,7 @@ export function Details({
   const childrenArray = React.Children.toArray(children);
   const summaryChild = childrenArray.find(
     (child) => React.isValidElement(child) && child.type === DetailsSummary,
-  ) as React.ReactElement | undefined;
+  ) as React.ReactElement<DetailsSummaryProps> | undefined;
   const contentChildren = childrenArray.filter(
     (child) => !React.isValidElement(child) || child.type !== DetailsSummary,
   );

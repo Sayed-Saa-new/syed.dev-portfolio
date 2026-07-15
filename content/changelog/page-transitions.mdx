@@ -1,0 +1,11 @@
+---
+title: "Global page transitions"
+publishedAt: "2026-07-09"
+imageName: "changelog/page_transitions.jpg"
+---
+
+Every route change now runs through a shared fade-and-lift transition, so moving between Home, About, Projects, and Blog feels like one continuous surface instead of hard page swaps.
+
+- One `PageTransition` wrapper at the root
+- `AnimatePresence` handles enter/exit
+- Also plays on first paint for a softer landing

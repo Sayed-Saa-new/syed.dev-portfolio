@@ -28,7 +28,7 @@ function Sticker({
 }) {
   // Create refs for the sticker and caption, and set up measurement of elements
   const itemRef = useRef<HTMLDivElement | null>(null);
-  const boundingRect = useElementBoundingRect(itemRef);
+  const boundingRect = useElementBoundingRect(itemRef as React.RefObject<HTMLElement>);
 
   // Manage state of stickers
   const [isDragging, setIsDragging] = useState<Boolean>(false);

@@ -14,8 +14,12 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteMetadata.siteUrl),
   description: siteMetadata.description,
   openGraph: {
+    type: "website",
+    url: siteMetadata.siteUrl,
+    siteName: siteMetadata.headerTitle,
     title: siteMetadata.title,
     description: siteMetadata.description,
+    locale: siteMetadata.locale,
     images: [
       {
         url: "/syed_og.jpg",
@@ -27,6 +31,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
+    site: siteMetadata.twitterHandle,
+    creator: siteMetadata.twitterHandle,
     title: siteMetadata.title,
     description: siteMetadata.description,
     images: ["/syed_og.jpg"],

@@ -16,11 +16,23 @@ export async function GET(request: NextRequest) {
     // Read images directly from the filesystem
     const publicDir = path.join(process.cwd(), "public");
 
-    // Read the blog image
+    // Read the blog image (validate to prevent path traversal)
     let blogImageSrc = "";
-    if (imageName) {
-      const blogImagePath = path.join(publicDir, "blog", imageName);
-      if (fs.existsSync(blogImagePath)) {
+    const safeName = path.basename(imageName);
+    const isSafe =
+      !!safeName &&
+      safeName === imageName &&
+      !imageName.includes("..") &&
+      !imageName.includes("/") &&
+      !imageName.includes("\\") &&
+      /^[a-zA-Z0-9._-]+\.(jpg|jpeg|png|webp|gif)$/i.test(safeName);
+    if (isSafe) {
+      const blogDir = path.join(publicDir, "blog");
+      const blogImagePath = path.resolve(blogDir, safeName);
+      if (
+        blogImagePath.startsWith(path.resolve(blogDir) + path.sep) &&
+        fs.existsSync(blogImagePath)
+      ) {
         const blogImageBuffer = fs.readFileSync(blogImagePath);
         const ext = path.extname(imageName).toLowerCase().slice(1);
         const mimeType = ext === "jpg" ? "jpeg" : ext;

@@ -12,7 +12,7 @@ export default async function ChangelogPage() {
       <div className="mx-auto text-balance pt-14 md:pt-16">
         <GridWrapper>
           <h1 className="mx-auto max-w-2xl text-center text-4xl font-medium leading-tight tracking-tighter text-text-primary md:text-6xl md:leading-[64px]">
-            Fresh start — new updates coming soon.
+            A log of what I&apos;ve been shipping.
           </h1>
         </GridWrapper>
       </div>

@@ -208,8 +208,8 @@ export async function toggleReaction(slug: string, reactionType: ReactionType) {
     
     revalidatePath(`/blog/${slug}`);
     revalidatePath(`/stats`);
-    revalidateTag("article-reactions");
-    revalidateTag("server-stats");
+    (revalidateTag as (tag: string) => void)("article-reactions");
+    (revalidateTag as (tag: string) => void)("server-stats");
     
     return { 
       success: true, 
