@@ -8,7 +8,9 @@ if (!process.env.VELITE_STARTED && (isDev || isBuild)) {
 
 /** @type {import('next').NextConfig} */
 const config = {
+  turbopack: {},
   trailingSlash: false,
+
   async redirects() {
     return [
       // Handle trailing slashes on blog posts (Google Search Console 404s)
