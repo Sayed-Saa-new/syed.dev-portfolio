@@ -31,9 +31,27 @@ const projects: Project[] = [
 ];
 
 export const metadata = {
-  title: "Projects | Syed",
+  title: "Projects — Aegis Authenticator & Full Stack Apps by Syed",
   description:
-    "A curated collection of AI-powered products, full-stack apps, and experiments built by Syed.",
+    "Aegis Authenticator by Syed (Abushaid Islam) — a zero-knowledge, end-to-end encrypted TOTP 2FA app (Google Authenticator / Authy alternative), plus more AI and full-stack projects.",
+  keywords: [
+    "Aegis Authenticator",
+    "zero knowledge 2FA",
+    "end to end encrypted authenticator",
+    "Google Authenticator alternative",
+    "Authy alternative",
+    "TOTP authenticator app",
+    "Syed projects",
+    "Abushaid Islam projects",
+  ],
+  alternates: { canonical: "/projects" },
+  openGraph: {
+    title: "Projects — Aegis Authenticator & Full Stack Apps by Syed",
+    description:
+      "Aegis Authenticator: a privacy-first, zero-knowledge alternative to Google Authenticator & Authy — plus more work by Syed.",
+    url: "/projects",
+    images: ["/projects/aegis-cover.jpg"],
+  },
 };
 
 export default function ProjectPage() {
