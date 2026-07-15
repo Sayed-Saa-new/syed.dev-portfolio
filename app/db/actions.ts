@@ -267,6 +267,16 @@ export async function createContact(
       }),
     }).catch(() => {}); // email failure shouldn't block signup
 
+    // 3) Persist subscriber locally so the RSS-to-Loops cron can email them.
+    try {
+      const supabase = await createSupabaseAdminClient();
+      await supabase
+        .from("blog_subscribers")
+        .upsert({ email }, { onConflict: "email" });
+    } catch (dbErr) {
+      console.warn("Failed to store subscriber locally:", dbErr);
+    }
+
     return { success: true };
   } catch (error) {
     return { success: false, error: "Failed to create contact" };
