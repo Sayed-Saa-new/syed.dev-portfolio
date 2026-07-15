@@ -150,7 +150,9 @@ export default function RootLayout({
           </div>
           <Footer />
         </main>
+        <ServiceWorkerRegistrar />
       </body>
+
 
       <Script
         id="person-jsonld"
