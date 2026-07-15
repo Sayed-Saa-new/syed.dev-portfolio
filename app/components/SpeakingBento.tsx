@@ -33,7 +33,7 @@ export function SpeakingBento() {
               stiffness: 150,
             }}
           >
-            <SecondaryPhoto imgSrc="/syed_headshot_3.png" />
+            <SecondaryPhoto imgSrc="/syed_headshot_3.webp" />
           </motion.span>
 
           <motion.span
@@ -62,7 +62,7 @@ export function SpeakingBento() {
               stiffness: 150,
             }}
           >
-            <SecondaryPhoto imgSrc="/syed_headshot_4.png" />
+            <SecondaryPhoto imgSrc="/syed_headshot_4.webp" />
           </motion.span>
         </div>
         {/* Gradient overlay */}
@@ -311,7 +311,7 @@ function PrimaryPhoto() {
 
       <img
         className="absolute left-1/2 top-1/2 h-[100px] w-[100px] -translate-x-1/2 -translate-y-1/2 transform rounded-full object-cover"
-        src="/syed_headshot_2.png"
+        src="/syed_headshot_2.webp"
         alt=""
       />
     </span>

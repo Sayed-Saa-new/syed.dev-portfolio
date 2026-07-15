@@ -86,7 +86,7 @@ export default function SpeakingPage() {
               <ShadowBox width={200} height={240}></ShadowBox>
               <img
                 className="absolute left-1 top-1 h-[232px] w-[192px] rounded-lg object-cover"
-                src="/syed_headshot_2.png"
+                src="/syed_headshot_2.webp"
                 alt="Syed headshot"
               />
             </div>
@@ -104,7 +104,7 @@ export default function SpeakingPage() {
               <ShadowBox width={260} height={240}></ShadowBox>
               <img
                 className="absolute left-1 top-1 h-[232px] w-[252px] rounded-lg object-cover"
-                src="/syed_headshot_1.jpg"
+                src="/syed_headshot_1.webp"
                 alt="Syed portrait"
               />
             </div>
@@ -122,7 +122,7 @@ export default function SpeakingPage() {
               <ShadowBox width={200} height={240}></ShadowBox>
               <img
                 className="absolute left-1 top-1 h-[232px] w-[192px] rounded-lg object-cover"
-                src="/syed_headshot_3.png"
+                src="/syed_headshot_3.webp"
                 alt="Syed headshot"
               />
             </div>
@@ -134,7 +134,7 @@ export default function SpeakingPage() {
               <ShadowBox width={220} height={260}></ShadowBox>
               <img
                 className="absolute left-1 top-1 h-[252px] w-[212px] rounded-lg object-cover"
-                src="/syed_headshot_1.jpg"
+                src="/syed_headshot_1.webp"
                 alt="Syed portrait"
               />
             </div>
@@ -252,7 +252,7 @@ export default function SpeakingPage() {
                         <ShadowBox width={200} height={200}></ShadowBox>
                         <img
                           className="absolute left-1 top-2 h-[186px] w-[186px] rotate-[9deg] rounded-lg object-cover shadow"
-                          src="/syed_headshot_4.png"
+                          src="/syed_headshot_4.webp"
                           alt="Syed headshot"
                         />
                       </div>
@@ -261,7 +261,7 @@ export default function SpeakingPage() {
                         <ShadowBox width={200} height={200}></ShadowBox>
                         <img
                           className="absolute left-1 top-2 h-[186px] w-[186px] rotate-[-8deg] rounded-lg object-cover shadow"
-                          src="/syed_headshot_5.png"
+                          src="/syed_headshot_5.webp"
                           alt="Syed headshot"
                         />
                       </div>

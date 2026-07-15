@@ -54,7 +54,7 @@ const resumeData: ResumeData = {
       degree: "Higher Secondary Certificate (HSC) — Science",
     },
   ],
-  avatarUrl: "/syed_headshot_1.jpg",
+  avatarUrl: "/syed_headshot_1.webp",
 };
 
 export function Resume() {
