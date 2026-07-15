@@ -83,7 +83,7 @@ const personJsonLd = {
   name: "Abushaid Islam",
   alternateName: "Syed",
   url: siteMetadata.siteUrl,
-  image: `${siteMetadata.siteUrl}/syed_headshot_1.jpg`,
+  image: `${siteMetadata.siteUrl}/syed_headshot_1.webp`,
   jobTitle: "AI Engineer & Full Stack Developer",
   email: "abushaidislam7@gmail.com",
   sameAs: [siteMetadata.github, siteMetadata.twitter, siteMetadata.facebook],

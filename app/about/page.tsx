@@ -39,7 +39,7 @@ export default function AboutPage() {
                     <Photo
                       width={140}
                       height={140}
-                      src="/syed_headshot_2.png"
+                      src="/syed_headshot_2.webp"
                       alt="Syed speaking at an event"
                       direction="left"
                     />
@@ -48,7 +48,7 @@ export default function AboutPage() {
                     <Photo
                       width={140}
                       height={140}
-                      src="/syed_headshot_1.jpg"
+                      src="/syed_headshot_1.webp"
                       alt="Syed"
                       direction="right"
                     />
@@ -57,7 +57,7 @@ export default function AboutPage() {
                     <Photo
                       width={140}
                       height={140}
-                      src="/syed_headshot_3.png"
+                      src="/syed_headshot_3.webp"
                       alt="Syed"
                       direction="left"
                     />
@@ -100,7 +100,7 @@ export default function AboutPage() {
                     <ShadowBox width={188} height={278}></ShadowBox>
                     <img
                       className="absolute left-0 top-0 h-[270px] w-[180px] rotate-[-8deg] rounded-lg object-cover shadow"
-                      src="/syed_headshot_4.png"
+                      src="/syed_headshot_4.webp"
                       alt="Syed working"
                     />
                   </div>
@@ -122,7 +122,7 @@ export default function AboutPage() {
                   <ShadowBox width={188} height={278}></ShadowBox>
                   <img
                     className="absolute left-0 top-0 h-[270px] w-[180px] rotate-[-8deg] rounded-lg object-cover shadow"
-                    src="/syed_headshot_4.png"
+                    src="/syed_headshot_4.webp"
                     alt="Syed working"
                   />
                 </div>
@@ -139,7 +139,7 @@ export default function AboutPage() {
                     <ShadowBox width={188} height={278}></ShadowBox>
                     <img
                       className="absolute left-0 top-0 h-[270px] w-[180px] rotate-[8deg] rounded-lg object-cover shadow"
-                      src="/syed_headshot_3.png"
+                      src="/syed_headshot_3.webp"
                       alt="Syed"
                     />
                   </div>
@@ -160,7 +160,7 @@ export default function AboutPage() {
                   <ShadowBox width={188} height={278}></ShadowBox>
                   <img
                     className="absolute left-0 top-0 h-[270px] w-[180px] rotate-[8deg] rounded-lg object-cover shadow"
-                    src="/syed_headshot_3.png"
+                    src="/syed_headshot_3.webp"
                     alt="Syed"
                   />
                 </div>
@@ -218,7 +218,7 @@ export default function AboutPage() {
                     <ShadowBox width={188} height={278}></ShadowBox>
                     <img
                       className="absolute left-0 top-0 h-[270px] w-[180px] rotate-[8deg] rounded-lg object-cover shadow"
-                      src="/syed_headshot_2.png"
+                      src="/syed_headshot_2.webp"
                       alt="Syed speaking"
                     />
                   </div>
@@ -243,7 +243,7 @@ export default function AboutPage() {
                   <ShadowBox width={188} height={278}></ShadowBox>
                   <img
                     className="absolute left-0 top-0 h-[270px] w-[180px] rotate-[8deg] rounded-lg object-cover shadow"
-                    src="/syed_headshot_2.png"
+                    src="/syed_headshot_2.webp"
                     alt="Syed speaking"
                   />
                 </div>

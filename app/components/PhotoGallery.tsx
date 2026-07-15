@@ -79,7 +79,7 @@ export const PhotoGallery = ({
       y: "15px",
       zIndex: 50,
       direction: "left" as Direction,
-      src: "/syed_headshot_2.png",
+      src: "/syed_headshot_2.webp",
     },
     {
       id: 2,
@@ -88,7 +88,7 @@ export const PhotoGallery = ({
       y: "32px",
       zIndex: 40,
       direction: "left" as Direction,
-      src: "/syed_headshot_3.png",
+      src: "/syed_headshot_3.webp",
     },
     {
       id: 3,
@@ -97,7 +97,7 @@ export const PhotoGallery = ({
       y: "8px",
       zIndex: 30,
       direction: "right" as Direction,
-      src: "/syed_headshot_1.jpg",
+      src: "/syed_headshot_1.webp",
     },
     {
       id: 4,
@@ -106,7 +106,7 @@ export const PhotoGallery = ({
       y: "22px",
       zIndex: 20,
       direction: "right" as Direction,
-      src: "/syed_headshot_4.png",
+      src: "/syed_headshot_4.webp",
     },
     {
       id: 5,
@@ -115,7 +115,7 @@ export const PhotoGallery = ({
       y: "44px",
       zIndex: 10,
       direction: "left" as Direction,
-      src: "/syed_headshot_5.png",
+      src: "/syed_headshot_5.webp",
     },
   ];
 

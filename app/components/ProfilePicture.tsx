@@ -4,17 +4,17 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function ProfilePicture() {
-  const [imageSrc, setImageSrc] = useState("/syed_headshot_1.jpg");
+  const [imageSrc, setImageSrc] = useState("/syed_headshot_1.webp");
   const [isChanging, setIsChanging] = useState(false);
 
   const changeImage = () => {
     setIsChanging(true);
     const images = [
-      "/syed_headshot_1.jpg",
-      "/syed_headshot_2.png",
-      "/syed_headshot_3.png",
-      "/syed_headshot_4.png",
-      "/syed_headshot_5.png",
+      "/syed_headshot_1.webp",
+      "/syed_headshot_2.webp",
+      "/syed_headshot_3.webp",
+      "/syed_headshot_4.webp",
+      "/syed_headshot_5.webp",
     ];
     const availableImages = images.filter((img) => img !== imageSrc);
     if (availableImages.length === 0) return;
