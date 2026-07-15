@@ -12,12 +12,35 @@ import Script from "next/script";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteMetadata.siteUrl),
+  title: {
+    default:
+      "Syed (Abushaid Islam) — AI Engineer & Full Stack Developer Portfolio",
+    template: "%s | Syed — Abushaid Islam",
+  },
   description: siteMetadata.description,
+  keywords: [
+    "Syed",
+    "Abushaid Islam",
+    "AI Engineer",
+    "AI engineer portfolio",
+    "Full Stack Developer",
+    "full stack developer portfolio",
+    "software engineer portfolio",
+    "Aegis Authenticator",
+    "Supabase developer",
+    "Next.js developer",
+    "TanStack Start",
+    "Bangladeshi software engineer",
+  ],
+  authors: [{ name: "Abushaid Islam", url: siteMetadata.siteUrl }],
+  creator: "Abushaid Islam",
+  alternates: { canonical: siteMetadata.siteUrl },
   openGraph: {
     type: "website",
     url: siteMetadata.siteUrl,
     siteName: siteMetadata.headerTitle,
-    title: siteMetadata.title,
+    title:
+      "Syed (Abushaid Islam) — AI Engineer & Full Stack Developer",
     description: siteMetadata.description,
     locale: siteMetadata.locale,
     images: [
@@ -33,10 +56,41 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: siteMetadata.twitterHandle,
     creator: siteMetadata.twitterHandle,
-    title: siteMetadata.title,
+    title:
+      "Syed (Abushaid Islam) — AI Engineer & Full Stack Developer",
     description: siteMetadata.description,
     images: ["/syed_og.jpg"],
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+};
+
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Abushaid Islam",
+  alternateName: "Syed",
+  url: siteMetadata.siteUrl,
+  image: `${siteMetadata.siteUrl}/syed_headshot_1.jpg`,
+  jobTitle: "AI Engineer & Full Stack Developer",
+  email: "abushaidislam7@gmail.com",
+  sameAs: [siteMetadata.github, siteMetadata.twitter, siteMetadata.facebook],
+  knowsAbout: [
+    "Artificial Intelligence",
+    "Full Stack Development",
+    "Authentication Systems",
+    "Next.js",
+    "Supabase",
+    "TypeScript",
+  ],
 };
 
 export default function RootLayout({
@@ -67,6 +121,12 @@ export default function RootLayout({
           <Footer />
         </main>
       </body>
+
+      <Script
+        id="person-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+      />
 
       <Script id="vemetric-loader" strategy="afterInteractive">
         {`
