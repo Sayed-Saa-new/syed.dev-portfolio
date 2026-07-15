@@ -74,6 +74,21 @@ export const metadata: Metadata = {
   verification: {
     google: "4GW5hFWsbJa_98tGQoSUIX-OAfhGOfhh7ZLsxEoHqc0",
   },
+  manifest: "/manifest.webmanifest",
+  themeColor: "#0a0a0c",
+  appleWebApp: {
+    capable: true,
+    title: "Syed",
+    statusBarStyle: "black-translucent",
+  },
+  icons: {
+    icon: [
+      { url: "/favicon.png" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+  },
 
 };
 
