@@ -237,9 +237,17 @@ export async function createContact(
   }
 
   try {
+    const apiKey = process.env.LOOPS_API_KEY;
+    const welcomeTemplateId = process.env.LOOPS_WELCOME_TEMPLATE_ID;
+
+    if (!apiKey) {
+      console.error("[newsletter] Missing LOOPS_API_KEY env var");
+      return { success: false, error: "Server misconfiguration" };
+    }
+
     const authHeader = {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.LOOPS_API_KEY}`,
+      Authorization: `Bearer ${apiKey}`,
     };
 
     // 1) Add contact to Loops audience (userGroup = Blogfolio)
@@ -248,24 +256,50 @@ export async function createContact(
       {
         method: "POST",
         headers: authHeader,
-        body: JSON.stringify({ email, userGroup: "Blogfolio", source: "syed.flinkeo.online" }),
+        body: JSON.stringify({
+          email,
+          userGroup: "Blogfolio",
+          source: "syed.flinkeo.online",
+        }),
       },
     );
 
-    // 409 = contact already exists, treat as success
     if (!contactRes.ok && contactRes.status !== 409) {
+      const body = await contactRes.text().catch(() => "");
+      console.error(
+        `[newsletter] Loops contacts/create failed: ${contactRes.status} ${body}`,
+      );
       throw new Error("Failed to create contact");
     }
 
     // 2) Send welcome transactional email
-    await fetch("https://app.loops.so/api/v1/transactional", {
-      method: "POST",
-      headers: authHeader,
-      body: JSON.stringify({
-        transactionalId: "cmrmclo5e02m80jyzgf4f0bh0",
-        email,
-      }),
-    }).catch(() => {}); // email failure shouldn't block signup
+    if (welcomeTemplateId) {
+      try {
+        const emailRes = await fetch(
+          "https://app.loops.so/api/v1/transactional",
+          {
+            method: "POST",
+            headers: authHeader,
+            body: JSON.stringify({
+              transactionalId: welcomeTemplateId,
+              email,
+            }),
+          },
+        );
+        if (!emailRes.ok) {
+          const body = await emailRes.text().catch(() => "");
+          console.error(
+            `[newsletter] Loops welcome email failed: ${emailRes.status} ${body}`,
+          );
+        }
+      } catch (mailErr) {
+        console.error("[newsletter] Loops welcome email exception:", mailErr);
+      }
+    } else {
+      console.warn(
+        "[newsletter] LOOPS_WELCOME_TEMPLATE_ID not set — skipping welcome email",
+      );
+    }
 
     // 3) Persist subscriber locally so the RSS-to-Loops cron can email them.
     try {
@@ -274,11 +308,12 @@ export async function createContact(
         .from("blog_subscribers")
         .upsert({ email }, { onConflict: "email" });
     } catch (dbErr) {
-      console.warn("Failed to store subscriber locally:", dbErr);
+      console.warn("[newsletter] Failed to store subscriber locally:", dbErr);
     }
 
     return { success: true };
   } catch (error) {
+    console.error("[newsletter] createContact error:", error);
     return { success: false, error: "Failed to create contact" };
   }
 }
