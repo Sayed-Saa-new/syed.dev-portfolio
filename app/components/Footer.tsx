@@ -30,9 +30,8 @@ const footerSections: FooterSection[] = [
       { href: "/toolbox", label: "Toolbox" },
       { href: "/speaking", label: "Speaking" },
       {
-        href: "https://braydoncoyer.lemonsqueezy.com/",
-        label: "Products",
-        isExternal: true,
+        href: "/projects",
+        label: "Projects",
       },
       { href: "/community-wall", label: "Community Wall" },
     ],

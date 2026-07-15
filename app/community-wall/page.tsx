@@ -24,7 +24,7 @@ export default async function Page({ searchParams }: SearchParamProps) {
 
   return (
     <>
-      <title>Community Wall | Braydon Coyer</title>
+      <title>Community Wall | Syed</title>
       {show ? <CommunityWallModal /> : null}
 
       {/* Page Header */}

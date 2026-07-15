@@ -40,10 +40,7 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Read the overlay image
-    const overlayPath = path.join(publicDir, "braydoncoyer_og_overlay.png");
-    const overlayBuffer = fs.readFileSync(overlayPath);
-    const overlaySrc = `data:image/png;base64,${overlayBuffer.toString("base64")}`;
+    // Gradient overlay applied via CSS (no external overlay asset needed)
 
     return new ImageResponse(
       (
@@ -72,17 +69,16 @@ export async function GET(request: NextRequest) {
               alt="article background image"
             />
           )}
-          <img
+          <div
             style={{
               position: "absolute",
               top: 0,
               left: 0,
               width: "100%",
               height: "100%",
-              objectFit: "cover",
+              background:
+                "linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.85) 100%)",
             }}
-            src={overlaySrc}
-            alt="Gradient overlay"
           />
 
           <h1

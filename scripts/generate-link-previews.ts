@@ -36,7 +36,7 @@ const EXCLUDED_DOMAINS = [
 ];
 
 // Internal patterns
-const INTERNAL_PATTERNS = [/^\//, /^#/, /braydoncoyer\.dev/];
+const INTERNAL_PATTERNS = [/^\//, /^#/, /syed\.flinkeo\.online/];
 
 // Max age before regeneration (6 months)
 const MAX_SCREENSHOT_AGE_MS = 6 * 30 * 24 * 60 * 60 * 1000;

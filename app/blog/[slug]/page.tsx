@@ -322,7 +322,7 @@ export async function generateMetadata(
       description: post.summary,
       type: "article",
       publishedTime: post.publishedAt,
-      authors: ["Braydon Coyer"],
+      authors: ["Syed (Abushaid Islam)"],
       images: [
         {
           url: `/api/og?title=${encodeURIComponent(post.title)}&summary=${encodeURIComponent(post.summary)}&image=${encodeURIComponent(post.imageName)}`,
