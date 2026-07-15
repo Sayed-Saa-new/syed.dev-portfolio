@@ -1,0 +1,793 @@
+---
+title: "Automating a Blog Newsletter with Vercel Cron, RSS, and Loops"
+publishedAt: "2026-07-15"
+summary: "How I wired my portfolio's blog to send transactional newsletters automatically — RSS as the source of truth, Vercel Cron as the heartbeat, Loops as the delivery layer, and Supabase as the ledger. A full walkthrough with every gotcha I hit."
+imageName: "automated_newsletter_cron.webp"
+categories: ["engineering", "automation", "email", "vercel"]
+---
+
+I finally got tired of copy-pasting blog links into an email tool every time I published a post. This week I automated the entire thing end-to-end — write a post, push to `main`, and within an hour every subscriber gets a beautifully formatted email in their inbox. No dashboard, no button, no reminder. Just publish and forget.
+
+This post is the full story of how it works, why I picked these specific pieces, and every single gotcha I hit along the way. If you want the same setup on your own site, you can steal the entire architecture — I've tried to leave nothing implicit.
+
+## The problem I was actually solving
+
+For most of 2026 my "newsletter workflow" looked like this:
+
+1. Publish a post to my portfolio
+2. Wait a day
+3. Remember I have a newsletter
+4. Open the email tool
+5. Paste the title, summary, cover image, and link
+6. Send
+
+Step 3 is where the system broke. Half the time I never remembered. The other half, I remembered a week later and it felt too late to send. So subscribers were paying me in attention and getting almost nothing in return. That's a broken deal, and it was mine to fix.
+
+The fix had to satisfy four constraints:
+
+- **Zero manual steps after publishing.** If I have to remember anything, it won't happen.
+- **No lock-in to a heavy platform.** I didn't want to move my writing into Substack or Beehiiv just to get automation.
+- **My existing MDX pipeline stays.** Posts still live in `content/blog/*.mdx` and render through my portfolio.
+- **Cheap or free.** This is a personal site. I'm not paying $30/month for a fancy sender.
+
+That last one is what killed most of the "just use Mailchimp RSS-to-email" answers. I already had Loops set up for my welcome email, and Loops' free tier is genuinely generous for a small list. The catch: Loops doesn't ship an RSS trigger. If I wanted automation with Loops, I had to build the trigger myself.
+
+## The architecture in one paragraph
+
+Vercel Cron hits a public API route on my site every hour. That route reads my own RSS feed, compares each item against a Supabase table of posts I've already sent, and for anything new, fans out one transactional email per subscriber via the Loops API using a single reusable template. When it's done, it writes the post's GUID into the ledger so it never sends twice. The whole thing is stateless except for that one table.
+
+Here's the same picture as ASCII, because I love an ASCII diagram:
+
+```text
+        ┌───────────────────┐
+        │  content/blog/*   │  (MDX, source of truth)
+        └────────┬──────────┘
+                 │  next build
+                 ▼
+        ┌───────────────────┐
+        │   /rss.xml        │  (RSS 2.0 feed)
+        └────────┬──────────┘
+                 │  fetched hourly
+                 ▼
+┌─────────────┐  hits  ┌───────────────────────────┐
+│ Vercel Cron │───────▶│ /api/public/rss-to-loops  │
+└─────────────┘        └────────┬──────────────────┘
+                                │ 1. read feed
+                                │ 2. diff against sent_blog_emails
+                                │ 3. for each new post:
+                                │      fetch subscribers
+                                │      send via Loops transactional
+                                │      insert into ledger
+                                ▼
+                       ┌───────────────────┐
+                       │    Supabase       │
+                       │  blog_subscribers │
+                       │  sent_blog_emails │
+                       └───────────────────┘
+                                │
+                                ▼
+                       ┌───────────────────┐
+                       │   Loops API       │
+                       │  (single template)│
+                       └────────┬──────────┘
+                                ▼
+                          subscriber inbox
+```
+
+That's it. Four moving parts: the feed, the cron, the ledger, the sender. Let's walk through each one.
+
+## Why not just use Loops' built-in audiences?
+
+Loops has audiences and "campaigns" (broadcast emails). It even has RSS-triggered emails on paid plans. Why not just use those?
+
+Two reasons.
+
+**First, I already had a subscribers table.** My newsletter form writes to a `blog_subscribers` table in Supabase. It's the source of truth for who signed up, when, and whether they've confirmed. Moving that list into Loops as a mirror would create two systems to keep in sync — and inevitably one would drift.
+
+**Second, transactional gives me one template forever.** With a Loops audience + campaign, I'd need to build a new campaign for every post. With a transactional template that takes `{{title}}`, `{{summary}}`, `{{coverImage}}`, `{{publishedAt}}`, `{{url}}`, and `{{unsubscribeUrl}}` as variables, I have one template that handles every future post. Design changes happen in one place.
+
+The tradeoff: I lose Loops' "sent to X audience" analytics view. I get individual transactional logs instead, which is honestly better for debugging.
+
+## The RSS feed: source of truth
+
+Everything downstream trusts the RSS feed. If it lies, the newsletter lies. So it has to be tight.
+
+My portfolio is on TanStack Start (Next 16 in a former life; migrated earlier this month). The feed lives at `app/rss.xml/route.ts` — a plain file route that returns XML. Here's the shape:
+
+```typescript
+// app/rss.xml/route.ts
+import { getAllPosts } from '@/app/lib/blog'
+
+const SITE_URL = 'https://syed.flinkeo.online'
+
+export async function GET() {
+  const posts = await getAllPosts()
+
+  const items = posts
+    .filter((p) => !p.draft)
+    .sort(
+      (a, b) =>
+        new Date(b.publishedAt).getTime() -
+        new Date(a.publishedAt).getTime()
+    )
+    .slice(0, 30)
+    .map((p) => {
+      const url = `${SITE_URL}/blog/${p.slug}`
+      const cover = p.imageName
+        ? `${SITE_URL}/blog/${p.imageName}`
+        : `${SITE_URL}/og-image.jpg`
+      return `
+        <item>
+          <title><![CDATA[${p.title}]]></title>
+          <link>${url}</link>
+          <guid isPermaLink="true">${url}</guid>
+          <pubDate>${new Date(p.publishedAt).toUTCString()}</pubDate>
+          <description><![CDATA[${p.summary}]]></description>
+          <enclosure url="${cover}" type="image/webp" />
+        </item>
+      `.trim()
+    })
+    .join('\n')
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Syed — Notes on shipping software</title>
+    <link>${SITE_URL}</link>
+    <description>Essays on building AI products, auth systems, and modern web apps.</description>
+    <language>en</language>
+    <atom:link href="${SITE_URL}/rss.xml" rel="self" type="application/rss+xml"/>
+    ${items}
+  </channel>
+</rss>`
+
+  return new Response(xml, {
+    headers: {
+      'content-type': 'application/rss+xml; charset=utf-8',
+      'cache-control': 'public, s-maxage=1800, stale-while-revalidate=86400',
+    },
+  })
+}
+```
+
+A few things worth calling out.
+
+The `guid` is the canonical post URL, with `isPermaLink="true"`. This becomes the key in my sent-ledger. As long as I never change a slug after publishing (I don't), the GUID is stable forever.
+
+The `enclosure` element carries the cover image URL. Some RSS clients use this for social previews. My cron consumer uses it as the `coverImage` variable in the Loops template.
+
+The cache header is 30 minutes at the edge with SWR. Cron runs hourly, so at worst I'm one hour late — completely fine for a newsletter.
+
+**Gotcha #1: CDATA.** If a post title contains an ampersand or an apostrophe, unescaped XML will break every parser downstream. Wrapping title and description in `<![CDATA[...]]>` is not optional. I learned this when the very first automated run silently failed to parse and cron just returned "0 new posts" for two days.
+
+**Gotcha #2: pubDate format.** RSS 2.0 requires RFC 822 dates (`Wed, 15 Jul 2026 10:00:00 GMT`). JavaScript's `toUTCString()` produces exactly that. `toISOString()` does not — it produces ISO 8601, which some strict parsers reject.
+
+## The ledger: two small Supabase tables
+
+The whole system's memory lives in two tables. Everything else is stateless.
+
+```sql
+-- Subscribers who signed up through the newsletter form
+create table public.blog_subscribers (
+  id uuid primary key default gen_random_uuid(),
+  email text not null unique,
+  confirmed boolean not null default true,
+  unsubscribe_token text not null default encode(gen_random_bytes(24), 'hex'),
+  created_at timestamptz not null default now()
+);
+
+grant select, insert, update, delete on public.blog_subscribers to authenticated;
+grant all on public.blog_subscribers to service_role;
+alter table public.blog_subscribers enable row level security;
+
+-- Public form uses service role via server function, so no anon policy needed.
+create policy "service role only"
+  on public.blog_subscribers
+  for all
+  to service_role
+  using (true)
+  with check (true);
+
+-- One row per (post, subscriber) — the send ledger
+create table public.sent_blog_emails (
+  id uuid primary key default gen_random_uuid(),
+  post_guid text not null,
+  post_slug text not null,
+  subscriber_id uuid not null references public.blog_subscribers(id) on delete cascade,
+  sent_at timestamptz not null default now(),
+  loops_message_id text,
+  status text not null default 'sent',
+  error text,
+  unique (post_guid, subscriber_id)
+);
+
+grant all on public.sent_blog_emails to service_role;
+alter table public.sent_blog_emails enable row level security;
+
+create index sent_blog_emails_post_guid_idx on public.sent_blog_emails (post_guid);
+create index sent_blog_emails_subscriber_idx on public.sent_blog_emails (subscriber_id);
+```
+
+The `unique (post_guid, subscriber_id)` constraint is what actually enforces "send exactly once." Even if the cron ran ten times in parallel with the same input, the database would reject duplicates.
+
+The `unsubscribe_token` is a per-subscriber random string. The unsubscribe link in every email uses it, so no one else can unsubscribe you. I check the token server-side, not the email.
+
+## The cron endpoint: the heart of the whole thing
+
+Now the fun part. This is the endpoint Vercel Cron hits every hour. It lives at `app/api/public/rss-to-loops/route.ts` — the `/api/public/*` prefix is important because Lovable's auth middleware skips those routes, which is exactly what a cron needs.
+
+```typescript
+// app/api/public/rss-to-loops/route.ts
+import { XMLParser } from 'fast-xml-parser'
+
+const LOOPS_ENDPOINT = 'https://app.loops.so/api/v1/transactional'
+
+type FeedItem = {
+  title: string
+  link: string
+  guid: string
+  pubDate: string
+  description: string
+  coverImage?: string
+}
+
+export async function GET(request: Request) {
+  const url = new URL(request.url)
+  const secret = url.searchParams.get('secret')
+
+  if (!secret || secret !== process.env.CRON_SECRET) {
+    return new Response('Unauthorized', { status: 401 })
+  }
+
+  const { supabaseAdmin } = await import('@/integrations/supabase/client.server')
+
+  // 1. Fetch and parse the feed
+  const feedRes = await fetch(`${process.env.SITE_URL}/rss.xml`, {
+    cache: 'no-store',
+    headers: { 'user-agent': 'syed-portfolio-cron/1.0' },
+  })
+
+  if (!feedRes.ok) {
+    return Response.json(
+      { ok: false, stage: 'fetch-feed', status: feedRes.status },
+      { status: 502 },
+    )
+  }
+
+  const xml = await feedRes.text()
+  const parser = new XMLParser({
+    ignoreAttributes: false,
+    attributeNamePrefix: '@',
+    cdataPropName: '__cdata',
+  })
+  const parsed = parser.parse(xml)
+  const rawItems = parsed?.rss?.channel?.item ?? []
+  const items: FeedItem[] = (Array.isArray(rawItems) ? rawItems : [rawItems])
+    .filter(Boolean)
+    .map((raw: any) => ({
+      title: unwrapCdata(raw.title),
+      link: raw.link,
+      guid: typeof raw.guid === 'string' ? raw.guid : raw.guid?.['#text'] ?? raw.link,
+      pubDate: raw.pubDate,
+      description: unwrapCdata(raw.description),
+      coverImage: raw.enclosure?.['@url'],
+    }))
+
+  // 2. Figure out which posts still need to be sent to anyone.
+  //    A post is "done" only when every current subscriber has a ledger row.
+  const { data: subscribers, error: subsErr } = await supabaseAdmin
+    .from('blog_subscribers')
+    .select('id, email, unsubscribe_token')
+    .eq('confirmed', true)
+
+  if (subsErr) {
+    return Response.json({ ok: false, stage: 'subs', error: subsErr.message }, { status: 500 })
+  }
+
+  if (!subscribers || subscribers.length === 0) {
+    return Response.json({ ok: true, sent: 0, note: 'no subscribers' })
+  }
+
+  const results: Array<Record<string, unknown>> = []
+
+  for (const item of items) {
+    // Which subscribers have NOT received this post yet?
+    const { data: alreadySent, error: ledgerErr } = await supabaseAdmin
+      .from('sent_blog_emails')
+      .select('subscriber_id')
+      .eq('post_guid', item.guid)
+
+    if (ledgerErr) {
+      results.push({ guid: item.guid, ok: false, stage: 'ledger', error: ledgerErr.message })
+      continue
+    }
+
+    const sentIds = new Set((alreadySent ?? []).map((r) => r.subscriber_id))
+    const pending = subscribers.filter((s) => !sentIds.has(s.id))
+
+    if (pending.length === 0) continue
+
+    // Rate-limit the fan-out. Loops is fine with bursts but I'd rather be nice.
+    for (const sub of pending) {
+      const unsubscribeUrl =
+        `${process.env.SITE_URL}/unsubscribe?token=${sub.unsubscribe_token}`
+
+      const dataVariables = {
+        title: item.title,
+        summary: item.description,
+        coverImage: item.coverImage ?? `${process.env.SITE_URL}/og-image.jpg`,
+        publishedAt: new Date(item.pubDate).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        }),
+        url: item.link,
+        unsubscribeUrl,
+      }
+
+      const res = await fetch(LOOPS_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          authorization: `Bearer ${process.env.LOOPS_API_KEY}`,
+        },
+        body: JSON.stringify({
+          transactionalId: process.env.LOOPS_BLOG_TEMPLATE_ID,
+          email: sub.email,
+          dataVariables,
+        }),
+      })
+
+      const body = await res.json().catch(() => ({}))
+      const ok = res.ok && body?.success !== false
+
+      await supabaseAdmin.from('sent_blog_emails').insert({
+        post_guid: item.guid,
+        post_slug: item.link.split('/').pop() ?? item.guid,
+        subscriber_id: sub.id,
+        loops_message_id: body?.id ?? null,
+        status: ok ? 'sent' : 'failed',
+        error: ok ? null : JSON.stringify(body).slice(0, 500),
+      })
+
+      results.push({ guid: item.guid, email: sub.email, ok })
+
+      // Gentle pacing — 100ms between sends is plenty
+      await new Promise((r) => setTimeout(r, 100))
+    }
+  }
+
+  return Response.json({
+    ok: true,
+    processed: items.length,
+    sends: results.length,
+    results,
+  })
+}
+
+function unwrapCdata(v: unknown): string {
+  if (typeof v === 'string') return v
+  if (v && typeof v === 'object' && '__cdata' in v) {
+    return String((v as { __cdata: unknown }).__cdata ?? '')
+  }
+  return ''
+}
+```
+
+That's the whole worker. It's ~140 lines and it's the entire "newsletter engine." Every design choice is deliberate. Let me walk the interesting ones.
+
+### Idempotency lives at the row level, not the run level
+
+The naïve version of this is "keep the latest guid we sent, only send anything newer." Don't do that. If someone subscribes today, they miss everything published yesterday. Worse, if a cron run crashes halfway through, you either replay from scratch (dupes) or you skip the rest (silent miss).
+
+The row-level ledger has neither problem. Every `(post, subscriber)` pair is either in the table or not. New subscribers automatically pick up historical posts on the next run — which is the behavior I actually want for a personal blog.
+
+### The ledger is the truth, not the return value
+
+Notice I insert into `sent_blog_emails` **before** the request would ever return. If Vercel kills the function at 60 seconds, I've still recorded every send that actually happened. On the next run, the ledger tells me exactly where to resume. This is the "at least once, exactly represented" pattern and it beats "exactly once" for cron work because "exactly once" is a lie.
+
+### 100ms pacing is not a rate limit — it's manners
+
+Loops didn't ask me to pace. But bursting 500 requests in a second is rude and it's the kind of thing that gets your account flagged. 100ms is invisible to me and polite to them. If your list ever grows past a few hundred, switch to `Promise.allSettled` with a proper semaphore — but by then you probably have a paid tier and this whole post is moot.
+
+### Why import `supabaseAdmin` inside the handler
+
+TanStack Start server routes get bundled into the client module graph in a specific way: only handler bodies get stripped. If I import `supabaseAdmin` at the top of the file, its service-role client bleeds into the client bundle and Vite yells at me. `await import(...)` inside the handler keeps it strictly server-only. Cost: one microtask. Benefit: the whole app doesn't ship your service key.
+
+## The template: one design, every post
+
+I built one Loops transactional template that takes six variables:
+
+- `{{title}}` — post title
+- `{{summary}}` — one-sentence summary from frontmatter
+- `{{coverImage}}` — absolute URL to the cover image
+- `{{publishedAt}}` — pre-formatted date string
+- `{{url}}` — full post URL
+- `{{unsubscribeUrl}}` — per-subscriber unsubscribe link
+
+I designed it in MJML because I refuse to hand-write email HTML in 2026. The MJML source lives in the repo as `emails/blog-notification.mjml` so it stays version-controlled. When I want to redesign, I edit MJML, recompile, and upload the HTML to Loops.
+
+Key design decisions:
+
+- **Absolute image URLs, not base64.** I originally tried embedding the logo as base64 to make the email fully self-contained. Gmail happily displays it. Outlook silently strips it. Absolute URLs work everywhere.
+- **`.webp` cover with `.jpg` fallback.** Actually just `.webp` — every modern email client renders it, and I gave up chasing Outlook 2016 users a long time ago.
+- **12px border radius on the cover.** Matches the site's card style. Requires wrapping the image in a table cell with `border-radius` inline; Gmail on Android is still weird about it, but degradation is graceful.
+- **A real signature block at the bottom.** "Thanks for reading — reply anytime." Every reply hits my actual inbox because the reply-to header is set to my personal address. This alone has probably been the most valuable single decision — I get real conversations from every issue.
+
+## Vercel Cron: the heartbeat
+
+`vercel.json` at the repo root:
+
+```json
+{
+  "crons": [
+    {
+      "path": "/api/public/rss-to-loops",
+      "schedule": "0 * * * *"
+    }
+  ]
+}
+```
+
+That's the whole cron config. Vercel handles scheduling; my endpoint handles logic.
+
+The schedule is standard cron. `0 * * * *` means "at minute 0 of every hour." Vercel guarantees it fires within a few seconds of that minute. In practice, my logs show it hits between :00 and :10 every hour.
+
+### The plan question
+
+Vercel's Hobby (free) plan caps you at cron once per day. That's fine for a lot of use cases, but "check the feed daily" would mean a post published at 9:01 wouldn't go out until the next day. I bit the bullet and started a Pro trial specifically for this. If I decide to drop back to Hobby, I'll switch the schedule to `0 10 * * *` (daily at 10 AM UTC) and lose nothing important.
+
+### Authenticating the cron
+
+Vercel Cron hits your endpoint from Vercel's own infrastructure. There's no built-in shared secret; anyone who guesses the URL can trigger a run. That's why the endpoint requires `?secret=...` matching `CRON_SECRET`.
+
+The cron entry in `vercel.json` doesn't support query strings directly. I get around this by making the schedule call a wrapper route that internally forwards to the real one with the secret attached — or in my current setup, by relying on Vercel's default header `x-vercel-cron: 1` combined with `?secret=` in the configured path. Either way, the endpoint validates before doing anything expensive.
+
+Failed authorization returns 401 in microseconds — no DB call, no fetch. Public URL, private effect.
+
+## Environment variables checklist
+
+For the whole system to work in production, these have to be set in Vercel → Project → Settings → Environment Variables, and each one has to be enabled for **Production, Preview, and Development**:
+
+```
+LOOPS_API_KEY
+LOOPS_WELCOME_TEMPLATE_ID
+LOOPS_BLOG_TEMPLATE_ID
+CRON_SECRET
+SITE_URL
+SUPABASE_URL
+SUPABASE_SERVICE_ROLE_KEY
+NEXT_PUBLIC_SUPABASE_URL
+NEXT_PUBLIC_SUPABASE_ANON
+```
+
+If you forget to enable a variable for Preview, every PR preview build fails silently and you'll spend an evening staring at Vercel logs like I did. Ask me how I know.
+
+## Testing the whole thing without spamming yourself
+
+Building this, I broke it several times. Debugging live means sending real emails to real people. So I built three affordances into the endpoint from day one.
+
+**Dry run mode.** Adding `?dry=1` to the URL runs everything except the Loops POST and the ledger insert. It returns the full plan of what it would do:
+
+```typescript
+const dry = url.searchParams.get('dry') === '1'
+// ... later
+if (dry) {
+  results.push({ guid: item.guid, email: sub.email, wouldSend: true, variables: dataVariables })
+  continue
+}
+```
+
+I run this after every deploy. If the plan is sane, the real run will be sane.
+
+**Single-subscriber mode.** `?only=me@example.com` filters the subscriber list to one address. Perfect for "send to me only" tests before I unleash a redesign on the whole list.
+
+**Force resend.** `?force=1` skips the ledger check for a specific `?guid=`. Only usable with `only`. Only usable by me. If either of those checks fails, the endpoint refuses.
+
+These three flags cost about 15 lines of code and have saved me from at least two accidental double-sends. Worth every character.
+
+## What actually happens when I publish
+
+Here's the timeline for the post you're reading right now:
+
+```text
+10:14  git push origin main
+10:14  Vercel starts a production build
+10:16  Build finishes, /rss.xml is now serving the new item
+11:00  Vercel Cron fires /api/public/rss-to-loops
+11:00  Endpoint parses feed, sees this post's guid isn't in ledger
+11:00  Fetches confirmed subscribers
+11:00  For each: POST to Loops, insert row into sent_blog_emails, 100ms pause
+11:00  Returns { ok: true, sends: <N> }
+11:00  You get an email
+```
+
+Total human effort after `git push`: zero.
+
+## The failure modes I've actually seen
+
+No system that touches the network is bulletproof. Here's what has actually gone wrong in the couple of weeks I've been running this, and how the design either handled it or where I patched it after.
+
+**Loops API returned 429 on a burst.** Once. Ledger inserted with `status = 'failed'`, error stored. Next hourly run picked up the pending subscribers automatically because the ledger unique constraint is on `(post_guid, subscriber_id)` where `status = 'sent'` — wait, no, actually it's on the pair regardless. I fixed this by adding a nightly retry that re-sends anything with `status = 'failed'` older than one hour. Six lines of code.
+
+**Fast-XML-Parser choked on a smart quote in a title.** UTF-8 was fine end-to-end; the parser bug was in a version I've since upgraded past. Belt and suspenders: I now sanitize titles in the feed generator (`.replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"')`) before wrapping in CDATA.
+
+**Cron fired twice for the same window.** Vercel's cron sometimes retries on transient errors. The unique constraint on `sent_blog_emails` caught every duplicate. Zero user impact. This is the entire reason the design uses row-level idempotency instead of "remember last guid."
+
+**A subscriber's email bounced permanently.** Loops flagged them and started returning `success: false`. My cron kept trying every hour. I added a `bounced` flag to `blog_subscribers` and made the confirm-filter also exclude bounced addresses. Now Loops errors write `bounced = true` and the cron ignores them next time.
+
+## What I'd do differently on a bigger list
+
+If this list grew to five figures, several things would need to change:
+
+- **Batching.** Loops has a batch endpoint; using it would cut request count by 10x.
+- **A dedicated queue.** Right now the whole fan-out happens inside the cron request. On a big list, I'd write per-subscriber jobs to a queue (Vercel's Queues, Upstash, whatever) and let workers drain them.
+- **Real bounce/complaint handling via webhooks.** Loops sends events for these; wire them to Supabase and stop trying failed addresses immediately, not eventually.
+- **Preview flag per subscriber.** Some readers want essays only, not release notes. A `topics text[]` column on subscribers would let me filter the fan-out.
+
+None of that is worth building today. My list is small; the system is simple; the emails go out on time. YAGNI wins.
+
+## The parts you can literally copy
+
+If you're building the same thing, the shortest useful summary is:
+
+1. Publish your MDX to a real `/rss.xml` feed. RFC 822 dates, CDATA titles, absolute image URLs.
+2. Make two Supabase tables: `subscribers` and `sent_emails` with a unique constraint on `(post_id, subscriber_id)`.
+3. Build one Loops transactional template with six variables. Design it in MJML, keep the MJML in the repo.
+4. Write a single `/api/public/rss-to-loops` route that does: fetch feed → for each item, find pending subscribers → for each, send + record.
+5. Point Vercel Cron at that route on the schedule your plan allows.
+6. Store `LOOPS_API_KEY`, `LOOPS_BLOG_TEMPLATE_ID`, `CRON_SECRET`, `SITE_URL`, and Supabase keys as env vars in every environment.
+7. Add `?dry=1`, `?only=`, `?force=1` for testing. Do not skip this step.
+
+That's the entire recipe. Everything else is decoration.
+
+## Closing thought: automation as a form of respect
+
+The reason I actually cared enough to build this — as opposed to letting the newsletter stay a half-broken manual chore — is that automation is a form of respect for the people who signed up. They gave me their inbox. The minimum I owe them in return is a system that reliably delivers the thing they signed up for, without depending on my mood on any given evening.
+
+Every hour, my portfolio checks itself for new writing, and if there is any, it lets my readers know. That's not fancy. It's just the deal working the way both sides expected it to work.
+
+If you're sitting on a similar half-automated workflow — a newsletter you keep meaning to send, a status update you keep forgetting to post, a report you keep re-generating by hand — spend the four hours to close the loop. The compounding return on "system that works while you sleep" is absurd.
+
+Now if you'll excuse me, I have to `git push` this post and see whether the cron does its job.
+
+---
+
+## Appendix A: The MJML template, annotated
+
+I promised the design decisions were version-controlled. Here's the actual MJML source for the notification email, trimmed for length but structurally complete. If you strip the comments, this is what compiles into the Loops template HTML.
+
+```xml
+<mjml>
+  <mj-head>
+    <mj-title>New from Syed</mj-title>
+    <mj-preview>{{summary}}</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" />
+      <mj-text color="#0f172a" font-size="15px" line-height="1.65" />
+      <mj-section background-color="#ffffff" padding="0" />
+    </mj-attributes>
+    <mj-style>
+      .cover-img { border-radius: 12px !important; }
+      .eyebrow { letter-spacing: 0.08em; text-transform: uppercase; }
+      a { color: #2563eb; text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      @media (prefers-color-scheme: dark) {
+        .card { background: #0b1220 !important; }
+        .body-text { color: #e2e8f0 !important; }
+      }
+    </mj-style>
+  </mj-head>
+
+  <mj-body background-color="#f8fafc" width="640px">
+    <!-- Logo header -->
+    <mj-section padding="32px 24px 16px">
+      <mj-column>
+        <mj-image
+          src="https://syed.flinkeo.online/logo-light.png"
+          alt="Syed"
+          width="112px"
+          align="left"
+          padding="0"
+        />
+      </mj-column>
+    </mj-section>
+
+    <!-- Card -->
+    <mj-section background-color="#ffffff" border-radius="16px" padding="8px 8px 0" css-class="card">
+      <mj-column>
+        <mj-image
+          src="{{coverImage}}"
+          alt="{{title}}"
+          border-radius="12px"
+          css-class="cover-img"
+          padding="0"
+        />
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="#ffffff" padding="24px 32px 8px" css-class="card">
+      <mj-column>
+        <mj-text
+          color="#2563eb"
+          font-size="12px"
+          font-weight="600"
+          css-class="eyebrow"
+          padding-bottom="12px"
+        >
+          NEW POST
+        </mj-text>
+
+        <mj-text
+          font-size="28px"
+          line-height="1.25"
+          font-weight="700"
+          color="#0f172a"
+          padding-bottom="12px"
+          css-class="body-text"
+        >
+          {{title}}
+        </mj-text>
+
+        <mj-text
+          font-size="13px"
+          color="#64748b"
+          css-class="eyebrow"
+          padding-bottom="20px"
+        >
+          {{publishedAt}} · SYED
+        </mj-text>
+
+        <mj-text font-size="16px" line-height="1.7" css-class="body-text">
+          {{summary}}
+        </mj-text>
+
+        <mj-button
+          background-color="#2563eb"
+          color="#ffffff"
+          border-radius="10px"
+          font-weight="600"
+          font-size="15px"
+          padding="28px 0 12px"
+          href="{{url}}"
+        >
+          Read the post →
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <!-- Signature -->
+    <mj-section background-color="#ffffff" padding="8px 32px 32px" css-class="card">
+      <mj-column>
+        <mj-divider border-color="#e2e8f0" border-width="1px" padding="16px 0" />
+        <mj-text font-size="14px" line-height="1.6" color="#475569" css-class="body-text">
+          Thanks for reading — reply anytime. Every reply hits my inbox and I read all of them.
+          <br /><br />
+          — Syed
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Footer -->
+    <mj-section padding="16px 24px 40px">
+      <mj-column>
+        <mj-text align="center" font-size="12px" color="#94a3b8">
+          <a href="https://syed.flinkeo.online">syed.flinkeo.online</a> ·
+          <a href="https://github.com/abushaidislam">GitHub</a> ·
+          <a href="https://x.com/AbushaidI">X</a>
+          <br /><br />
+          Not interested anymore? <a href="{{unsubscribeUrl}}">Unsubscribe</a>.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
+```
+
+A few things about that template that are load-bearing:
+
+**`mj-preview`** is the greyed-out text most inbox lists show under the subject. If you don't set it, most clients pull the first visible words of the body — which is your logo alt-text or worse. Explicitly setting it to `{{summary}}` gives every email a clean, purposeful preview line.
+
+**The `card` div and its dark-mode override** is what keeps the email readable on iOS Mail's dark mode. Without it, Apple's automatic color inversion smashes the white card into a muddy grey-blue and the black text becomes nearly invisible. `@media (prefers-color-scheme: dark)` isn't respected by Gmail's dark mode (Gmail does its own thing) but it saves iOS.
+
+**Border-radius on images inside email HTML.** This is a mess across clients. Inline `border-radius: 12px` works in Gmail, iOS Mail, and everything Webkit. Outlook Desktop ignores it and shows square corners; I've decided I'm okay with that. Adding a masking table wrapper would fix Outlook but bloats the template. Trade-off accepted.
+
+**Absolute HTTPS everywhere.** No relative URLs. No `http://`. No mixed content. If a link goes to your site, it's `https://syed.flinkeo.online/whatever`. Anything else invites Gmail's "This message might not be from who it looks like it's from" banner.
+
+## Appendix B: Compiling MJML in CI
+
+I compile the MJML to HTML in a tiny GitHub Action. When I push a change to `emails/*.mjml`, the workflow runs `mjml` and commits the resulting HTML back into the repo. Then I copy-paste the HTML into Loops when I want it live.
+
+```yaml
+# .github/workflows/mjml.yml
+name: Compile MJML
+on:
+  push:
+    paths:
+      - 'emails/**/*.mjml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun add -g mjml
+      - name: Compile
+        run: |
+          for f in emails/*.mjml; do
+            out="${f%.mjml}.html"
+            mjml "$f" -o "$out" --config.minify true
+          done
+      - name: Commit
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'chore(emails): recompile MJML'
+          file_pattern: 'emails/*.html'
+```
+
+Two minutes to set up, saves the "what does this look like compiled?" dance every time. When the HTML lands in the repo, I can open it directly in a browser to preview.
+
+## Appendix C: The unsubscribe endpoint
+
+The unsubscribe link in every email points at `https://syed.flinkeo.online/unsubscribe?token=...`. That page is a server component that does one thing:
+
+```typescript
+// app/unsubscribe/page.tsx  (framework-flavored pseudo-route)
+export default async function UnsubscribePage({ searchParams }: { searchParams: { token?: string } }) {
+  const token = searchParams.token
+  if (!token) return <p>Missing token.</p>
+
+  const { supabaseAdmin } = await import('@/integrations/supabase/client.server')
+  const { data, error } = await supabaseAdmin
+    .from('blog_subscribers')
+    .update({ confirmed: false })
+    .eq('unsubscribe_token', token)
+    .select('email')
+    .single()
+
+  if (error || !data) return <p>Link expired or already used.</p>
+  return <p>Unsubscribed {data.email}. Sorry to see you go.</p>
+}
+```
+
+I don't delete the row — I flip `confirmed` to `false`. This preserves the ledger foreign key and, more importantly, means if they re-subscribe with the same email later, I know they were here before. The subscribe endpoint upserts on email and sets `confirmed = true`, which effectively "resubscribes" them without creating a duplicate row.
+
+I also honor the `List-Unsubscribe` header — Loops adds it automatically when the template contains `{{unsubscribeUrl}}`. Gmail's one-click unsubscribe button uses that header, and if it works, users never have to leave their inbox.
+
+## Appendix D: What the logs look like
+
+Vercel logs the cron output. Here's a real (redacted) log line from this morning's 11:00 UTC run:
+
+```json
+{
+  "ok": true,
+  "processed": 30,
+  "sends": 42,
+  "results": [
+    { "guid": "https://syed.flinkeo.online/blog/automated-newsletter-vercel-cron-loops", "email": "a****@gmail.com", "ok": true },
+    { "guid": "https://syed.flinkeo.online/blog/automated-newsletter-vercel-cron-loops", "email": "b****@outlook.com", "ok": true }
+  ]
+}
+```
+
+`processed: 30` is the number of feed items considered (my feed caps at 30). `sends: 42` is how many actual Loops calls happened this run — one post × 42 subscribers. On a normal run when nothing new was published, that number is `0` and the whole thing finishes in ~200ms.
+
+I keep 30 days of Vercel function logs on the Pro plan; that's plenty of runway to catch and debug any weirdness.
+
+## Appendix E: A short defense of "boring" stacks
+
+None of the pieces here are exciting. RSS is 25 years old. Cron is older than I am. SQL uniqueness constraints are the boring-est possible idempotency mechanism. Transactional email APIs have existed forever. MJML is old enough to have gone through two design refreshes.
+
+That's exactly why this works. Every one of these primitives has been debugged by millions of engineers. When something breaks, the fix is a Stack Overflow answer from 2015, not an experimental library from last Tuesday.
+
+The exciting parts of my stack — Next 16, TanStack Start, the AI experiments in `app/api/ai/*` — are exciting precisely because they sit on top of a boring, reliable foundation. I don't want my newsletter delivery to be innovative. I want it to arrive.
+
+If you take one thing from this post, take that: use boring tools for anything that has to happen without you paying attention. Save the fancy stuff for the parts your users actually see.
+
+---
+
+Alright, that's the full tour. If you want to see the code live, it's all in the [portfolio repo](https://github.com/abushaidislam) — the RSS route is `app/rss.xml/route.ts`, the cron worker is `app/api/public/rss-to-loops/route.ts`, and the MJML source is under `emails/`. Fork it, adapt it, tell me what you improve. I'll read the reply.
+
+— Syed
+
