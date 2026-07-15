@@ -107,6 +107,14 @@ export default function RootLayout({
       lang="en"
       className={`bg-bg-primary ${GeistMono.variable} ${GeistSans.variable}`}
     >
+      <head>
+        <link
+          rel="preload"
+          as="image"
+          href="/syed_headshot_1.webp"
+          fetchPriority="high"
+        />
+      </head>
       <body className="flex min-h-screen flex-col font-sans md:max-w-7xl lg:mx-auto lg:flex-row">
         <main
           className={cx(
