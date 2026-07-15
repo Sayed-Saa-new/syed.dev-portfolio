@@ -212,7 +212,7 @@ export function ScrapbookBento({ className }: { className?: string }) {
           >
             <img
               width="90"
-              src="/chai_sticker.png"
+              src="/chai_sticker.webp"
               className="xs:max-w-none max-w-[100px]"
               draggable={false}
             />
@@ -223,7 +223,7 @@ export function ScrapbookBento({ className }: { className?: string }) {
           >
             <img
               width="100"
-              src="/laptop_ai_sticker.png"
+              src="/laptop_ai_sticker.webp"
               className="xs:max-w-none max-w-[110px]"
               draggable={false}
             />
@@ -234,7 +234,7 @@ export function ScrapbookBento({ className }: { className?: string }) {
           >
             <img
               width="110"
-              src="/cassette_sticker.png"
+              src="/cassette_sticker.webp"
               className="xs:max-w-none max-w-[120px]"
               draggable={false}
             />
@@ -245,7 +245,7 @@ export function ScrapbookBento({ className }: { className?: string }) {
           >
             <img
               width="110"
-              src="/rickshaw_sticker.png"
+              src="/rickshaw_sticker.webp"
               draggable={false}
               className="xs:max-w-none max-w-[120px]"
             />

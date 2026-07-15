@@ -187,8 +187,8 @@ export function NewsletterSignUp({
               style={{
                 width: 453,
                 height: 501,
-                maskImage: "url(/syed_logo_mark.png)",
-                WebkitMaskImage: "url(/syed_logo_mark.png)",
+                maskImage: "url(/syed_logo_mark.webp)",
+                WebkitMaskImage: "url(/syed_logo_mark.webp)",
                 maskSize: "contain",
                 WebkitMaskSize: "contain",
                 maskRepeat: "no-repeat",

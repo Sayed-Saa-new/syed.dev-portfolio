@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     locale: siteMetadata.locale,
     images: [
       {
-        url: "/syed_og.jpg",
+        url: "/syed_og.webp",
         width: 1200,
         height: 630,
         alt: siteMetadata.title,
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     title:
       "Syed (Abushaid Islam) — AI Engineer & Full Stack Developer",
     description: siteMetadata.description,
-    images: ["/syed_og.jpg"],
+    images: ["/syed_og.webp"],
   },
   robots: {
     index: true,

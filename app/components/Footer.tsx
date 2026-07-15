@@ -71,7 +71,7 @@ export function Footer(): React.JSX.Element {
                   <Link className="inline-block" href="/">
                     <img
                       className="h-12 w-12"
-                      src="/syed_logo.png"
+                      src="/syed_logo.webp"
                       alt="Syed's Logo"
                     />
                   </Link>

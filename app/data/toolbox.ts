@@ -13,7 +13,7 @@ type SoftwareDataItem = {
 const softwareData: SoftwareDataItem[] = [
   {
     title: "VSCode",
-    imgSrc: "/vscode_logo.png",
+    imgSrc: "/vscode_logo.webp",
     link: "https://code.visualstudio.com/",
   },
   {
@@ -28,12 +28,12 @@ const softwareData: SoftwareDataItem[] = [
   },
   {
     title: "ChatGPT",
-    imgSrc: "/chatgpt_logo.png",
+    imgSrc: "/chatgpt_logo.webp",
     link: "https://chat.openai.com/",
   },
   {
     title: "Claude",
-    imgSrc: "/claude_logo.png",
+    imgSrc: "/claude_logo.webp",
     link: "https://claude.ai/",
   },
   {
@@ -53,17 +53,17 @@ const softwareData: SoftwareDataItem[] = [
   },
   {
     title: "Figma",
-    imgSrc: "/figma_logo.png",
+    imgSrc: "/figma_logo.webp",
     link: "https://www.figma.com/",
   },
   {
     title: "Notion",
-    imgSrc: "/notion_logo.png",
+    imgSrc: "/notion_logo.webp",
     link: "https://www.notion.so/",
   },
   {
     title: "Linear",
-    imgSrc: "/linear_logo.png",
+    imgSrc: "/linear_logo.webp",
     link: "https://linear.app/",
   },
   {
@@ -78,17 +78,17 @@ const softwareData: SoftwareDataItem[] = [
   },
   {
     title: "Spotify",
-    imgSrc: "/spotify_logo.png",
+    imgSrc: "/spotify_logo.webp",
     link: "https://www.spotify.com/",
   },
   {
     title: "Arc",
-    imgSrc: "/arc_logo.png",
+    imgSrc: "/arc_logo.webp",
     link: "https://arc.net/",
   },
   {
     title: "Raycast",
-    imgSrc: "/raycast_logo.png",
+    imgSrc: "/raycast_logo.webp",
     link: "https://raycast.com/",
   },
 ];

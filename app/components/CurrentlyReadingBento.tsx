@@ -20,7 +20,7 @@ function BookCover() {
     <div className="relative aspect-video h-full w-96 overflow-hidden rounded">
       <div className="absolute left-5 h-full w-2 bg-slate-900/20 blur-sm"></div>
       <img
-        src="/surrounded_by_idiots_cover.png"
+        src="/surrounded_by_idiots_cover.webp"
         alt="Surrounded by Idiots book cover"
         className="h-full"
       />

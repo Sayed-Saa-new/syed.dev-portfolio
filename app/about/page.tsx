@@ -177,7 +177,7 @@ export default function AboutPage() {
                     <ShadowBox width={188} height={278}></ShadowBox>
                     <img
                       className="absolute left-0 top-0 h-[270px] w-[180px] rotate-[-8deg] rounded-lg object-cover shadow"
-                      src="/syed_and_friend.jpg"
+                      src="/syed_and_friend.webp"
                       alt="Syed with a friend"
                     />
                   </div>
@@ -201,7 +201,7 @@ export default function AboutPage() {
                   <ShadowBox width={188} height={278}></ShadowBox>
                   <img
                     className="absolute left-0 top-0 h-[270px] w-[180px] rotate-[-8deg] rounded-lg object-cover shadow"
-                    src="/syed_and_friend.jpg"
+                    src="/syed_and_friend.webp"
                     alt="Syed with a friend"
                   />
                 </div>
