@@ -48,5 +48,11 @@
     "tsx": "^4.21.0",
     "typescript": "^5",
     "velite": "^0.1.1"
-  }
+  },
+  "browserslist": [
+    "chrome >= 90",
+    "edge >= 90",
+    "firefox >= 90",
+    "safari >= 15"
+  ]
 }
