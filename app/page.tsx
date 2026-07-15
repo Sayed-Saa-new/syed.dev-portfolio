@@ -9,7 +9,7 @@ import { FeaturedBlogCard } from "./components/FeaturedBlogCard";
 import { ToolboxBento } from "./components/ToolboxBento";
 import { ConnectionsBento } from "./components/ConnectionsBento";
 import { AnimatedProfilePicture } from "./components/AnimatedProfilePicture";
-import { AnimatedText } from "./components/AnimatedText";
+
 import { PhotoGallery } from "./components/PhotoGallery";
 import { AboutMeBento } from "./components/AboutMeBento";
 import { AnimatedMobilePhotos } from "./components/AnimatedMobilePhotos";
