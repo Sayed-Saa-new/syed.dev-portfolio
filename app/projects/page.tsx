@@ -81,74 +81,98 @@ export default function ProjectPage() {
 }
 
 function ProjectBentoCard({ project }: { project: Project }) {
+  const isLive = project.status === "Live";
   return (
     <BentoCard
       linkTo={project.url}
       hideOverflow={true}
-      className="!p-0 md:min-h-[420px]"
+      className="!p-0 md:min-h-[440px]"
     >
-      <div className="grid grid-cols-1 md:grid-cols-2">
+      <div className="grid grid-cols-1 md:grid-cols-[1.05fr_1fr]">
         {/* Left: image */}
-        <div className="relative aspect-[16/10] w-full overflow-hidden bg-[#F5EEDF] md:aspect-auto md:min-h-[420px]">
+        <div className="relative aspect-[16/10] w-full overflow-hidden bg-[#F5EEDF] md:aspect-auto md:min-h-[440px]">
           <Image
             src={project.image}
             alt={project.title}
             fill
             sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+            className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
             priority
           />
+          {/* subtle inner border for depth on light images */}
+          <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/[0.04]" />
+          {/* soft top gradient to lift the status badge */}
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/15 to-transparent" />
+
+          {/* Floating status pill */}
+          <div className="absolute left-4 top-4 flex items-center gap-1.5 rounded-full bg-white/85 px-2.5 py-1 text-[10.5px] font-medium uppercase tracking-[0.14em] text-neutral-800 shadow-sm backdrop-blur-md ring-1 ring-black/[0.04]">
+            <span className="relative inline-flex h-1.5 w-1.5">
+              <span
+                className={`absolute inline-flex h-full w-full rounded-full opacity-60 ${
+                  isLive ? "animate-ping bg-emerald-500" : "bg-amber-500"
+                }`}
+              />
+              <span
+                className={`relative inline-flex h-1.5 w-1.5 rounded-full ${
+                  isLive ? "bg-emerald-500" : "bg-amber-500"
+                }`}
+              />
+            </span>
+            {project.status}
+          </div>
         </div>
 
         {/* Right: details */}
-        <div className="flex flex-col justify-between gap-6 p-7 md:p-10">
+        <div className="flex flex-col justify-between gap-8 p-7 md:p-10">
           <div>
-            <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.16em] text-text-tertiary">
-              <span
-                className={`inline-flex h-1.5 w-1.5 rounded-full ${
-                  project.status === "Live" ? "bg-emerald-500" : "bg-amber-500"
-                }`}
-              />
-              {project.status}
-              <span className="text-border-secondary">·</span>
-              <span>{project.year}</span>
-            </div>
+            <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-text-tertiary">
+              {project.year}
+            </p>
 
-            <h2 className="mt-3 text-2xl font-medium leading-tight tracking-tight text-text-primary md:text-3xl">
+            <h2 className="mt-3 text-[26px] font-medium leading-[1.1] tracking-tight text-text-primary md:text-[32px]">
               {project.title}
             </h2>
-            <p className="mt-1 text-sm text-text-secondary md:text-base">
+            <p className="mt-2 text-[15px] leading-snug text-text-secondary md:text-base">
               {project.tagline}
             </p>
 
-            <p className="mt-5 text-sm leading-6 text-text-secondary">
+            <div className="mt-5 h-px w-10 bg-border-primary" />
+
+            <p className="mt-5 text-[14px] leading-[1.65] text-text-secondary">
               {project.description}
             </p>
           </div>
 
-          <div className="space-y-4">
-            <div className="flex flex-wrap gap-1.5">
-              {project.stack.map((t) => (
-                <span
-                  key={t}
-                  className="rounded-full border border-border-primary bg-bg-secondary px-2.5 py-1 text-[11px] text-text-secondary"
-                >
-                  {t}
-                </span>
-              ))}
+          <div className="space-y-5">
+            <div>
+              <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-text-tertiary">
+                Stack
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {project.stack.map((t) => (
+                  <span
+                    key={t}
+                    className="rounded-md border border-border-primary bg-bg-secondary px-2 py-[3px] text-[11px] font-medium text-text-secondary"
+                  >
+                    {t}
+                  </span>
+                ))}
+              </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2 text-[11px] text-text-tertiary">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-text-tertiary">
               {project.platforms.map((p, i) => (
-                <span key={p} className="inline-flex items-center gap-2">
-                  {i > 0 && <span className="text-border-secondary">·</span>}
+                <span key={p} className="inline-flex items-center gap-3">
+                  {i > 0 && (
+                    <span className="text-border-secondary">•</span>
+                  )}
                   {p}
                 </span>
               ))}
             </div>
 
-            <div className="pt-1">
-              <span className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600">
+            <div className="flex items-center justify-between border-t border-border-primary pt-4">
+              <span className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 transition-transform duration-300 group-hover:translate-x-0.5">
                 Visit {project.title}
                 <svg
                   width="3"
@@ -163,6 +187,9 @@ function ProjectBentoCard({ project }: { project: Project }) {
                 >
                   <path d="M0 0L3 3L0 6" />
                 </svg>
+              </span>
+              <span className="text-[11px] uppercase tracking-[0.14em] text-text-tertiary">
+                Case Study →
               </span>
             </div>
           </div>
