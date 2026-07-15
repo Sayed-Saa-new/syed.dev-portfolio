@@ -105,7 +105,7 @@ export function ConnectionsBento({
 
           <span className="hidden md:block">
             <AnimatedConnectionCircle
-              src="/avatars/avatar_1.png"
+              src="/avatars/avatar_1.webp"
               top="55%"
               left="23%"
               delay={0.1}
@@ -113,14 +113,14 @@ export function ConnectionsBento({
               controls={controls}
             />
             <AnimatedConnectionCircle
-              src="/avatars/avatar_2.png"
+              src="/avatars/avatar_2.webp"
               top="53%"
               left="67%"
               delay={0.3}
               controls={controls}
             />
             <AnimatedConnectionCircle
-              src="/avatars/avatar_3.png"
+              src="/avatars/avatar_3.webp"
               top="4%"
               left="32%"
               delay={0.2}
@@ -128,7 +128,7 @@ export function ConnectionsBento({
               controls={controls}
             />
             <AnimatedConnectionCircle
-              src="/avatars/avatar_4.png"
+              src="/avatars/avatar_4.webp"
               top="15%"
               left="78%"
               delay={0.4}
@@ -136,7 +136,7 @@ export function ConnectionsBento({
               controls={controls}
             />
             <AnimatedConnectionCircle
-              src="/avatars/avatar_5.png"
+              src="/avatars/avatar_5.webp"
               top="5%"
               left="7%"
               delay={0.5}
