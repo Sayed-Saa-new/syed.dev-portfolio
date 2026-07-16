@@ -11,6 +11,7 @@ import { cx } from "./lib/utils";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import Script from "next/script";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteMetadata.siteUrl),
@@ -153,6 +154,7 @@ export default function RootLayout({
           <Footer />
         </main>
         <ServiceWorkerRegistrar />
+        <SpeedInsights />
       </body>
 
 
