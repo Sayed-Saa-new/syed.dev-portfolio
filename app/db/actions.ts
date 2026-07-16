@@ -272,36 +272,11 @@ export async function createContact(
       throw new Error("Failed to create contact");
     }
 
-    // 2) Send welcome transactional email
-    if (welcomeTemplateId) {
-      try {
-        const emailRes = await fetch(
-          "https://app.loops.so/api/v1/transactional",
-          {
-            method: "POST",
-            headers: authHeader,
-            body: JSON.stringify({
-              transactionalId: welcomeTemplateId,
-              email,
-            }),
-          },
-        );
-        if (!emailRes.ok) {
-          const body = await emailRes.text().catch(() => "");
-          console.error(
-            `[newsletter] Loops welcome email failed: ${emailRes.status} ${body}`,
-          );
-        }
-      } catch (mailErr) {
-        console.error("[newsletter] Loops welcome email exception:", mailErr);
-      }
-    } else {
-      console.warn(
-        "[newsletter] LOOPS_WELCOME_TEMPLATE_ID not set — skipping welcome email",
-      );
-    }
+    // Welcome email is handled independently by Loops (Event/Audience automation).
+    // We only create the contact here; Loops fires the welcome mail on its own.
 
     // 3) Persist subscriber locally so the RSS-to-Loops cron can email them.
+
     try {
       const supabase = await createSupabaseAdminClient();
       await supabase
