@@ -13,7 +13,7 @@ type NavigationLink = {
   link: string;
 };
 
-const navigationLinks: readonly NavigationLink[] = [
+const baseNavigationLinks: readonly NavigationLink[] = [
   { name: "Home", link: "/" },
   { name: "About", link: "/about" },
   { name: "Blog", link: "/blog" },
@@ -22,16 +22,23 @@ const navigationLinks: readonly NavigationLink[] = [
   { name: "Toolbox", link: "/toolbox" },
 ] as const;
 
-const Navbar: React.FC = () => {
+interface NavbarProps {
+  showPoem?: boolean;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ showPoem = false }) => {
+  const navigationLinks: NavigationLink[] = showPoem
+    ? [...baseNavigationLinks, { name: "Poem", link: "/poem" }]
+    : [...baseNavigationLinks];
   return (
     <header role="banner">
-      <DesktopNav />
-      <MobileNav />
+      <DesktopNav navigationLinks={navigationLinks} />
+      <MobileNav navigationLinks={navigationLinks} />
     </header>
   );
 };
 
-function DesktopNav() {
+function DesktopNav({ navigationLinks }: { navigationLinks: NavigationLink[] }) {
   const path = usePathname();
   const navRef = useRef<HTMLUListElement | null>(null);
   const spotlightX = useRef(0);
@@ -173,7 +180,7 @@ function DesktopNav() {
   );
 }
 
-function MobileNav() {
+function MobileNav({ navigationLinks }: { navigationLinks: NavigationLink[] }) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const path = usePathname();
 

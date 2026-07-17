@@ -275,7 +275,8 @@ async function main() {
   // Load posts from Velite output
   let posts: Array<{ code: string; draft?: boolean }> = [];
   try {
-    const veliteOutput = await import("../.velite/index.js");
+    const veliteModulePath: string = "../.velite/index.js";
+    const veliteOutput = await import(veliteModulePath);
     posts = veliteOutput.posts || [];
   } catch (error) {
     console.log("⚠️  No Velite output found. Run 'npm run build' first to generate content.");

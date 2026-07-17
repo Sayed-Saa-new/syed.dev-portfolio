@@ -12,6 +12,7 @@ export default {
       fontFamily: {
         sans: "var(--font-geist-sans), system-ui, sans-serif",
         mono: ["var(--font-geist-mono)"],
+        poem: ["var(--font-poem-serif)", "ui-serif", "Georgia", "serif"],
       },
       colors: {
         "bg-primary": "#F7F7F8",

@@ -1,0 +1,9 @@
+import { Fraunces } from "next/font/google";
+
+export const poemSerif = Fraunces({
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  display: "swap",
+  variable: "--font-poem-serif",
+  axes: ["SOFT", "opsz"],
+});
