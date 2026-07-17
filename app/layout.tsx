@@ -7,6 +7,7 @@ import { BgGradient } from "./components/BgGradient";
 import { PageTransition } from "./components/PageTransition";
 import { ServiceWorkerRegistrar } from "./components/ServiceWorkerRegistrar";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 
 import { cx } from "./lib/utils";
 import { GeistMono } from "geist/font/mono";
@@ -155,6 +156,7 @@ export default function RootLayout({
         </main>
         <ServiceWorkerRegistrar />
         <SpeedInsights />
+        <Analytics />
       </body>
 
 
