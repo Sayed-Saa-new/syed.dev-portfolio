@@ -102,8 +102,8 @@ export default async function PoemPage() {
       <section className="mx-auto max-w-6xl overflow-visible px-6 pb-40">
         <div className="grid grid-cols-1 items-start gap-12 overflow-visible lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)] lg:gap-16">
           {/* Sticky ASCII art card */}
-          <aside className="lg:sticky lg:top-1/2 lg:self-start lg:-translate-y-1/2">
-            <div className="group relative overflow-hidden rounded-3xl border border-neutral-200/70 bg-white/60 p-4 shadow-[0_20px_60px_-30px_rgba(80,50,20,0.25)] backdrop-blur-md lg:max-h-[calc(100vh-6rem)]">
+          <aside className="lg:sticky lg:top-8 lg:self-start">
+            <div className="group relative overflow-hidden rounded-3xl border border-neutral-200/70 bg-white/60 p-4 shadow-[0_20px_60px_-30px_rgba(80,50,20,0.25)] backdrop-blur-md">
               {/* soft inner glow */}
               <div
                 aria-hidden
@@ -113,7 +113,7 @@ export default async function PoemPage() {
                     "radial-gradient(400px 200px at 50% 0%, rgba(255,220,180,0.25), transparent 60%)",
                 }}
               />
-              <div className="relative overflow-hidden rounded-2xl bg-[#fdfaf5] lg:max-h-[calc(100vh-10rem)]">
+              <div className="relative overflow-hidden rounded-2xl bg-[#fdfaf5]">
                 <pre
                   aria-hidden
                   className="m-0 overflow-hidden whitespace-pre p-3 font-mono text-[3.2px] leading-[3.4px] text-neutral-800 md:text-[3.6px] md:leading-[3.8px] lg:text-[3.25px] lg:leading-[3.45px] xl:text-[3.6px] xl:leading-[3.8px]"
@@ -137,6 +137,7 @@ export default async function PoemPage() {
               </figcaption>
             </div>
           </aside>
+
 
           {/* Stanzas */}
           <article className="relative pt-4">
