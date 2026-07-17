@@ -158,7 +158,7 @@ export default async function PoemPage() {
             {/* closing signature */}
             <div className="mt-8 flex items-center gap-4 opacity-70">
               <div className="h-px flex-1 bg-neutral-300" />
-              <span className="font-serif text-lg italic text-neutral-600">
+              <span className="font-poem text-lg italic text-neutral-600">
                 — Syed
               </span>
               <div className="h-px flex-1 bg-neutral-300" />
