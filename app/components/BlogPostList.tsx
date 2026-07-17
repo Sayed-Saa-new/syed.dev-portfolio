@@ -123,6 +123,7 @@ export function BlogPostList({ posts, viewCounts }: BlogPostListProps) {
       ) : (
         <p>Nothing to see here yet...</p>
       )}
-    </motion.ul>
+      </motion.ul>
+    </AnimatePresence>
   );
 }
