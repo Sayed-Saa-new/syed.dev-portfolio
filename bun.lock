@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "braydoncoyer.dev",
+      "name": "syed-portfolio",
       "dependencies": {
         "@codesandbox/sandpack-react": "^2.20.0",
         "@headlessui/react": "^2.1.8",
