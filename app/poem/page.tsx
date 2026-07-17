@@ -102,7 +102,7 @@ export default async function PoemPage() {
       <section className="mx-auto max-w-6xl px-6 pb-40">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)] lg:gap-16">
           {/* Sticky ASCII art card */}
-          <aside className="lg:sticky lg:top-24 lg:h-fit">
+          <aside className="lg:sticky lg:top-1/2 lg:h-fit lg:-translate-y-1/2 lg:self-start">
             <div className="group relative overflow-hidden rounded-3xl border border-neutral-200/70 bg-white/60 p-4 shadow-[0_20px_60px_-30px_rgba(80,50,20,0.25)] backdrop-blur-md">
               {/* soft inner glow */}
               <div
