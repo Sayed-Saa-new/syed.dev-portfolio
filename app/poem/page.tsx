@@ -62,7 +62,7 @@ export default async function PoemPage() {
   if (!show) notFound();
 
   return (
-    <main className="relative">
+    <main className={`relative ${poemSerif.variable}`}>
       {/* Warm paper-toned ambient background */}
       <div
         aria-hidden
@@ -85,14 +85,23 @@ export default async function PoemPage() {
       {/* Hero */}
       <section className="mx-auto max-w-6xl px-6 pt-24 pb-16 md:pt-32 md:pb-24">
         <div className="mx-auto max-w-2xl text-center">
-          <p className="font-mono text-[11px] uppercase tracking-[0.4em] text-neutral-500">
+          <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-neutral-500">
             A Poem · By Syed
           </p>
-          <h1 className="mt-6 font-serif text-5xl italic leading-[1.05] tracking-tight text-neutral-900 md:text-7xl">
+          <h1
+            className="mt-8 font-poem text-6xl font-light italic leading-[0.98] tracking-[-0.03em] text-neutral-900 md:text-8xl"
+            style={{
+              fontVariationSettings: '"SOFT" 100, "opsz" 144',
+              fontFeatureSettings: '"liga", "dlig", "swsh", "salt"',
+            }}
+          >
             {POEM_TITLE}
           </h1>
-          <div className="mx-auto mt-8 h-px w-16 bg-neutral-400/60" />
-          <p className="mt-8 font-serif text-base italic leading-relaxed text-neutral-600 md:text-lg">
+          <div className="mx-auto mt-10 h-px w-20 bg-gradient-to-r from-transparent via-neutral-400 to-transparent" />
+          <p
+            className="mt-8 font-poem text-base italic leading-relaxed text-neutral-600 md:text-lg"
+            style={{ fontVariationSettings: '"SOFT" 100, "opsz" 24' }}
+          >
             A quiet remembrance of a first love —<br />
             born in the hush of an examination hall.
           </p>
