@@ -28,20 +28,20 @@ export function PoemStanza({
     <motion.div
       ref={ref}
       style={{ opacity, y, filter, willChange: "opacity, transform, filter" }}
-      className="relative mb-16 md:mb-24"
+      className="relative mb-10 md:mb-14"
     >
       {/* Stanza number — barely there, like a breath */}
       <div
         aria-hidden
-        className="mb-6 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.35em] text-neutral-400"
+        className="mb-5 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.35em] text-neutral-400"
       >
         <span className="h-px w-8 bg-neutral-300" />
         <span>{String(index + 1).padStart(2, "0")}</span>
       </div>
 
       <p
-        className="whitespace-pre-line font-serif text-[1.35rem] leading-[1.65] tracking-normal text-neutral-800 md:text-[1.65rem] md:leading-[1.72]"
-        style={{ letterSpacing: 0, wordSpacing: "-0.03em" }}
+        className="whitespace-pre-line font-serif text-[1.3rem] leading-[1.45] tracking-normal text-neutral-800 md:text-[1.6rem] md:leading-[1.5]"
+        style={{ letterSpacing: "-0.005em", wordSpacing: "-0.08em" }}
       >
         {lines.join("\n")}
       </p>
