@@ -8,6 +8,7 @@ import { PageTransition } from "./components/PageTransition";
 import { ServiceWorkerRegistrar } from "./components/ServiceWorkerRegistrar";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
+import { showPoemFlag } from "./flags";
 
 import { cx } from "./lib/utils";
 import { GeistMono } from "geist/font/mono";
