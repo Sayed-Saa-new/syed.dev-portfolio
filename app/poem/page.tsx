@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { showPoemFlag } from "../flags";
-import { GridWrapper } from "../components/GridWrapper";
-import { MotionFadeIn } from "../components/MotionFadeIn";
+import { PoemStanza } from "./PoemStanza";
+import { POEM_ASCII_ART } from "./ascii-art";
 
 export const dynamic = "force-dynamic";
 
@@ -61,36 +61,100 @@ export default async function PoemPage() {
   if (!show) notFound();
 
   return (
-    <section className="py-16 md:py-24">
-      <GridWrapper>
-        <MotionFadeIn>
-          <div className="mx-auto max-w-2xl text-center">
-            <p className="text-sm font-medium uppercase tracking-widest text-indigo-600">
-              A Poem
-            </p>
-            <h1 className="mt-3 text-balance text-4xl font-medium leading-tight tracking-tight text-text-primary md:text-5xl">
-              {POEM_TITLE}
-            </h1>
-            <p className="mt-4 text-sm italic text-text-secondary">
-              — Syed
-            </p>
-          </div>
-        </MotionFadeIn>
-      </GridWrapper>
+    <main className="relative overflow-hidden">
+      {/* Warm paper-toned ambient background */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10"
+        style={{
+          background:
+            "radial-gradient(1200px 600px at 20% 10%, rgba(255, 226, 199, 0.35), transparent 60%), radial-gradient(900px 500px at 85% 40%, rgba(220, 210, 255, 0.28), transparent 60%), radial-gradient(1000px 700px at 50% 100%, rgba(255, 210, 220, 0.25), transparent 60%), linear-gradient(180deg, #fdfaf5 0%, #faf6ef 100%)",
+        }}
+      />
+      {/* Subtle grain */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10 opacity-[0.035] mix-blend-multiply"
+        style={{
+          backgroundImage:
+            "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.6'/></svg>\")",
+        }}
+      />
 
-      <GridWrapper>
-        <MotionFadeIn delay={0.15} y={20}>
-          <article className="prose prose-neutral mx-auto mt-14 max-w-xl text-center">
-            {POEM_STANZAS.map((stanza, i) => (
-              <MotionFadeIn key={i} delay={0.2 + i * 0.08} y={16}>
-                <p className="mb-8 whitespace-pre-line text-lg leading-9 text-text-primary md:text-xl md:leading-10">
-                  {stanza.join("\n")}
-                </p>
-              </MotionFadeIn>
+      {/* Hero */}
+      <section className="mx-auto max-w-6xl px-6 pt-24 pb-16 md:pt-32 md:pb-24">
+        <div className="mx-auto max-w-2xl text-center">
+          <p className="font-mono text-[11px] uppercase tracking-[0.4em] text-neutral-500">
+            A Poem · By Syed
+          </p>
+          <h1 className="mt-6 font-serif text-5xl italic leading-[1.05] tracking-tight text-neutral-900 md:text-7xl">
+            {POEM_TITLE}
+          </h1>
+          <div className="mx-auto mt-8 h-px w-16 bg-neutral-400/60" />
+          <p className="mt-8 font-serif text-base italic leading-relaxed text-neutral-600 md:text-lg">
+            A quiet remembrance of a first love —<br />
+            born in the hush of an examination hall.
+          </p>
+        </div>
+      </section>
+
+      {/* Body: two columns — sticky ASCII portrait card + scrolling stanzas */}
+      <section className="mx-auto max-w-6xl px-6 pb-40">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)] lg:gap-16">
+          {/* Sticky ASCII art card */}
+          <aside className="lg:sticky lg:top-24 lg:h-fit">
+            <div className="group relative overflow-hidden rounded-3xl border border-neutral-200/70 bg-white/60 p-4 shadow-[0_20px_60px_-30px_rgba(80,50,20,0.25)] backdrop-blur-md">
+              {/* soft inner glow */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 rounded-3xl"
+                style={{
+                  background:
+                    "radial-gradient(400px 200px at 50% 0%, rgba(255,220,180,0.25), transparent 60%)",
+                }}
+              />
+              <div className="relative overflow-hidden rounded-2xl bg-[#fdfaf5]">
+                <pre
+                  aria-hidden
+                  className="m-0 overflow-hidden whitespace-pre p-3 font-mono text-[3.2px] leading-[3.4px] text-neutral-800 md:text-[3.6px] md:leading-[3.8px]"
+                  style={{ letterSpacing: 0 }}
+                >
+                  {POEM_ASCII_ART}
+                </pre>
+                {/* vignette overlay for mood */}
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-0"
+                  style={{
+                    background:
+                      "radial-gradient(circle at 50% 50%, transparent 50%, rgba(60, 40, 20, 0.15) 100%)",
+                  }}
+                />
+              </div>
+              <figcaption className="mt-4 flex items-center justify-between px-2 pb-1 font-mono text-[10px] uppercase tracking-[0.3em] text-neutral-500">
+                <span>Portrait · ASCII</span>
+                <span>— of a memory</span>
+              </figcaption>
+            </div>
+          </aside>
+
+          {/* Stanzas */}
+          <article className="relative pt-4">
+            {POEM_STANZAS.map((lines, i) => (
+              <PoemStanza key={i} lines={lines} index={i} />
             ))}
+
+            {/* closing signature */}
+            <div className="mt-8 flex items-center gap-4 opacity-70">
+              <div className="h-px flex-1 bg-neutral-300" />
+              <span className="font-serif text-lg italic text-neutral-600">
+                — Syed
+              </span>
+              <div className="h-px flex-1 bg-neutral-300" />
+            </div>
           </article>
-        </MotionFadeIn>
-      </GridWrapper>
-    </section>
+        </div>
+      </section>
+    </main>
   );
 }
