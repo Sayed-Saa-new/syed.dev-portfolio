@@ -4,11 +4,13 @@ publishedAt: "2026-07-15"
 summary: "How I wired my portfolio's blog to send transactional newsletters automatically — RSS as the source of truth, Vercel Cron as the heartbeat, Loops as the delivery layer, and Supabase as the ledger. A full walkthrough with every gotcha I hit."
 imageName: "automated_newsletter_cron.webp"
 categories: ["engineering", "automation", "email", "vercel"]
+draft: true
 ---
-
 I finally got tired of copy-pasting blog links into an email tool every time I published a post. This week I automated the entire thing end-to-end — write a post, push to `main`, and within an hour every subscriber gets a beautifully formatted email in their inbox. No dashboard, no button, no reminder. Just publish and forget.
 
 This post is the full story of how it works, why I picked these specific pieces, and every single gotcha I hit along the way. If you want the same setup on your own site, you can steal the entire architecture — I've tried to leave nothing implicit.
+
+<img height="606" width="852" alt="ME" src="/blog/automated-newsletter-vercel-cron-loops-1784330544322-aegis-cover-v2.jpg" />
 
 ## The problem I was actually solving
 
@@ -25,10 +27,10 @@ Step 3 is where the system broke. Half the time I never remembered. The other ha
 
 The fix had to satisfy four constraints:
 
-- **Zero manual steps after publishing.** If I have to remember anything, it won't happen.
-- **No lock-in to a heavy platform.** I didn't want to move my writing into Substack or Beehiiv just to get automation.
-- **My existing MDX pipeline stays.** Posts still live in `content/blog/*.mdx` and render through my portfolio.
-- **Cheap or free.** This is a personal site. I'm not paying $30/month for a fancy sender.
+* **Zero manual steps after publishing.** If I have to remember anything, it won't happen.
+* **No lock-in to a heavy platform.** I didn't want to move my writing into Substack or Beehiiv just to get automation.
+* **My existing MDX pipeline stays.** Posts still live in `content/blog/*.mdx` and render through my portfolio.
+* **Cheap or free.** This is a personal site. I'm not paying $30/month for a fancy sender.
 
 That last one is what killed most of the "just use Mailchimp RSS-to-email" answers. I already had Loops set up for my welcome email, and Loops' free tier is genuinely generous for a small list. The catch: Loops doesn't ship an RSS trigger. If I wanted automation with Loops, I had to build the trigger myself.
 
@@ -374,7 +376,7 @@ function unwrapCdata(v: unknown): string {
 }
 ```
 
-That's the whole worker. It's ~140 lines and it's the entire "newsletter engine." Every design choice is deliberate. Let me walk the interesting ones.
+That's the whole worker. It's \~140 lines and it's the entire "newsletter engine." Every design choice is deliberate. Let me walk the interesting ones.
 
 ### Idempotency lives at the row level, not the run level
 
@@ -398,21 +400,21 @@ TanStack Start server routes get bundled into the client module graph in a speci
 
 I built one Loops transactional template that takes six variables:
 
-- `{{title}}` — post title
-- `{{summary}}` — one-sentence summary from frontmatter
-- `{{coverImage}}` — absolute URL to the cover image
-- `{{publishedAt}}` — pre-formatted date string
-- `{{url}}` — full post URL
-- `{{unsubscribeUrl}}` — per-subscriber unsubscribe link
+* `{{title}}` — post title
+* `{{summary}}` — one-sentence summary from frontmatter
+* `{{coverImage}}` — absolute URL to the cover image
+* `{{publishedAt}}` — pre-formatted date string
+* `{{url}}` — full post URL
+* `{{unsubscribeUrl}}` — per-subscriber unsubscribe link
 
 I designed it in MJML because I refuse to hand-write email HTML in 2026. The MJML source lives in the repo as `emails/blog-notification.mjml` so it stays version-controlled. When I want to redesign, I edit MJML, recompile, and upload the HTML to Loops.
 
 Key design decisions:
 
-- **Absolute image URLs, not base64.** I originally tried embedding the logo as base64 to make the email fully self-contained. Gmail happily displays it. Outlook silently strips it. Absolute URLs work everywhere.
-- **`.webp` cover with `.jpg` fallback.** Actually just `.webp` — every modern email client renders it, and I gave up chasing Outlook 2016 users a long time ago.
-- **12px border radius on the cover.** Matches the site's card style. Requires wrapping the image in a table cell with `border-radius` inline; Gmail on Android is still weird about it, but degradation is graceful.
-- **A real signature block at the bottom.** "Thanks for reading — reply anytime." Every reply hits my actual inbox because the reply-to header is set to my personal address. This alone has probably been the most valuable single decision — I get real conversations from every issue.
+* **Absolute image URLs, not base64.** I originally tried embedding the logo as base64 to make the email fully self-contained. Gmail happily displays it. Outlook silently strips it. Absolute URLs work everywhere.
+* **`.webp` cover with `.jpg` fallback.** Actually just `.webp` — every modern email client renders it, and I gave up chasing Outlook 2016 users a long time ago.
+* **12px border radius on the cover.** Matches the site's card style. Requires wrapping the image in a table cell with `border-radius` inline; Gmail on Android is still weird about it, but degradation is graceful.
+* **A real signature block at the bottom.** "Thanks for reading — reply anytime." Every reply hits my actual inbox because the reply-to header is set to my personal address. This alone has probably been the most valuable single decision — I get real conversations from every issue.
 
 ## Vercel Cron: the heartbeat
 
@@ -480,7 +482,7 @@ if (dry) {
 
 I run this after every deploy. If the plan is sane, the real run will be sane.
 
-**Single-subscriber mode.** `?only=me@example.com` filters the subscriber list to one address. Perfect for "send to me only" tests before I unleash a redesign on the whole list.
+**Single-subscriber mode.** [`?only=me@example.com`](mailto:?only=me@example.com) filters the subscriber list to one address. Perfect for "send to me only" tests before I unleash a redesign on the whole list.
 
 **Force resend.** `?force=1` skips the ledger check for a specific `?guid=`. Only usable with `only`. Only usable by me. If either of those checks fails, the endpoint refuses.
 
@@ -520,10 +522,10 @@ No system that touches the network is bulletproof. Here's what has actually gone
 
 If this list grew to five figures, several things would need to change:
 
-- **Batching.** Loops has a batch endpoint; using it would cut request count by 10x.
-- **A dedicated queue.** Right now the whole fan-out happens inside the cron request. On a big list, I'd write per-subscriber jobs to a queue (Vercel's Queues, Upstash, whatever) and let workers drain them.
-- **Real bounce/complaint handling via webhooks.** Loops sends events for these; wire them to Supabase and stop trying failed addresses immediately, not eventually.
-- **Preview flag per subscriber.** Some readers want essays only, not release notes. A `topics text[]` column on subscribers would let me filter the fan-out.
+* **Batching.** Loops has a batch endpoint; using it would cut request count by 10x.
+* **A dedicated queue.** Right now the whole fan-out happens inside the cron request. On a big list, I'd write per-subscriber jobs to a queue (Vercel's Queues, Upstash, whatever) and let workers drain them.
+* **Real bounce/complaint handling via webhooks.** Loops sends events for these; wire them to Supabase and stop trying failed addresses immediately, not eventually.
+* **Preview flag per subscriber.** Some readers want essays only, not release notes. A `topics text[]` column on subscribers would let me filter the fan-out.
 
 None of that is worth building today. My list is small; the system is simple; the emails go out on time. YAGNI wins.
 
@@ -551,7 +553,7 @@ If you're sitting on a similar half-automated workflow — a newsletter you keep
 
 Now if you'll excuse me, I have to `git push` this post and see whether the cron does its job.
 
----
+***
 
 ## Appendix A: The MJML template, annotated
 
@@ -692,7 +694,7 @@ A few things about that template that are load-bearing:
 
 **Border-radius on images inside email HTML.** This is a mess across clients. Inline `border-radius: 12px` works in Gmail, iOS Mail, and everything Webkit. Outlook Desktop ignores it and shows square corners; I've decided I'm okay with that. Adding a masking table wrapper would fix Outlook but bloats the template. Trade-off accepted.
 
-**Absolute HTTPS everywhere.** No relative URLs. No `http://`. No mixed content. If a link goes to your site, it's `https://syed.flinkeo.online/whatever`. Anything else invites Gmail's "This message might not be from who it looks like it's from" banner.
+**Absolute HTTPS everywhere.** No relative URLs. No `http://`. No mixed content. If a link goes to your site, it's [`https://syed.flinkeo.online/whatever`.](https://syed.flinkeo.online/whatever.) Anything else invites Gmail's "This message might not be from who it looks like it's from" banner.
 
 ## Appendix B: Compiling MJML in CI
 
@@ -730,7 +732,7 @@ Two minutes to set up, saves the "what does this look like compiled?" dance ever
 
 ## Appendix C: The unsubscribe endpoint
 
-The unsubscribe link in every email points at `https://syed.flinkeo.online/unsubscribe?token=...`. That page is a server component that does one thing:
+The unsubscribe link in every email points at [`https://syed.flinkeo.online/unsubscribe?token=...`.](https://syed.flinkeo.online/unsubscribe?token=....) That page is a server component that does one thing:
 
 ```typescript
 // app/unsubscribe/page.tsx  (framework-flavored pseudo-route)
@@ -771,7 +773,7 @@ Vercel logs the cron output. Here's a real (redacted) log line from this morning
 }
 ```
 
-`processed: 30` is the number of feed items considered (my feed caps at 30). `sends: 42` is how many actual Loops calls happened this run — one post × 42 subscribers. On a normal run when nothing new was published, that number is `0` and the whole thing finishes in ~200ms.
+`processed: 30` is the number of feed items considered (my feed caps at 30). `sends: 42` is how many actual Loops calls happened this run — one post × 42 subscribers. On a normal run when nothing new was published, that number is `0` and the whole thing finishes in \~200ms.
 
 I keep 30 days of Vercel function logs on the Pro plan; that's plenty of runway to catch and debug any weirdness.
 
@@ -785,9 +787,8 @@ The exciting parts of my stack — Next 16, TanStack Start, the AI experiments i
 
 If you take one thing from this post, take that: use boring tools for anything that has to happen without you paying attention. Save the fancy stuff for the parts your users actually see.
 
----
+***
 
 Alright, that's the full tour. If you want to see the code live, it's all in the [portfolio repo](https://github.com/abushaidislam) — the RSS route is `app/rss.xml/route.ts`, the cron worker is `app/api/public/rss-to-loops/route.ts`, and the MJML source is under `emails/`. Fork it, adapt it, tell me what you improve. I'll read the reply.
 
-— Syed
-
+— Syed![](/blog/automated-newsletter-vercel-cron-loops-1784330545944-aegis-cover-v2.jpg)
