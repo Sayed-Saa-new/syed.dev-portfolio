@@ -11,10 +11,10 @@ declare module "#site/content" {
     canonicalUrl?: string;
     draft?: boolean;
     audioFile?: string;
-    headings?: Array<{
-      id: string;
+    headings: Array<{
+      level: 2 | 3;
       text: string;
-      level: number;
+      slug: string;
     }>;
   };
 
