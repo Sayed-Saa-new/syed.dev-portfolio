@@ -8,6 +8,7 @@ import { PageTransition } from "./components/PageTransition";
 import { ServiceWorkerRegistrar } from "./components/ServiceWorkerRegistrar";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
+import { showPoemFlag } from "./flags";
 
 import { cx } from "./lib/utils";
 import { GeistMono } from "geist/font/mono";
@@ -119,11 +120,12 @@ const personJsonLd = {
   ],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const showPoem = await showPoemFlag();
   return (
     <html
       lang="en"
@@ -143,7 +145,7 @@ export default function RootLayout({
             "relative flex flex-1 flex-col overflow-x-hidden border-x border-border-primary/50",
           )}
         >
-          <Navbar />
+          <Navbar showPoem={showPoem} />
           <div className="grid flex-1 grid-cols-1 lg:grid-cols-[32px_1fr_32px]">
             <div className="hidden w-full border-r border-border-primary opacity-75 [background-image:linear-gradient(45deg,theme(colors.border-primary)_12.50%,transparent_12.50%,transparent_50%,theme(colors.border-primary)_50%,theme(colors.border-primary)_62.50%,transparent_62.50%,transparent_100%)] [background-size:5px_5px] lg:block"></div>
             <div className="relative col-span-1 px-3 lg:px-0">
