@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface BlogPost {
   slug: string;
@@ -20,28 +20,41 @@ const easeOut = [0.22, 1, 0.36, 1] as const;
 const container = {
   hidden: {},
   show: {
-    transition: { staggerChildren: 0.08, delayChildren: 0.05 },
+    transition: { staggerChildren: 0.06, delayChildren: 0.04 },
+  },
+  exit: {
+    transition: { staggerChildren: 0.02, staggerDirection: -1 },
   },
 };
 
 const item = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 18, filter: "blur(6px)" },
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.55, ease: easeOut },
+    filter: "blur(0px)",
+    transition: { duration: 0.5, ease: easeOut },
+  },
+  exit: {
+    opacity: 0,
+    y: -12,
+    filter: "blur(6px)",
+    transition: { duration: 0.25, ease: easeOut },
   },
 };
 
 export function BlogPostList({ posts, viewCounts }: BlogPostListProps) {
+  const listKey = posts.map((p) => p.slug).join(",") || "empty";
   return (
-    <motion.ul
-      key={posts.map((p) => p.slug).join(",")}
-      className="flex flex-col"
-      variants={container}
-      initial="hidden"
-      animate="show"
-    >
+    <AnimatePresence mode="wait" initial={false}>
+      <motion.ul
+        key={listKey}
+        className="flex flex-col"
+        variants={container}
+        initial="hidden"
+        animate="show"
+        exit="exit"
+      >
       {posts.length > 0 ? (
         <>
           {posts.map((post) => (
