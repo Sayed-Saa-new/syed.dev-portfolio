@@ -142,7 +142,7 @@ export default async function RootLayout({
       <body className="flex min-h-screen flex-col font-sans md:max-w-7xl lg:mx-auto lg:flex-row">
         <main
           className={cx(
-            "relative flex min-w-0 flex-1 flex-col border-x border-border-primary/50",
+            "relative flex min-w-0 flex-1 flex-col overflow-x-clip border-x border-border-primary/50",
           )}
         >
           <Navbar showPoem={showPoem} />
