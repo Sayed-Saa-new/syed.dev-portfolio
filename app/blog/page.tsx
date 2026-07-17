@@ -8,7 +8,25 @@ import { CategorySelect } from "@/app/components/CategorySelect";
 import { FeaturedBlogCard } from "@/app/components/FeaturedBlogCard";
 import { GridWrapper } from "@/app/components/GridWrapper";
 import { MotionFadeIn } from "@/app/components/MotionFadeIn";
+import { createSupabaseAdminClient } from "@/app/lib/supabase/server";
 import clsx from "clsx";
+
+async function getViewCountsForSlugs(slugs: string[]): Promise<Record<string, number>> {
+  if (slugs.length === 0) return {};
+  try {
+    const supabase = await createSupabaseAdminClient();
+    const { data } = await supabase
+      .from("article_views")
+      .select("slug, view_count")
+      .in("slug", slugs);
+    const map: Record<string, number> = {};
+    for (const slug of slugs) map[slug] = 0;
+    for (const row of data ?? []) map[row.slug] = row.view_count ?? 0;
+    return map;
+  } catch {
+    return Object.fromEntries(slugs.map((s) => [s, 0]));
+  }
+}
 
 export default async function BlogPage({
   searchParams,
@@ -26,6 +44,10 @@ export default async function BlogPage({
         post.categories?.map((cat) => cat.toLowerCase()).includes(category),
       )
     : allPublishedBlogPosts;
+
+  const viewCounts = await getViewCountsForSlugs(
+    displayedPosts.map((p) => p.slug),
+  );
 
   const featuredPosts = !category && (
     <MotionFadeIn delay={0.15} y={30}>
@@ -73,7 +95,7 @@ export default async function BlogPage({
       <MotionFadeIn delay={0.1}>
         <div>
           <CategorySelect categories={categories} currentCategory={category} />
-          <BlogPostList posts={displayedPosts} />
+          <BlogPostList posts={displayedPosts} viewCounts={viewCounts} />
         </div>
       </MotionFadeIn>
 

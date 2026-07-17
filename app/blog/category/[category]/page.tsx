@@ -5,6 +5,24 @@ import {
 import { NewsletterSignUp } from "@/app/components/NewsletterSignUp";
 import { BlogPostList } from "@/app/components/BlogPostList";
 import { CategorySelect } from "@/app/components/CategorySelect";
+import { createSupabaseAdminClient } from "@/app/lib/supabase/server";
+
+async function getViewCountsForSlugs(slugs: string[]): Promise<Record<string, number>> {
+  if (slugs.length === 0) return {};
+  try {
+    const supabase = await createSupabaseAdminClient();
+    const { data } = await supabase
+      .from("article_views")
+      .select("slug, view_count")
+      .in("slug", slugs);
+    const map: Record<string, number> = {};
+    for (const slug of slugs) map[slug] = 0;
+    for (const row of data ?? []) map[row.slug] = row.view_count ?? 0;
+    return map;
+  } catch {
+    return Object.fromEntries(slugs.map((s) => [s, 0]));
+  }
+}
 
 export default async function CategoryPage({
   params,
@@ -29,6 +47,10 @@ export default async function CategoryPage({
     );
   });
 
+  const viewCounts = await getViewCountsForSlugs(
+    categoryPosts.map((p) => p.slug),
+  );
+
   return (
     <div className="mt-[100px] w-full space-y-[80px]">
       <title>{category} Articles</title>
@@ -38,7 +60,7 @@ export default async function CategoryPage({
 
       <CategorySelect categories={categories} currentCategory={category} />
 
-      <BlogPostList posts={categoryPosts} />
+      <BlogPostList posts={categoryPosts} viewCounts={viewCounts} />
       <NewsletterSignUp
         title={`Stay updated on ${category} articles`}
         description={`Sign up to receive notifications about new blog posts, insights, and exclusive content directly in your inbox.`}

@@ -142,13 +142,13 @@ export default async function RootLayout({
       <body className="flex min-h-screen flex-col font-sans md:max-w-7xl lg:mx-auto lg:flex-row">
         <main
           className={cx(
-            "relative flex flex-1 flex-col border-x border-border-primary/50",
+            "relative flex min-w-0 flex-1 flex-col overflow-x-clip border-x border-border-primary/50",
           )}
         >
           <Navbar showPoem={showPoem} />
-          <div className="grid flex-1 grid-cols-1 lg:grid-cols-[32px_1fr_32px]">
+          <div className="grid flex-1 grid-cols-1 lg:grid-cols-[32px_minmax(0,1fr)_32px]">
             <div className="hidden w-full border-r border-border-primary opacity-75 [background-image:linear-gradient(45deg,theme(colors.border-primary)_12.50%,transparent_12.50%,transparent_50%,theme(colors.border-primary)_50%,theme(colors.border-primary)_62.50%,transparent_62.50%,transparent_100%)] [background-size:5px_5px] lg:block"></div>
-            <div className="relative col-span-1 px-3 lg:px-0">
+            <div className="relative col-span-1 min-w-0 px-3 lg:px-0">
               <BgGradient />
               <PageTransition>{children}</PageTransition>
             </div>

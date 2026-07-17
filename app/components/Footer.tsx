@@ -84,7 +84,7 @@ export function Footer(): React.JSX.Element {
                   © {new Date().getFullYear()} Abushaid Islam (Syed)
                 </p>
               </div>
-              <div className="flex w-full items-end justify-end pr-16">
+              <div className="flex w-full items-end justify-start md:justify-end md:pr-16">
                 <SocialPill />
               </div>
             </div>

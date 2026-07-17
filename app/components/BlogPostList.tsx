@@ -1,8 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { ViewCounter } from "./ViewCounter";
-import { Suspense } from "react";
 import { motion } from "framer-motion";
 
 interface BlogPost {
@@ -14,6 +12,7 @@ interface BlogPost {
 
 interface BlogPostListProps {
   posts: BlogPost[];
+  viewCounts?: Record<string, number>;
 }
 
 const easeOut = [0.22, 1, 0.36, 1] as const;
@@ -34,7 +33,7 @@ const item = {
   },
 };
 
-export function BlogPostList({ posts }: BlogPostListProps) {
+export function BlogPostList({ posts, viewCounts }: BlogPostListProps) {
   return (
     <motion.ul
       className="flex flex-col"
@@ -63,15 +62,12 @@ export function BlogPostList({ posts }: BlogPostListProps) {
                           )}
                         </time>
                       </div>
-                      <span className="text-text-secondary">
-                        <Suspense fallback={<span>...</span>}>
-                          <ViewCounter
-                            slug={post.slug}
-                            increment={false}
-                            className="font-mono text-xs text-text-secondary"
-                          />
-                        </Suspense>
-                      </span>
+                      {viewCounts && viewCounts[post.slug] !== undefined && (
+                        <span className="font-mono text-xs text-text-secondary">
+                          {viewCounts[post.slug]}{" "}
+                          {viewCounts[post.slug] === 1 ? "read" : "reads"}
+                        </span>
+                      )}
                     </div>
                     <div className="col-start-4 hidden h-full border-x border-border-primary md:block md:border-dashed"></div>
                     <div className="group col-span-8 flex w-full flex-grow flex-col py-4 md:col-start-5 md:col-end-12 md:p-4">

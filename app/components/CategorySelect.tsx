@@ -50,7 +50,7 @@ export function CategorySelect({
           </select>
         </div>
         <div className="hidden lg:block">
-          <nav className="-mb-px flex space-x-4">
+          <nav className="-mb-px flex flex-wrap gap-x-4 gap-y-2">
             <Link
               href="/blog"
               aria-current={!currentCategory ? "page" : undefined}
