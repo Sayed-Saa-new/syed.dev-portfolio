@@ -1,0 +1,45 @@
+---
+title: "Admin Dashboard Update: Inline Code Styling & Popup Fixes"
+publishedAt: "2026-07-17"
+summary: "Fixed the popup transparency issues and improved the inline code styling in the MDX editor."
+imageName: ""
+categories: ["engineering"]
+draft: false
+---
+\# Admin Dashboard Updates
+
+
+
+We have recently pushed some essential fixes to the Admin Dashboard, specifically focusing on the MDX Editor experience.
+
+
+
+\## What's New & Fixed
+
+
+
+\*   \*\*Fixed Popup Transparency:\*\* The popup container now has a solid dark background (\`#171717\`). The items are now clearly readable with a blue highlight on hover, fixing the previous transparent background issue.
+
+\*   \*\*Inline Code Styling:\*\* Inline code is now styled as a pill using the JetBrains Mono font, a dark navy background (\`#0f172a\`), and sky-blue text (\`#7dd3fc\`). This provides a much cleaner look in rich text mode.
+
+\*   \*\*Selection Rule Fixed:\*\* We made the selection rule universal (\`.mdx-editor-wrap \*::selection\`). Now, when you select inline code, it displays a blue background with clear white text, hiding the conflicting yellow code text.
+
+\*   \*\*Span Styling Fix:\*\* All child spans inside inline code are now forced to adopt the sky-blue color, ensuring no unexpected white text appears.
+
+
+
+\### Code Example
+
+
+
+Here is a quick example of how inline code block renders now:
+
+
+
+\`\`\`javascript
+
+const applyEditorFixes \= () \=> {
+
+&#x20; console.log("MDX editor styling is now perfectly clean!");
+
+};
