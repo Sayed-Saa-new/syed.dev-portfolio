@@ -8,6 +8,21 @@ const easeOut = [0.22, 1, 0.36, 1] as const;
 
 export function PageTransition({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const isPoemPage = pathname === "/poem";
+
+  if (isPoemPage) {
+    return (
+      <motion.div
+        key={pathname}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.25, ease: easeOut }}
+      >
+        {children}
+      </motion.div>
+    );
+  }
+
   return (
     <motion.div
       key={pathname}

@@ -28,7 +28,7 @@ export function PoemStanza({
     <motion.div
       ref={ref}
       style={{ opacity, y, filter, willChange: "opacity, transform, filter" }}
-      className="relative mb-24 md:mb-32"
+      className="relative mb-16 md:mb-24"
     >
       {/* Stanza number — barely there, like a breath */}
       <div
@@ -39,7 +39,10 @@ export function PoemStanza({
         <span>{String(index + 1).padStart(2, "0")}</span>
       </div>
 
-      <p className="whitespace-pre-line font-serif text-[1.35rem] leading-[2.15] tracking-[-0.005em] text-neutral-800 md:text-[1.65rem] md:leading-[2.2]">
+      <p
+        className="whitespace-pre-line font-serif text-[1.35rem] leading-[1.65] tracking-normal text-neutral-800 md:text-[1.65rem] md:leading-[1.72]"
+        style={{ letterSpacing: 0, wordSpacing: "-0.03em" }}
+      >
         {lines.join("\n")}
       </p>
     </motion.div>
