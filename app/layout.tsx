@@ -156,6 +156,7 @@ export default function RootLayout({
         </main>
         <ServiceWorkerRegistrar />
         <SpeedInsights />
+        <Analytics />
       </body>
 
 
