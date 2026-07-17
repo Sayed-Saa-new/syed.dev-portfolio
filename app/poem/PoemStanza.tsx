@@ -69,12 +69,11 @@ export function PoemStanza({
               ease: easeOut,
               delay: 0.15 + i * 0.12,
             }}
-            className="m-0"
+            className="m-0 [word-spacing:normal] md:[word-spacing:-0.04em]"
             style={{
               fontFeatureSettings: '"liga", "dlig", "swsh", "kern"',
               fontVariationSettings: '"SOFT" 100, "opsz" 144',
-              letterSpacing: "-0.012em",
-              wordSpacing: "-0.06em",
+              letterSpacing: "-0.005em",
             }}
           >
             {line}
