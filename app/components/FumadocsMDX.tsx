@@ -6,6 +6,7 @@ import defaultMdxComponents from "fumadocs-ui/mdx";
 import { withArticle } from "fumadocs-ui/page";
 import { MdxMermaid } from "./MdxMermaid";
 import { MdxReveal } from "./MdxReveal";
+import { GeminiCodeBlock } from "./GeminiCodeBlock";
 
 interface Props {
   code: string;
@@ -48,10 +49,9 @@ function PreWithMermaid(props: any) {
     );
   }
 
-  const DefaultPre: any = (defaultMdxComponents as any).pre;
   return (
     <MdxReveal blur={8} y={12}>
-      <DefaultPre {...props} />
+      <GeminiCodeBlock {...props} />
     </MdxReveal>
   );
 }
