@@ -23,7 +23,9 @@ export function useActiveSection({
   headingIds,
   topOffset = 120,
 }: UseActiveSectionOptions): string | null {
-  const [activeId, setActiveId] = useState<string | null>(null);
+  const [activeId, setActiveId] = useState<string | null>(
+    headingIds[0] ?? null,
+  );
 
   const calculateActiveHeading = useCallback(() => {
     if (headingIds.length === 0) return;
