@@ -34,7 +34,7 @@ export default function AboutPage() {
 
   return (
     <div className="relative mt-14">
-      <title>About | Syed — Abushaid Islam</title>
+      
       <div className="relative space-y-10 md:space-y-16">
         {/* Title */}
         <GridWrapper className="space-y-12">

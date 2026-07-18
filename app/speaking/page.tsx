@@ -1,4 +1,19 @@
+import type { Metadata } from "next";
 import { ShadowBox } from "@/app/components/ShadowBox";
+
+export const metadata: Metadata = {
+  title: "Speaking — Book Syed for AI, Auth & Full-Stack Talks",
+  description:
+    "Invite Syed (Abushaid Islam) to speak on AI-powered products, modern authentication & 2FA, and shipping full-stack side projects — conference talks, workshops, podcasts, panels.",
+  alternates: { canonical: "/speaking" },
+  openGraph: {
+    title: "Speaking — Book Syed for AI, Auth & Full-Stack Talks",
+    description:
+      "Talks and workshops on AI products, authentication, and shipping as a solo builder.",
+    url: "/speaking",
+    type: "website",
+  },
+};
 import { NewsletterSignUp } from "@/app/components/NewsletterSignUp";
 import { Button } from "@/app/components/Button";
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from "@/app/components/Tabs";
@@ -43,7 +58,7 @@ export default function SpeakingPage() {
 
   return (
     <div className="relative">
-      <title>Speaking | Syed</title>
+      
       <div className="relative space-y-20">
         <MotionFadeIn duration={0.8} y={40}>
           <GridWrapper>

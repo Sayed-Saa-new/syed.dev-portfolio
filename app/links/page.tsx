@@ -1,4 +1,18 @@
+import type { Metadata } from "next";
 import { NewsletterSignUp } from "@/app/components/NewsletterSignUp";
+
+export const metadata: Metadata = {
+  title: "Links — Syed (Abushaid Islam) Around the Web",
+  description:
+    "All of Syed's links in one place — GitHub, Twitter/X, Facebook, email, featured blog posts, and the projects he's shipping.",
+  alternates: { canonical: "/links" },
+  openGraph: {
+    title: "Links — Syed (Abushaid Islam)",
+    description: "Find Syed across the web — social, blog, and projects.",
+    url: "/links",
+    type: "website",
+  },
+};
 
 import { GridWrapper } from "@/app/components/GridWrapper";
 import { ProfilePicture } from "@/app/components/ProfilePicture";
@@ -14,7 +28,7 @@ export default async function LinksPage() {
 
   return (
     <div className="relative">
-      <title>Links | Abushaid Islam (Syed)</title>
+      
       <div className="space-y-12">
         <ProfilePicture />
         <GridWrapper>
