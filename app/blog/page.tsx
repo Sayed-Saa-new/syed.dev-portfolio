@@ -33,7 +33,7 @@ export default async function BlogPage({
 }: {
   searchParams: Promise<{ category?: string }>;
 }) {
-  const allPublishedBlogPosts = fetchAndSortBlogPosts();
+  const allPublishedBlogPosts = await fetchAndSortBlogPostsAsync();
   const categories = Array.from(
     extractUniqueBlogCategories(allPublishedBlogPosts),
   );
