@@ -109,7 +109,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
         <div
           className="drama-shadow flex h-[350px] w-full flex-col justify-end rounded-2xl bg-cover bg-center bg-no-repeat p-8 md:mb-16 md:h-[600px] md:p-16"
           style={{
-            backgroundImage: `linear-gradient(to top, rgba(99, 102, 241, 1) 0%, rgba(99, 102, 241, 0.1) 30%, transparent 35%), url('${resolveCoverUrl(post.imageName)}')`,
+            backgroundImage: `linear-gradient(to top, rgba(15, 15, 25, 0.95) 0%, rgba(15, 15, 25, 0.85) 30%, rgba(15, 15, 25, 0.55) 55%, rgba(15, 15, 25, 0.25) 80%, rgba(15, 15, 25, 0.15) 100%), url('${resolveCoverUrl(post.imageName)}')`,
           }}
         >
           <div className="mt-auto">
