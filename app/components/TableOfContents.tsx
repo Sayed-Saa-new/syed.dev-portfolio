@@ -201,8 +201,15 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
 
     // Calculate horizontal position based on link's padding
     // H3 links have padding-left, so the dot should shift right
-    const isH3 = activeLink.classList.contains("toc-link--h3");
-    const left = isH3 ? 11 : -3; // Shift right for H3s to align with indented text
+    // Align dot with the link's indent (kept in sync with X_BY_LEVEL / .toc-link--hN padding).
+    const level = activeLink.classList.contains("toc-link--h1")
+      ? 1
+      : activeLink.classList.contains("toc-link--h4")
+        ? 4
+        : activeLink.classList.contains("toc-link--h3")
+          ? 3
+          : 2;
+    const left = ({ 1: -9, 2: -3, 3: 11, 4: 25 } as const)[level as 1 | 2 | 3 | 4];
 
     indicatorRef.current.style.top = `${top}px`;
     indicatorRef.current.style.left = `${left}px`;
