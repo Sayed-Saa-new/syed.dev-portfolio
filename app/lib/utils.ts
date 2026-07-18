@@ -96,46 +96,9 @@ export function fetchAndSortBlogPosts(): Blog[] {
   }
 }
 
-/** Preferred: merges Supabase posts + legacy MDX files, published only. */
-export async function fetchAndSortBlogPostsAsync(): Promise<Blog[]> {
-  return getAllPosts();
-}
-
-export async function getRelatedBlogPosts(
-  currentPost: Blog,
-  maxResults: number = 3,
-): Promise<Blog[]> {
-  const allPosts = (await fetchAndSortBlogPostsAsync()).filter(
-    (post) => post.slug !== currentPost.slug,
-  );
-
-  const sameCategories = allPosts.filter((post) =>
-    post.categories.some((category) =>
-      currentPost.categories.includes(category),
-    ),
-  );
-
-  // Sort by number of matching categories (most relevant first)
-  const sortedByRelevance = sameCategories.sort((a, b) => {
-    const aMatches = a.categories.filter((cat) =>
-      currentPost.categories.includes(cat),
-    ).length;
-    const bMatches = b.categories.filter((cat) =>
-      currentPost.categories.includes(cat),
-    ).length;
-    return bMatches - aMatches;
-  });
-
-  if (sortedByRelevance.length >= maxResults) {
-    return sortedByRelevance.slice(0, maxResults);
-  }
-
-  const remainingPosts = allPosts.filter(
-    (post) => !sortedByRelevance.some((related) => related.slug === post.slug),
-  );
-
-  return [...sortedByRelevance, ...remainingPosts].slice(0, maxResults);
-}
+// Async helpers that merge Supabase + MDX live in `@/app/lib/blog/posts`.
+// Do not import that server-only module here — utils.ts is reachable from
+// client components.
 
 export async function fetchAndSortChangelogPosts(): Promise<Changelog[]> {
   try {
