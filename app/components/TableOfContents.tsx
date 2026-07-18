@@ -11,10 +11,10 @@ interface TableOfContentsProps {
 // X positions for SVG path aligned with dot positions per heading level.
 // Kept in sync with .toc-link--hN padding-left in globals.css.
 const X_BY_LEVEL: Record<1 | 2 | 3 | 4, number> = {
-  1: -6,
-  2: 0,
-  3: 14,
-  4: 28,
+  1: 2,
+  2: 8,
+  3: 22,
+  4: 36,
 };
 
 
