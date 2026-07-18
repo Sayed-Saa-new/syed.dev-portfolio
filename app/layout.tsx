@@ -14,6 +14,7 @@ import { cx } from "./lib/utils";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import Script from "next/script";
+import { RootProvider } from "fumadocs-ui/provider/next";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteMetadata.siteUrl),
@@ -140,22 +141,24 @@ export default async function RootLayout({
         />
       </head>
       <body className="flex min-h-screen flex-col font-sans md:max-w-7xl lg:mx-auto lg:flex-row">
-        <main
-          className={cx(
-            "relative flex min-w-0 flex-1 flex-col overflow-x-clip border-x border-border-primary/50",
-          )}
-        >
-          <Navbar showPoem={showPoem} />
-          <div className="grid flex-1 grid-cols-1 lg:grid-cols-[32px_minmax(0,1fr)_32px]">
-            <div className="hidden w-full border-r border-border-primary opacity-75 [background-image:linear-gradient(45deg,theme(colors.border-primary)_12.50%,transparent_12.50%,transparent_50%,theme(colors.border-primary)_50%,theme(colors.border-primary)_62.50%,transparent_62.50%,transparent_100%)] [background-size:5px_5px] lg:block"></div>
-            <div className="relative col-span-1 min-w-0 px-3 lg:px-0">
-              <BgGradient />
-              <PageTransition>{children}</PageTransition>
+        <RootProvider theme={{ enabled: false, forcedTheme: "light", defaultTheme: "light" }}>
+          <main
+            className={cx(
+              "relative flex min-w-0 flex-1 flex-col overflow-x-clip border-x border-border-primary/50",
+            )}
+          >
+            <Navbar showPoem={showPoem} />
+            <div className="grid flex-1 grid-cols-1 lg:grid-cols-[32px_minmax(0,1fr)_32px]">
+              <div className="hidden w-full border-r border-border-primary opacity-75 [background-image:linear-gradient(45deg,theme(colors.border-primary)_12.50%,transparent_12.50%,transparent_50%,theme(colors.border-primary)_50%,theme(colors.border-primary)_62.50%,transparent_62.50%,transparent_100%)] [background-size:5px_5px] lg:block"></div>
+              <div className="relative col-span-1 min-w-0 px-3 lg:px-0">
+                <BgGradient />
+                <PageTransition>{children}</PageTransition>
+              </div>
+              <div className="hidden w-full border-l border-border-primary opacity-75 [background-image:linear-gradient(45deg,theme(colors.border-primary)_12.50%,transparent_12.50%,transparent_50%,theme(colors.border-primary)_50%,theme(colors.border-primary)_62.50%,transparent_62.50%,transparent_100%)] [background-size:5px_5px] lg:block"></div>
             </div>
-            <div className="hidden w-full border-l border-border-primary opacity-75 [background-image:linear-gradient(45deg,theme(colors.border-primary)_12.50%,transparent_12.50%,transparent_50%,theme(colors.border-primary)_50%,theme(colors.border-primary)_62.50%,transparent_62.50%,transparent_100%)] [background-size:5px_5px] lg:block"></div>
-          </div>
-          <Footer />
-        </main>
+            <Footer />
+          </main>
+        </RootProvider>
         <ServiceWorkerRegistrar />
         <SpeedInsights />
         <Analytics />

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import clsx from "clsx";
 import { motion } from "framer-motion";
+import { resolveCoverUrl } from "@/app/lib/utils";
 
 type FeaturedBlogCardProps = {
   slug: string;
@@ -42,10 +43,7 @@ export function FeaturedBlogCard({
       >
         <div className="overflow-hidden rounded-2xl">
           <img
-            src={
-              `/blog/${imageName}` ||
-              "https://image.isu.pub/190918160849-8822f46c79620853d26cb2aad7175839/jpg/page_1_thumb_large.jpg"
-            }
+            src={resolveCoverUrl(imageName)}
             alt=""
             className="h-[280px] w-full rounded-2xl object-cover transition-transform duration-500 ease-out group-hover:scale-105 md:h-[225px]"
           />

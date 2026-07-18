@@ -1,11 +1,14 @@
+export const revalidate = 30;
+
 import { notFound } from "next/navigation";
-import { MDXContent } from "@/app/components/mdx";
+import { FumadocsMDX } from "@/app/components/FumadocsMDX";
 import { unstable_noStore as noStore } from "next/cache";
 import { SectionTitlePill } from "@/app/components/SectionTitlePill";
 import { HorizontalLine } from "@/app/components/HorizontalLine";
 import { NewsletterSignUp } from "@/app/components/NewsletterSignUp";
 import { posts } from "#site/content";
-import { getRelatedBlogPosts } from "@/app/lib/utils";
+import { resolveCoverUrl } from "@/app/lib/utils";
+import { getPostBySlug, getRelatedBlogPosts } from "@/app/lib/blog/posts";
 import { FeaturedBlogCard } from "@/app/components/FeaturedBlogCard";
 import { BgGradient } from "@/app/components/BgGradient";
 import readingDuration from "reading-duration";
@@ -16,6 +19,8 @@ import { Suspense } from "react";
 import { Metadata, ResolvingMetadata } from "next";
 import { AudioPlayer } from "@/app/components/AudioPlayer";
 import { TableOfContents } from "@/app/components/TableOfContents";
+import { HashScroller } from "@/app/components/HashScroller";
+import { poemSerif } from "@/app/poem/fonts";
 
 interface BlogPageProps {
   params: Promise<{
@@ -58,18 +63,14 @@ function formatDate(date: string) {
 
 async function getPostFromParams(params: BlogPageProps["params"]) {
   const { slug } = await params;
-  const post = posts.find((post) => post.slug === slug);
-
-  if (!post) {
-    notFound();
-  }
-
+  const post = await getPostBySlug(slug);
+  if (!post) notFound();
   return post;
 }
 
 export default async function BlogPage({ params }: BlogPageProps) {
   const post = await getPostFromParams(params);
-  const similarPosts = getRelatedBlogPosts(post);
+  const similarPosts = await getRelatedBlogPosts(post);
 
   const readingTime = readingDuration(post.code, {
     wordsPerMinute: 200,
@@ -78,10 +79,13 @@ export default async function BlogPage({ params }: BlogPageProps) {
 
   return (
     <>
+      {/* Deep-link smooth scroll for #slug URLs (waits for MDX to mount). */}
+      <HashScroller />
       {/* Table of Contents - fixed position, outside content flow */}
       <TableOfContents headings={post.headings} />
 
-      <article className="space-y-12">
+
+      <article className={`${poemSerif.variable} space-y-6 md:space-y-8`}>
         {/* Article Banner Image */}
       <div className="relative">
         {/* Lines */}
@@ -107,9 +111,9 @@ export default async function BlogPage({ params }: BlogPageProps) {
         <span className="absolute bottom-[44.5px] right-[48px] z-20 hidden h-2 w-px bg-white md:block"></span>
 
         <div
-          className="drama-shadow flex h-[350px] w-full flex-col justify-end rounded-2xl bg-cover bg-center bg-no-repeat p-8 md:mb-16 md:h-[600px] md:p-16"
+          className="drama-shadow flex h-[320px] w-full flex-col justify-end rounded-2xl bg-cover bg-center bg-no-repeat p-5 sm:h-[380px] sm:p-8 md:h-[600px] md:p-16"
           style={{
-            backgroundImage: `linear-gradient(to top, rgba(99, 102, 241, 1) 0%, rgba(99, 102, 241, 0.1) 30%, transparent 35%), url('/blog/${post.imageName}')`,
+            backgroundImage: `linear-gradient(to top, rgba(15, 15, 25, 0.95) 0%, rgba(15, 15, 25, 0.85) 30%, rgba(15, 15, 25, 0.55) 55%, rgba(15, 15, 25, 0.25) 80%, rgba(15, 15, 25, 0.15) 100%), url('${resolveCoverUrl(post.imageName)}')`,
           }}
         >
           <div className="mt-auto">
@@ -123,8 +127,8 @@ export default async function BlogPage({ params }: BlogPageProps) {
                 </div>
               ))}
             </div>
-            <div className="mb-4 space-y-4 text-balance">
-              <h1 className="max-w-2xl text-4xl font-medium leading-[45px] tracking-tight text-white md:text-5xl md:leading-[60px]">
+            <div className="mb-3 space-y-2 text-balance md:mb-4 md:space-y-4">
+              <h1 className="max-w-2xl text-[22px] font-semibold leading-tight tracking-tight text-white sm:text-3xl md:text-5xl md:font-medium md:leading-[60px]">
                 {post.title}
               </h1>
               <p className="hidden max-w-3xl leading-8 text-slate-100 md:block">
@@ -248,9 +252,10 @@ export default async function BlogPage({ params }: BlogPageProps) {
       )}
 
       {/* Content */}
-      <div className="wrapper z-10">
-        <MDXContent code={post.code} />
+      <div id="article-content" className="wrapper z-10">
+        <FumadocsMDX code={post.code} />
       </div>
+
 
       {/* Similar Posts */}
       <section className="space-y-16">
@@ -304,7 +309,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const slug = (await params).slug;
 
-  const post = posts.find((post) => post.slug === slug);
+  const post = await getPostBySlug(slug);
 
   if (!post) {
     return {

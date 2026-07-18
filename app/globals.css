@@ -1,6 +1,63 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
+@source "../node_modules/fumadocs-ui/dist/**/*.js";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono);
+  --font-poem: var(--font-poem-serif), ui-serif, Georgia, serif;
+
+  --color-bg-primary: #F7F7F8;
+  --color-border-primary: #D6DADE;
+  --color-dark-primary: #3C3C3F;
+  --color-purple-primary: #6C47FF;
+  --color-purple-secondary: #E6E2F9;
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #5E5F6E;
+  --color-text-tertiary: #A5AEB8;
+
+  --shadow-code-shadow: 0 0 0 1px rgba(14, 22, 34, 0.1), 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+  --animate-spin-slow: spin 14s linear infinite;
+}
+
+@source "./**/*.{ts,tsx}";
+@source "../content/**/*.mdx";
+@source "../public/**/*.svg";
+
+/* Smooth scroll + offset for anchor jumps (TOC / hash links) */
+html {
+  scroll-behavior: smooth;
+}
+article h1[id],
+article h2[id],
+article h3[id],
+article h4[id],
+article h5[id],
+article h6[id] {
+  scroll-margin-top: 120px;
+}
+
+/* Active TOC link emphasis */
+.toc-link--active {
+  color: var(--toc-accent) !important;
+  transform: translateX(2px);
+}
+.toc-link--h2.toc-link--active {
+  font-weight: 600;
+}
+
+/* v3 compat: default border color was gray-200, in v4 it is currentColor */
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
 
 .shimmer {
   background-image: linear-gradient(
@@ -86,19 +143,16 @@ iframe {
   margin-bottom: 2rem;
 }
 
-.drama-shadow {
+@utility drama-shadow {
   @apply relative shadow-md ring-1 ring-indigo-500/15;
+
+  &::after {
+    @apply pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_0_2px_1px_#ffffff4d];
+    content: "";
+  }
 }
 
-.drama-shadow::after {
-  @apply pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_0_2px_1px_#ffffff4d];
-  content: "";
-}
-
-pre {
-  @apply drama-shadow mb-12 rounded-xl;
-}
-
+/* Legacy MDX renderer chrome (used by MdxCodeBlock for the changelog). */
 .code-frame {
   @apply flex h-9 items-center justify-between overflow-hidden rounded-t-xl border-b border-[#E2E3E5] bg-white px-4;
 }
@@ -123,87 +177,6 @@ pre {
   @apply h-[10px] w-[10px] rounded-full bg-[#E2E3E5];
 }
 
-pre code {
-  @apply py-0.5 leading-7;
-  counter-reset: sh-line-number;
-  letter-spacing: 0.1em;
-  font-size: 15px;
-}
-
-code:not(pre code) {
-  /* @apply bg-indigo-100 rounded-md px-1.5 py-0.5 whitespace-nowrap font-mono; */
-  /* --sh-class: #4f46e5;
-  --sh-identifier: #4f46e5;
-  --sh-sign: #4f46e5;
-  --sh-property: #4f46e5;
-  --sh-entity: #4f46e5;
-  --sh-jsxliterals: #4f46e5;
-  --sh-string: #4f46e5;
-  --sh-keyword: #4f46e5;
-  --sh-comment: #4f46e5; */
-
-  font-size: 15px;
-  font-variant-ligatures: none;
-
-  --sh-class: #0f172a;
-  --sh-identifier: #0f172a;
-  --sh-sign: #0f172a;
-  --sh-property: #0f172a;
-  --sh-entity: #0f172a;
-  --sh-jsxliterals: #0f172a;
-  --sh-string: #0f172a;
-  --sh-keyword: #0f172a;
-  --sh-comment: #0f172a;
-}
-
-code:not(pre code)::before,
-code:not(pre code)::after {
-  content: "`";
-}
-
-pre code .sh__line::before {
-  counter-increment: sh-line-number 1;
-  content: counter(sh-line-number);
-  margin-right: 24px;
-  text-align: right;
-  color: #cccccc;
-  font-size: 14px;
-}
-
-.prose code span {
-  @apply font-medium;
-}
-
-.prose img {
-  /* Don't apply styles to next/image */
-  @apply m-0;
-}
-
-.prose h2,
-h3,
-h4 {
-  @apply font-medium tracking-tighter !important;
-}
-
-.prose strong {
-  @apply font-medium;
-}
-
-.prose > :first-child {
-  /* Override removing top margin, causing layout shift */
-  margin-top: 1.25em !important;
-  margin-bottom: 1.25em !important;
-}
-
-pre::-webkit-scrollbar {
-  display: none;
-}
-
-pre {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-}
-
 /* Remove Safari input shadow on mobile */
 input[type="text"],
 input[type="email"] {
@@ -212,29 +185,148 @@ input[type="email"] {
   appearance: none;
 }
 
-.prose .tweet a {
-  text-decoration: inherit;
-  font-weight: 500;
-}
-
-table {
-  display: block;
-  max-width: fit-content;
-  overflow-x: auto;
-  white-space: nowrap;
-}
-
-.prose .callout > p {
-  margin: 0 !important;
-}
-
 .title {
   text-wrap: balance;
 }
 
-blockquote p {
-  margin: 0 !important;
+/* Fumadocs' preset decorates inline code with `` `backticks` ``; drop them. */
+article.prose code:not(pre code)::before,
+article.prose code:not(pre code)::after,
+.prose code:not(pre code)::before,
+.prose code:not(pre code)::after {
+  content: none !important;
+  content: "" !important;
 }
+
+/* Blog article — Fraunces serif (same as /poem) + tight rhythm.
+   MdxReveal wraps each block in a motion.div; target those wrappers too
+   so we don't get compound spacing / phantom empty rectangles. */
+article.prose {
+  font-family: var(--font-poem), ui-serif, Georgia, "Times New Roman", serif;
+  font-feature-settings: "ss01", "ss02", "kern", "liga";
+  letter-spacing: -0.005em;
+}
+
+article.prose code,
+article.prose pre,
+article.prose kbd,
+article.prose samp {
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0;
+}
+
+article.prose > p,
+article.prose > div > p,
+article.prose p {
+  margin-top: 0.7em;
+  margin-bottom: 0.7em;
+  line-height: 1.7;
+}
+
+article.prose > h1,
+article.prose > h2,
+article.prose > h3,
+article.prose > h4,
+article.prose > div > h1,
+article.prose > div > h2,
+article.prose > div > h3,
+article.prose > div > h4 {
+  margin-top: 1.35em;
+  margin-bottom: 0.4em;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+/* Kill motion.div wrapper spacing + collapse empty paragraphs / stray <br> */
+article.prose > div {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+article.prose p:empty,
+article.prose > div:empty,
+article.prose > div > p:empty {
+  display: none;
+}
+
+article.prose br {
+  display: block;
+  content: "";
+  margin: 0;
+  line-height: 0;
+}
+
+article.prose ul,
+article.prose ol {
+  margin-top: 0.4em;
+  margin-bottom: 0.7em;
+  padding-left: 1.35rem;
+}
+
+article.prose li {
+  margin-top: 0.15em;
+  margin-bottom: 0.15em;
+  line-height: 1.6;
+}
+
+article.prose li > p {
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+}
+
+article.prose li > ul,
+article.prose li > ol {
+  margin-top: 0.15em;
+  margin-bottom: 0.15em;
+}
+
+/* Gemini-style tables — soft neutral card, generous cell padding */
+article.prose .table-wrap,
+article.prose figure:has(> table),
+article.prose > div:has(> table) {
+  margin-top: 1.4em;
+  margin-bottom: 1.4em;
+}
+
+article.prose table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border-radius: 1rem;
+  background: #f5f5f5;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.55;
+  color: #1f2937;
+}
+
+article.prose thead th {
+  background: #ececec;
+  color: #111827;
+  font-weight: 600;
+  text-align: left;
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+article.prose tbody td {
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  vertical-align: top;
+}
+
+article.prose tbody tr:last-child td {
+  border-bottom: none;
+}
+
+article.prose tbody tr:hover td {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+
+
 
 /* Wide layout utility for breaking out of blog content constraints while staying in grid */
 .wide-layout {
@@ -273,19 +365,37 @@ blockquote p {
   --toc-transition: cubic-bezier(0.34, 1.56, 0.64, 1);
 
   position: fixed;
-  /* Position further left to avoid overlap - account for container width */
-  left: max(1rem, calc((100vw - 1280px) / 2 - 200px));
-  /* top is set dynamically via inline style */
-  width: 180px;
+  /* right + top are set dynamically via inline style so TOC's side
+     padding from the page border matches the content column. */
+  left: auto;
+  width: 200px;
   max-height: calc(100vh - 200px);
   overflow: visible;
   z-index: 40;
 }
 
 /* Hide on smaller viewports - need enough space outside container */
-@media (max-width: 1536px) {
+@media (max-width: 1099px) {
   .toc-container {
     display: none !important;
+  }
+}
+
+/* When TOC is visible, shift blog article content to the left so the
+   content column no longer sits centered under the TOC. Left padding
+   matches the decorative border inset (48px); right padding reserves
+   room for the TOC (~200px wide + gap). */
+@media (min-width: 1100px) {
+  #article-content.wrapper {
+    display: block;
+    padding-left: 72px;
+    padding-right: 240px;
+    max-width: 100%;
+  }
+  #article-content.wrapper > * {
+    max-width: 75ch;
+    margin-left: 0;
+    margin-right: 0;
   }
 }
 
@@ -380,14 +490,34 @@ blockquote p {
    Section Label
    =========================================== */
 
+.toc-header {
+  margin-bottom: 16px;
+}
+
 .toc-label {
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--toc-text-tertiary);
-  margin-bottom: 16px;
+  margin: 0 0 8px 0;
   padding-left: 0;
+}
+
+/* Reading progress bar shown under the TOC label */
+.toc-progress {
+  height: 2px;
+  width: 100%;
+  background: var(--toc-border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.toc-progress-bar {
+  display: block;
+  height: 100%;
+  background: var(--toc-accent);
+  border-radius: 2px;
+  transition: width 120ms linear;
 }
 
 /* ===========================================
@@ -406,7 +536,10 @@ blockquote p {
 
 /* Base link styles */
 .toc-link {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
   font-size: 12px;
   line-height: 1.4;
   color: var(--toc-text-secondary);
@@ -416,6 +549,44 @@ blockquote p {
     color 0.15s ease,
     transform 0.15s ease;
   user-select: none;
+}
+
+.toc-link-text {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Copy-link button, revealed on hover / when active */
+.toc-copy {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--toc-text-tertiary);
+  border: none;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+}
+.toc-link:hover .toc-copy,
+.toc-link:focus-visible .toc-copy,
+.toc-link--active .toc-copy {
+  opacity: 1;
+}
+.toc-copy:hover {
+  background: var(--toc-accent-glow);
+  color: var(--toc-accent);
+}
+
+/* H1 headings - Article title level (rare in body) */
+.toc-link--h1 {
+  font-weight: 600;
+  color: var(--toc-text-primary);
+  letter-spacing: -0.005em;
 }
 
 /* H2 headings - Main sections */
@@ -431,6 +602,16 @@ blockquote p {
   color: var(--toc-text-secondary);
   padding-left: 14px;
 }
+
+/* H4 headings - Deeper subsections (further indented) */
+.toc-link--h4 {
+  font-weight: 400;
+  font-size: 11px;
+  color: var(--toc-text-secondary);
+  padding-left: 28px;
+  opacity: 0.9;
+}
+
 
 /* ===========================================
    Interactive States
@@ -452,8 +633,10 @@ blockquote p {
 /* Focus state for accessibility */
 .toc-link:focus-visible {
   outline: 2px solid var(--toc-accent);
-  outline-offset: 2px;
-  border-radius: 2px;
+  outline-offset: 3px;
+  border-radius: 3px;
+  color: var(--toc-text-primary);
+  background-color: var(--toc-accent-glow);
 }
 
 /* ===========================================

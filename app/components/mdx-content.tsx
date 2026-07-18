@@ -2,6 +2,9 @@ import React from "react";
 import * as runtime from "react/jsx-runtime";
 import { highlight } from "sugar-high";
 import { HorizontalLine } from "./HorizontalLine";
+import { MdxMermaid } from "./MdxMermaid";
+import { MdxCodeBlock } from "./MdxCodeBlock";
+import { MdxReveal } from "./MdxReveal";
 import Link from "next/link";
 
 interface MDXProps {
@@ -9,6 +12,14 @@ interface MDXProps {
   components?: Record<string, React.ComponentType>;
   [key: string]: any;
 }
+
+// Shared typographic style — Fraunces serif, generous rhythm for focused reading.
+const proseStyle: React.CSSProperties = {
+  fontFeatureSettings: '"liga", "dlig", "kern"',
+  fontVariationSettings: '"SOFT" 100, "opsz" 24',
+  letterSpacing: "-0.003em",
+  wordSpacing: "0.01em",
+};
 
 function Table({ data }) {
   let headers = data.headers.map((header, index) => (
@@ -127,16 +138,114 @@ function ConsCard({ title, cons }) {
   );
 }
 
-function Code({ children, ...props }) {
-  let codeHTML = highlight(children);
+function InlineCode({ children, ...props }) {
+  const codeHTML = highlight(String(children));
   return (
     <code
-      className="mb-8"
+      className="rounded bg-neutral-100 px-1.5 py-0.5 font-mono text-[0.9em] text-neutral-800 dark:bg-neutral-800 dark:text-neutral-100"
       dangerouslySetInnerHTML={{ __html: codeHTML }}
       {...props}
     />
   );
 }
+
+function extractText(node: any): string {
+  if (node == null) return "";
+  if (typeof node === "string") return node;
+  if (Array.isArray(node)) return node.map(extractText).join("");
+  if (node.props?.children) return extractText(node.props.children);
+  return "";
+}
+
+function Pre({ children }: any) {
+  // MDX passes <pre><code className="language-xxx">...</code></pre>
+  const codeEl = React.Children.toArray(children).find(
+    (c: any) => c?.props,
+  ) as any;
+  const rawClass = codeEl?.props?.className;
+  const className: string = Array.isArray(rawClass)
+    ? rawClass.join(" ")
+    : rawClass || "";
+  const language = className.match(/language-([\w-]+)/)?.[1]?.toLowerCase();
+  const raw = extractText(codeEl?.props?.children).replace(/\n$/, "");
+
+  const inner =
+    language === "mermaid" ? (
+      <MdxMermaid chart={raw} />
+    ) : (
+      <MdxCodeBlock code={raw} language={language} />
+    );
+
+  return <MdxReveal blur={12} y={18}>{inner}</MdxReveal>;
+}
+
+function StyledTable({ children }: any) {
+  return (
+    <MdxReveal blur={12} y={18}>
+      <div className="relative mb-12 -mx-2 sm:mx-0">
+        <div className="relative overflow-hidden rounded-xl border border-black/10 bg-white dark:border-white/10 dark:bg-[#0a0a0a]">
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse text-left text-[0.95rem]">
+              {children}
+            </table>
+          </div>
+        </div>
+      </div>
+    </MdxReveal>
+  );
+}
+function Thead({ children }: any) {
+  return <thead>{children}</thead>;
+}
+function Tbody({ children }: any) {
+  return <tbody>{children}</tbody>;
+}
+function Th({ children }: any) {
+  return (
+    <th
+      scope="col"
+      className="border-b border-black/10 px-6 py-5 text-[0.9rem] font-semibold text-neutral-900 first:pl-8 last:pr-8 dark:border-white/10 dark:text-white"
+    >
+      {children}
+    </th>
+  );
+}
+function Td({ children }: any) {
+  return (
+    <td className="px-6 py-5 align-top text-[0.95rem] leading-relaxed text-neutral-700 first:pl-8 last:pr-8 dark:text-neutral-300">
+      {children}
+    </td>
+  );
+}
+function Tr({ children }: any) {
+  return (
+    <tr className="border-b border-black/[0.06] transition-colors duration-150 last:border-0 hover:bg-black/[0.02] dark:border-white/[0.06] dark:hover:bg-white/[0.02]">
+      {children}
+    </tr>
+  );
+}
+
+function Blockquote({ children }: any) {
+  return (
+    <MdxReveal blur={10} y={14}>
+      <blockquote
+        className="font-poem mb-10 border-l-4 border-indigo-500 bg-neutral-50 py-4 pl-6 pr-4 text-[1.15rem] italic leading-[1.75] text-text-secondary dark:bg-neutral-900"
+        style={proseStyle}
+      >
+        {children}
+      </blockquote>
+    </MdxReveal>
+  );
+}
+
+function Hr() {
+  return (
+    <MdxReveal blur={6} y={8}>
+      <hr className="my-12 border-t border-dashed border-border-primary" />
+    </MdxReveal>
+  );
+}
+
 
 function slugify(str) {
   return str
@@ -149,36 +258,57 @@ function slugify(str) {
     .replace(/\-\-+/g, "-"); // Replace multiple - with single -
 }
 
-function createHeading(level) {
-  // eslint-disable-next-line react/display-name
-  return ({ children }) => {
-    let slug = slugify(children);
-    return React.createElement(
-      `h${level}`,
-      {
-        id: slug,
-        className: "text-2xl text-text-primary font-semibold leading-8 mb-6",
-      },
-      [
-        React.createElement("a", {
-          href: `#${slug}`,
-          key: `link-${slug}`,
-          className: "anchor ",
-        }),
-      ],
-      children,
+const HEADING_SIZES: Record<number, string> = {
+  1: "text-4xl md:text-5xl leading-[1.1] mt-16 mb-8",
+  2: "text-3xl md:text-4xl leading-[1.15] mt-14 mb-6",
+  3: "text-2xl md:text-3xl leading-[1.2] mt-12 mb-5",
+  4: "text-xl md:text-2xl leading-[1.3] mt-10 mb-4",
+  5: "text-lg md:text-xl leading-[1.35] mt-8 mb-3",
+  6: "text-base md:text-lg leading-[1.4] mt-8 mb-3",
+};
+
+function createHeading(level: number) {
+  const Tag = `h${level}` as any;
+  const HeadingComp = ({ children }: any) => {
+    const slug = slugify(children);
+    return (
+      <MdxReveal blur={12} y={16}>
+        <Tag
+          id={slug}
+          className={`font-poem tracking-[-0.015em] font-medium text-text-primary ${HEADING_SIZES[level]}`}
+          style={{
+            fontFeatureSettings: '"liga", "dlig", "swsh", "kern"',
+            fontVariationSettings: '"SOFT" 100, "opsz" 144',
+          }}
+        >
+          <a href={`#${slug}`} className="anchor" aria-hidden />
+          {children}
+        </Tag>
+      </MdxReveal>
     );
   };
+  HeadingComp.displayName = `MdxH${level}`;
+  return HeadingComp;
 }
 
 function paragraph({ children }) {
   return (
-    <p className="mb-8 text-base leading-7 text-text-secondary">{children}</p>
+    <MdxReveal as="p"
+      className="font-poem mb-8 text-[1.15rem] md:text-[1.2rem] leading-[1.85] text-text-secondary"
+    >
+      <span style={proseStyle}>{children}</span>
+    </MdxReveal>
   );
 }
 
 function OrderedList({ children }) {
-  return <ol className="mb-8 list-inside list-decimal">{children}</ol>;
+  return (
+    <MdxReveal blur={8} y={12}>
+      <ol className="font-poem mb-8 list-inside list-decimal space-y-2 text-[1.1rem] leading-[1.85] text-text-secondary" style={proseStyle}>
+        {children}
+      </ol>
+    </MdxReveal>
+  );
 }
 
 const sharedComponents = {
@@ -197,7 +327,16 @@ const sharedComponents = {
   ProsCard,
   ConsCard,
   //   StaticTweet: TweetComponent,
-  code: Code,
+  code: InlineCode,
+  pre: Pre,
+  table: StyledTable,
+  thead: Thead,
+  tbody: Tbody,
+  tr: Tr,
+  th: Th,
+  td: Td,
+  blockquote: Blockquote,
+  hr: Hr,
   Table,
   p: paragraph,
   //   LiveCode,

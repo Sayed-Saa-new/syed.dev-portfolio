@@ -1,4 +1,17 @@
 import { Blog, Changelog, changelogItems, posts } from "#site/content";
+
+/**
+ * Resolve a post cover image reference. DB-stored posts hold a full https://
+ * URL (Supabase Storage). Legacy MDX posts hold just a filename (served from
+ * /public/blog/). Empty → empty (caller decides fallback).
+ */
+export const DEFAULT_BLOG_COVER = "/blog/default-cover.svg";
+
+export function resolveCoverUrl(imageName: string | null | undefined): string {
+  if (!imageName || !imageName.trim()) return DEFAULT_BLOG_COVER;
+  if (/^https?:\/\//i.test(imageName)) return imageName;
+  return `/blog/${imageName}`;
+}
 import { unstable_noStore as noStore } from "next/cache";
 import { notFound } from "next/navigation";
 import { ClassValue, clsx } from "clsx";
@@ -69,55 +82,25 @@ export function fetchAndSortChangelogEntrees(): Changelog[] {
   }
 }
 
+
 export function fetchAndSortBlogPosts(): Blog[] {
+  // Legacy sync accessor — MDX files only. Prefer fetchAndSortBlogPostsAsync
+  // in server components; that source merges Supabase-stored posts too.
   try {
-    const allPosts = posts; // Assuming 'posts' is a promise or async call
-    return allPosts
-      .filter((post) => !post.draft)
+    return [...posts]
+      .filter((p) => !p.draft)
       .sort(
         (a, b) =>
           new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
       );
-  } catch (error) {
-    notFound();
+  } catch {
+    return [];
   }
 }
 
-export function getRelatedBlogPosts(
-  currentPost: Blog,
-  maxResults: number = 3,
-): Blog[] {
-  const allPosts = fetchAndSortBlogPosts().filter(
-    (post) => post.slug !== currentPost.slug,
-  );
-
-  const sameCategories = allPosts.filter((post) =>
-    post.categories.some((category) =>
-      currentPost.categories.includes(category),
-    ),
-  );
-
-  // Sort by number of matching categories (most relevant first)
-  const sortedByRelevance = sameCategories.sort((a, b) => {
-    const aMatches = a.categories.filter((cat) =>
-      currentPost.categories.includes(cat),
-    ).length;
-    const bMatches = b.categories.filter((cat) =>
-      currentPost.categories.includes(cat),
-    ).length;
-    return bMatches - aMatches;
-  });
-
-  if (sortedByRelevance.length >= maxResults) {
-    return sortedByRelevance.slice(0, maxResults);
-  }
-
-  const remainingPosts = allPosts.filter(
-    (post) => !sortedByRelevance.some((related) => related.slug === post.slug),
-  );
-
-  return [...sortedByRelevance, ...remainingPosts].slice(0, maxResults);
-}
+// Async helpers that merge Supabase + MDX live in `@/app/lib/blog/posts`.
+// Do not import that server-only module here — utils.ts is reachable from
+// client components.
 
 export async function fetchAndSortChangelogPosts(): Promise<Changelog[]> {
   try {

@@ -12,7 +12,7 @@ declare module "#site/content" {
     draft?: boolean;
     audioFile?: string;
     headings: Array<{
-      level: 2 | 3;
+      level: 1 | 2 | 3 | 4;
       text: string;
       slug: string;
     }>;
