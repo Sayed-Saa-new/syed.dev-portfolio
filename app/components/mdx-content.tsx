@@ -129,16 +129,84 @@ function ConsCard({ title, cons }) {
   );
 }
 
-function Code({ children, ...props }) {
-  let codeHTML = highlight(children);
+function InlineCode({ children, ...props }) {
+  const codeHTML = highlight(String(children));
   return (
     <code
-      className="mb-8"
+      className="rounded bg-neutral-100 px-1.5 py-0.5 font-mono text-[0.9em] text-neutral-800 dark:bg-neutral-800 dark:text-neutral-100"
       dangerouslySetInnerHTML={{ __html: codeHTML }}
       {...props}
     />
   );
 }
+
+function extractText(node: any): string {
+  if (node == null) return "";
+  if (typeof node === "string") return node;
+  if (Array.isArray(node)) return node.map(extractText).join("");
+  if (node.props?.children) return extractText(node.props.children);
+  return "";
+}
+
+function Pre({ children }: any) {
+  // MDX passes <pre><code className="language-xxx">...</code></pre>
+  const codeEl = React.Children.toArray(children).find(
+    (c: any) => c?.props,
+  ) as any;
+  const className: string = codeEl?.props?.className || "";
+  const language = className.match(/language-([\w-]+)/)?.[1];
+  const raw = extractText(codeEl?.props?.children).replace(/\n$/, "");
+
+  if (language === "mermaid") {
+    return <MdxMermaid chart={raw} />;
+  }
+  return <MdxCodeBlock code={raw} language={language} />;
+}
+
+function StyledTable({ children }: any) {
+  return (
+    <div className="mb-8 overflow-x-auto rounded-xl border border-border-primary">
+      <table className="w-full border-collapse text-left text-sm">
+        {children}
+      </table>
+    </div>
+  );
+}
+function Thead({ children }: any) {
+  return (
+    <thead className="bg-neutral-50 dark:bg-neutral-900">{children}</thead>
+  );
+}
+function Th({ children }: any) {
+  return (
+    <th className="border-b border-border-primary px-4 py-2 font-medium text-text-primary">
+      {children}
+    </th>
+  );
+}
+function Td({ children }: any) {
+  return (
+    <td className="border-b border-dashed border-border-primary px-4 py-2 text-text-secondary">
+      {children}
+    </td>
+  );
+}
+function Tr({ children }: any) {
+  return <tr>{children}</tr>;
+}
+
+function Blockquote({ children }: any) {
+  return (
+    <blockquote className="mb-8 border-l-4 border-indigo-500 bg-neutral-50 py-2 pl-4 pr-2 italic text-text-secondary dark:bg-neutral-900">
+      {children}
+    </blockquote>
+  );
+}
+
+function Hr() {
+  return <hr className="my-10 border-t border-dashed border-border-primary" />;
+}
+
 
 function slugify(str) {
   return str
