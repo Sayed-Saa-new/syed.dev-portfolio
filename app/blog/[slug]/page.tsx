@@ -301,7 +301,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const slug = (await params).slug;
 
-  const post = posts.find((post) => post.slug === slug);
+  const post = await getPostBySlug(slug);
 
   if (!post) {
     return {
