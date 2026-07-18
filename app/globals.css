@@ -26,6 +26,28 @@
 @source "../content/**/*.mdx";
 @source "../public/**/*.svg";
 
+/* Smooth scroll + offset for anchor jumps (TOC / hash links) */
+html {
+  scroll-behavior: smooth;
+}
+article h1[id],
+article h2[id],
+article h3[id],
+article h4[id],
+article h5[id],
+article h6[id] {
+  scroll-margin-top: 120px;
+}
+
+/* Active TOC link emphasis */
+.toc-link--active {
+  color: var(--toc-accent) !important;
+  transform: translateX(2px);
+}
+.toc-link--h2.toc-link--active {
+  font-weight: 600;
+}
+
 /* v3 compat: default border color was gray-200, in v4 it is currentColor */
 @layer base {
   *,
