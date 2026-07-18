@@ -235,6 +235,26 @@ article.prose > div > h4 {
   margin-bottom: 0.4em;
   line-height: 1.2;
   letter-spacing: -0.02em;
+  font-weight: 650;
+}
+
+/* Gemini-style: no underlines on heading anchors */
+article.prose :is(h1, h2, h3, h4, h5, h6),
+article.prose :is(h1, h2, h3, h4, h5, h6) a,
+article.prose :is(h1, h2, h3, h4, h5, h6) a:hover {
+  text-decoration: none !important;
+  border-bottom: 0 !important;
+}
+
+/* Slightly bolder body copy — Gemini chat feel */
+article.prose,
+article.prose p,
+article.prose li {
+  font-weight: 450;
+}
+article.prose strong,
+article.prose b {
+  font-weight: 650;
 }
 
 /* Kill motion.div wrapper spacing + collapse empty paragraphs / stray <br> */
