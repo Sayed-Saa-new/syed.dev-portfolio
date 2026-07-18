@@ -265,6 +265,7 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
               <a
                 href={`#${heading.slug}`}
                 data-toc-link
+                aria-current={activeId === heading.slug ? "location" : undefined}
                 className={`toc-link toc-link--h${heading.level} ${activeId === heading.slug ? "toc-link--active" : ""}`}
                 onClick={(e) => handleLinkClick(e, heading.slug)}
               >
