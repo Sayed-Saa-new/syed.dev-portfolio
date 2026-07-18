@@ -340,7 +340,7 @@ const sharedComponents = {
   pre: Pre,
   table: StyledTable,
   thead: Thead,
-  tbody: (props: any) => <tbody {...props} />,
+  tbody: Tbody,
   tr: Tr,
   th: Th,
   td: Td,
