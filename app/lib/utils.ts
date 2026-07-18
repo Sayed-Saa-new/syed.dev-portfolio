@@ -1,4 +1,16 @@
 import { Blog, Changelog, changelogItems, posts } from "#site/content";
+import { getAllPosts } from "@/app/lib/blog/posts";
+
+/**
+ * Resolve a post cover image reference. DB-stored posts hold a full https://
+ * URL (Supabase Storage). Legacy MDX posts hold just a filename (served from
+ * /public/blog/). Empty → empty (caller decides fallback).
+ */
+export function resolveCoverUrl(imageName: string | null | undefined): string {
+  if (!imageName) return "";
+  if (/^https?:\/\//i.test(imageName)) return imageName;
+  return `/blog/${imageName}`;
+}
 import { unstable_noStore as noStore } from "next/cache";
 import { notFound } from "next/navigation";
 import { ClassValue, clsx } from "clsx";
