@@ -54,11 +54,12 @@ type PostInput = {
 };
 
 function bustCaches(slug: string) {
+function bustCaches(slug: string) {
   revalidateTag("blog_posts");
   revalidatePath("/blog", "page");
-  revalidatePath(`/blog/${slug}`);
-  revalidatePath("/rss.xml");
-  revalidatePath("/sitemap.xml");
+  revalidatePath(`/blog/${slug}`, "page");
+  revalidatePath("/rss.xml", "page");
+  revalidatePath("/sitemap.xml", "page");
 }
 
 async function triggerEmail(req: NextRequest, slug: string) {
