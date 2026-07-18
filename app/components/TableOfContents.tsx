@@ -95,8 +95,12 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
     const recalc = () => {
       const wrapperRect = contentWrapper.getBoundingClientRect();
       setTopPosition(Math.max(fixedTop, wrapperRect.top));
-      // Mirror the content's left padding from the page edge on the right side.
-      const sidePadding = Math.max(16, wrapperRect.left);
+      // `.wrapper` is a full-width CSS grid; measure the actual content
+      // column (its first child) so we can mirror its left inset on the right.
+      const inner = contentWrapper.firstElementChild as HTMLElement | null;
+      const innerRect = inner?.getBoundingClientRect();
+      const contentLeft = innerRect ? innerRect.left : wrapperRect.left;
+      const sidePadding = Math.max(16, contentLeft);
       setRightPosition(sidePadding);
     };
 
