@@ -248,7 +248,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
       )}
 
       {/* Content */}
-      <div className="wrapper z-10 -mt-4 md:mt-0">
+      <div className="wrapper z-10">
         <FumadocsMDX code={post.code} />
       </div>
 
