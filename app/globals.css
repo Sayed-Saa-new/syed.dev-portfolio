@@ -176,8 +176,58 @@ article.prose code:not(pre code)::after,
   content: "" !important;
 }
 
+/* Tighten Fumadocs prose spacing — paragraphs, headings, lists.
+   MdxReveal wraps blocks in motion.div, so target direct div children too. */
+article.prose > p,
+article.prose > div > p,
+article.prose p {
+  margin-top: 0.85em;
+  margin-bottom: 0.85em;
+  line-height: 1.75;
+}
 
+article.prose > h1,
+article.prose > h2,
+article.prose > h3,
+article.prose > h4,
+article.prose > div > h1,
+article.prose > div > h2,
+article.prose > div > h3,
+article.prose > div > h4 {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  line-height: 1.25;
+}
 
+article.prose > div,
+article.prose > div + div {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+article.prose ul,
+article.prose ol {
+  margin-top: 0.5em;
+  margin-bottom: 0.85em;
+  padding-left: 1.35rem;
+}
+
+article.prose li {
+  margin-top: 0.2em;
+  margin-bottom: 0.2em;
+  line-height: 1.65;
+}
+
+article.prose li > p {
+  margin-top: 0.15em;
+  margin-bottom: 0.15em;
+}
+
+article.prose li > ul,
+article.prose li > ol {
+  margin-top: 0.2em;
+  margin-bottom: 0.2em;
+}
 
 
 /* Wide layout utility for breaking out of blog content constraints while staying in grid */
