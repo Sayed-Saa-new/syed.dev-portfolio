@@ -169,19 +169,25 @@ function Pre({ children }: any) {
   const language = className.match(/language-([\w-]+)/)?.[1]?.toLowerCase();
   const raw = extractText(codeEl?.props?.children).replace(/\n$/, "");
 
-  if (language === "mermaid") {
-    return <MdxMermaid chart={raw} />;
-  }
-  return <MdxCodeBlock code={raw} language={language} />;
+  const inner =
+    language === "mermaid" ? (
+      <MdxMermaid chart={raw} />
+    ) : (
+      <MdxCodeBlock code={raw} language={language} />
+    );
+
+  return <MdxReveal blur={12} y={18}>{inner}</MdxReveal>;
 }
 
 function StyledTable({ children }: any) {
   return (
-    <div className="mb-8 overflow-x-auto rounded-xl border border-border-primary">
-      <table className="w-full border-collapse text-left text-sm">
-        {children}
-      </table>
-    </div>
+    <MdxReveal blur={12} y={18}>
+      <div className="mb-8 overflow-x-auto rounded-xl border border-border-primary">
+        <table className="w-full border-collapse text-left text-sm">
+          {children}
+        </table>
+      </div>
+    </MdxReveal>
   );
 }
 function Thead({ children }: any) {
@@ -209,14 +215,23 @@ function Tr({ children }: any) {
 
 function Blockquote({ children }: any) {
   return (
-    <blockquote className="mb-8 border-l-4 border-indigo-500 bg-neutral-50 py-2 pl-4 pr-2 italic text-text-secondary dark:bg-neutral-900">
-      {children}
-    </blockquote>
+    <MdxReveal blur={10} y={14}>
+      <blockquote
+        className="font-poem mb-10 border-l-4 border-indigo-500 bg-neutral-50 py-4 pl-6 pr-4 text-[1.15rem] italic leading-[1.75] text-text-secondary dark:bg-neutral-900"
+        style={proseStyle}
+      >
+        {children}
+      </blockquote>
+    </MdxReveal>
   );
 }
 
 function Hr() {
-  return <hr className="my-10 border-t border-dashed border-border-primary" />;
+  return (
+    <MdxReveal blur={6} y={8}>
+      <hr className="my-12 border-t border-dashed border-border-primary" />
+    </MdxReveal>
+  );
 }
 
 
@@ -231,36 +246,57 @@ function slugify(str) {
     .replace(/\-\-+/g, "-"); // Replace multiple - with single -
 }
 
-function createHeading(level) {
-  // eslint-disable-next-line react/display-name
-  return ({ children }) => {
-    let slug = slugify(children);
-    return React.createElement(
-      `h${level}`,
-      {
-        id: slug,
-        className: "text-2xl text-text-primary font-semibold leading-8 mb-6",
-      },
-      [
-        React.createElement("a", {
-          href: `#${slug}`,
-          key: `link-${slug}`,
-          className: "anchor ",
-        }),
-      ],
-      children,
+const HEADING_SIZES: Record<number, string> = {
+  1: "text-4xl md:text-5xl leading-[1.1] mt-16 mb-8",
+  2: "text-3xl md:text-4xl leading-[1.15] mt-14 mb-6",
+  3: "text-2xl md:text-3xl leading-[1.2] mt-12 mb-5",
+  4: "text-xl md:text-2xl leading-[1.3] mt-10 mb-4",
+  5: "text-lg md:text-xl leading-[1.35] mt-8 mb-3",
+  6: "text-base md:text-lg leading-[1.4] mt-8 mb-3",
+};
+
+function createHeading(level: number) {
+  const Tag = `h${level}` as any;
+  const HeadingComp = ({ children }: any) => {
+    const slug = slugify(children);
+    return (
+      <MdxReveal blur={12} y={16}>
+        <Tag
+          id={slug}
+          className={`font-poem tracking-[-0.015em] font-medium text-text-primary ${HEADING_SIZES[level]}`}
+          style={{
+            fontFeatureSettings: '"liga", "dlig", "swsh", "kern"',
+            fontVariationSettings: '"SOFT" 100, "opsz" 144',
+          }}
+        >
+          <a href={`#${slug}`} className="anchor" aria-hidden />
+          {children}
+        </Tag>
+      </MdxReveal>
     );
   };
+  HeadingComp.displayName = `MdxH${level}`;
+  return HeadingComp;
 }
 
 function paragraph({ children }) {
   return (
-    <p className="mb-8 text-base leading-7 text-text-secondary">{children}</p>
+    <MdxReveal as="p"
+      className="font-poem mb-8 text-[1.15rem] md:text-[1.2rem] leading-[1.85] text-text-secondary"
+    >
+      <span style={proseStyle}>{children}</span>
+    </MdxReveal>
   );
 }
 
 function OrderedList({ children }) {
-  return <ol className="mb-8 list-inside list-decimal">{children}</ol>;
+  return (
+    <MdxReveal blur={8} y={12}>
+      <ol className="font-poem mb-8 list-inside list-decimal space-y-2 text-[1.1rem] leading-[1.85] text-text-secondary" style={proseStyle}>
+        {children}
+      </ol>
+    </MdxReveal>
+  );
 }
 
 const sharedComponents = {
