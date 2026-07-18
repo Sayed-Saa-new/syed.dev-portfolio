@@ -81,7 +81,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
       {/* Table of Contents - fixed position, outside content flow */}
       <TableOfContents headings={post.headings} />
 
-      <article className="space-y-12">
+      <article className={`${poemSerif.variable} space-y-12`}>
         {/* Article Banner Image */}
       <div className="relative">
         {/* Lines */}
