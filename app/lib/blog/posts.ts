@@ -3,15 +3,12 @@ import { unstable_cache } from "next/cache";
 import { createSupabaseAdminClient } from "@/app/lib/supabase/server";
 import { compileMdxToCode } from "./compile";
 import type { Blog } from "#site/content";
-import { posts as mdxPosts } from "#site/content";
 
 /**
  * Unified blog data layer.
  *
- * Reads posts from Supabase FIRST, then falls back to legacy MDX files
- * (velite) for any slug not yet migrated. When a post exists in both,
- * Supabase wins. This lets the migration happen incrementally with zero
- * downtime — delete MDX files once every post lives in the DB.
+ * Reads posts from Supabase only. Legacy MDX fallback is intentionally disabled
+ * so the public blog and external admin dashboard never show old/demo posts.
  */
 
 type DbRow = {
@@ -88,9 +85,7 @@ const getSupabasePostBySlug = unstable_cache(
 
 export async function getAllPosts(): Promise<Blog[]> {
   const dbPosts = await getSupabasePublishedPosts();
-  const dbSlugs = new Set(dbPosts.map((p) => p.slug));
-  const legacy = mdxPosts.filter((p) => !p.draft && !dbSlugs.has(p.slug));
-  const merged = [...dbPosts, ...legacy];
+  const merged = [...dbPosts];
   merged.sort(
     (a, b) =>
       new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
@@ -102,7 +97,7 @@ export async function getPostBySlug(slug: string): Promise<Blog | null> {
   const dbPost = await getSupabasePostBySlug(slug);
   if (dbPost && dbPost.draft) return null;
   if (dbPost) return dbPost;
-  return mdxPosts.find((p) => p.slug === slug && !p.draft) ?? null;
+  return null;
 }
 
 export async function getAllPostsIncludingDrafts(): Promise<Blog[]> {
@@ -116,11 +111,9 @@ export async function getAllPostsIncludingDrafts(): Promise<Blog[]> {
     const dbPosts = data
       ? await Promise.all((data as DbRow[]).map(rowToBlog))
       : [];
-    const dbSlugs = new Set(dbPosts.map((p) => p.slug));
-    const legacy = mdxPosts.filter((p) => !dbSlugs.has(p.slug));
-    return [...dbPosts, ...legacy];
+    return dbPosts;
   } catch {
-    return [...mdxPosts];
+    return [];
   }
 }
 
