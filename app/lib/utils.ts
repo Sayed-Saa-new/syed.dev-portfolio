@@ -81,19 +81,6 @@ export function fetchAndSortChangelogEntrees(): Changelog[] {
   }
 }
 
-export function fetchAndSortBlogPosts(): Blog[] {
-  try {
-    const allPosts = posts; // Assuming 'posts' is a promise or async call
-    return allPosts
-      .filter((post) => !post.draft)
-      .sort(
-        (a, b) =>
-          new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
-      );
-  } catch (error) {
-    notFound();
-  }
-}
 
 export function fetchAndSortBlogPosts(): Blog[] {
   // Legacy sync accessor — MDX files only. Prefer fetchAndSortBlogPostsAsync
