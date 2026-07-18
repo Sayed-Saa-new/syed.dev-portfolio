@@ -285,9 +285,17 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
     >
 
       <div ref={contentRef} className="toc-content">
-        <h2 id="toc-heading" className="toc-label">
-          Table of Contents
-        </h2>
+        <div className="toc-header">
+          <h2 id="toc-heading" className="toc-label">
+            On this page
+          </h2>
+          <div className="toc-progress" aria-hidden="true">
+            <span
+              className="toc-progress-bar"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        </div>
 
         {/* SVG path showing the TOC structure */}
         <svg className="toc-path-svg" aria-hidden="true">
@@ -304,19 +312,41 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
         />
 
         <ul className="toc-list">
-          {headings.map((heading) => (
-            <li key={heading.slug} className="toc-item">
-              <a
-                href={`#${heading.slug}`}
-                data-toc-link
-                aria-current={activeId === heading.slug ? "location" : undefined}
-                className={`toc-link toc-link--h${heading.level} ${activeId === heading.slug ? "toc-link--active" : ""}`}
-                onClick={(e) => handleLinkClick(e, heading.slug)}
-              >
-                {heading.text}
-              </a>
-            </li>
-          ))}
+          {headings.map((heading) => {
+            const isActive = activeId === heading.slug;
+            const isCopied = copiedId === heading.slug;
+            return (
+              <li key={heading.slug} className="toc-item">
+                <a
+                  href={`#${heading.slug}`}
+                  data-toc-link
+                  aria-current={isActive ? "location" : undefined}
+                  className={`toc-link toc-link--h${heading.level} ${isActive ? "toc-link--active" : ""}`}
+                  onClick={(e) => handleLinkClick(e, heading.slug)}
+                >
+                  <span className="toc-link-text">{heading.text}</span>
+                  <button
+                    type="button"
+                    className="toc-copy"
+                    aria-label={isCopied ? "Link copied" : "Copy link to section"}
+                    title={isCopied ? "Copied!" : "Copy link"}
+                    onClick={(e) => handleCopyLink(e, heading.slug)}
+                  >
+                    {isCopied ? (
+                      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    ) : (
+                      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5" />
+                        <path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5" />
+                      </svg>
+                    )}
+                  </button>
+                </a>
+              </li>
+            );
+          })}
         </ul>
       </div>
     </nav>
