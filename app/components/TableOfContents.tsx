@@ -80,6 +80,8 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
   const [rightPosition, setRightPosition] = useState(16);
   const [isVisible, setIsVisible] = useState(true);
   const [pathData, setPathData] = useState("");
+  const [progress, setProgress] = useState(0);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
   const fixedTop = 140; // The fixed top position when scrolled
 
 
@@ -98,18 +100,21 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
     const recalc = () => {
       const wrapperRect = contentWrapper.getBoundingClientRect();
       setTopPosition(Math.max(fixedTop, wrapperRect.top));
-      // `.wrapper` is a full-width CSS grid; measure the actual content
-      // column (its first child) so we can mirror its left inset on the right.
       const inner = contentWrapper.firstElementChild as HTMLElement | null;
       const innerRect = inner?.getBoundingClientRect();
       const contentLeft = innerRect ? innerRect.left : wrapperRect.left;
       const sidePadding = Math.max(16, contentLeft);
       setRightPosition(sidePadding);
-      // Hide the TOC once the article content has scrolled past the TOC's
-      // fixed top — otherwise it overlaps the newsletter / related posts.
       const tocHeight = navRef.current?.offsetHeight ?? 300;
       const bottomThreshold = Math.max(fixedTop, wrapperRect.top) + tocHeight;
       setIsVisible(wrapperRect.bottom > bottomThreshold);
+
+      // Reading progress: how far through the article we've scrolled.
+      const total = wrapperRect.height - window.innerHeight;
+      const scrolled = -wrapperRect.top;
+      const pct =
+        total > 0 ? Math.min(100, Math.max(0, (scrolled / total) * 100)) : 0;
+      setProgress(pct);
     };
 
 
@@ -238,7 +243,25 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
       const top =
         element.getBoundingClientRect().top + window.scrollY - 120;
       window.scrollTo({ top, behavior: "smooth" });
-      window.history.pushState(null, "", `#${slug}`);
+      // replaceState keeps back-button behavior clean while still updating the URL.
+      window.history.replaceState(null, "", `#${slug}`);
+    }
+  };
+
+  // Copy deep-link (URL#slug) to clipboard.
+  const handleCopyLink = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    slug: string,
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      const url = `${window.location.origin}${window.location.pathname}#${slug}`;
+      await navigator.clipboard.writeText(url);
+      setCopiedId(slug);
+      setTimeout(() => setCopiedId((prev) => (prev === slug ? null : prev)), 1200);
+    } catch {
+      /* clipboard unavailable — silently ignore */
     }
   };
 
@@ -262,9 +285,17 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
     >
 
       <div ref={contentRef} className="toc-content">
-        <h2 id="toc-heading" className="toc-label">
-          Table of Contents
-        </h2>
+        <div className="toc-header">
+          <h2 id="toc-heading" className="toc-label">
+            On this page
+          </h2>
+          <div className="toc-progress" aria-hidden="true">
+            <span
+              className="toc-progress-bar"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        </div>
 
         {/* SVG path showing the TOC structure */}
         <svg className="toc-path-svg" aria-hidden="true">
@@ -281,19 +312,41 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
         />
 
         <ul className="toc-list">
-          {headings.map((heading) => (
-            <li key={heading.slug} className="toc-item">
-              <a
-                href={`#${heading.slug}`}
-                data-toc-link
-                aria-current={activeId === heading.slug ? "location" : undefined}
-                className={`toc-link toc-link--h${heading.level} ${activeId === heading.slug ? "toc-link--active" : ""}`}
-                onClick={(e) => handleLinkClick(e, heading.slug)}
-              >
-                {heading.text}
-              </a>
-            </li>
-          ))}
+          {headings.map((heading) => {
+            const isActive = activeId === heading.slug;
+            const isCopied = copiedId === heading.slug;
+            return (
+              <li key={heading.slug} className="toc-item">
+                <a
+                  href={`#${heading.slug}`}
+                  data-toc-link
+                  aria-current={isActive ? "location" : undefined}
+                  className={`toc-link toc-link--h${heading.level} ${isActive ? "toc-link--active" : ""}`}
+                  onClick={(e) => handleLinkClick(e, heading.slug)}
+                >
+                  <span className="toc-link-text">{heading.text}</span>
+                  <button
+                    type="button"
+                    className="toc-copy"
+                    aria-label={isCopied ? "Link copied" : "Copy link to section"}
+                    title={isCopied ? "Copied!" : "Copy link"}
+                    onClick={(e) => handleCopyLink(e, heading.slug)}
+                  >
+                    {isCopied ? (
+                      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    ) : (
+                      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5" />
+                        <path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5" />
+                      </svg>
+                    )}
+                  </button>
+                </a>
+              </li>
+            );
+          })}
         </ul>
       </div>
     </nav>
