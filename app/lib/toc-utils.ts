@@ -1,53 +1,75 @@
 /**
  * Table of Contents utilities
- * Shared types and functions for TOC heading extraction and rendering
+ * Shared types and functions for TOC heading extraction and rendering.
+ *
+ * Extracts H1–H4 from raw MDX. Skips fenced code blocks so `# comments`
+ * inside code samples aren't picked up. Strips inline markdown (bold,
+ * italic, inline code, links) from heading text. Deduplicates slugs
+ * (`intro`, `intro-1`, `intro-2`, ...) to match `github-slugger` /
+ * `rehype-slug` behaviour so TOC anchors resolve reliably.
  */
 
 export interface TocHeading {
-  level: 2 | 3;
+  level: 1 | 2 | 3 | 4;
   text: string;
   slug: string;
 }
 
-/**
- * Slugify a string for use as an anchor ID
- * Must match the slugify function in mdx.tsx for consistency
- */
 export function slugify(str: string): string {
   return str
     .toString()
     .toLowerCase()
     .trim()
-    .replace(/\s+/g, "-")
+    .replace(/[\s]+/g, "-")
     .replace(/&/g, "-and-")
-    .replace(/[^\w\-]+/g, "")
-    .replace(/\-\-+/g, "-");
+    .replace(/[^\p{L}\p{N}\-_]+/gu, "")
+    .replace(/\-\-+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
-/**
- * Extract H2 and H3 headings from MDX content
- * Uses regex to parse markdown headings from raw content
- */
+function stripInline(text: string): string {
+  return text
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/\*\*([^*]+)\*\*/g, "$1")
+    .replace(/__([^_]+)__/g, "$1")
+    .replace(/\*([^*]+)\*/g, "$1")
+    .replace(/_([^_]+)_/g, "$1")
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/<[^>]+>/g, "")
+    .trim();
+}
+
 export function extractHeadingsFromMdx(content: string): TocHeading[] {
   const headings: TocHeading[] = [];
+  const seen = new Map<string, number>();
+  const lines = content.split(/\r?\n/);
 
-  // Match markdown headings: ## or ### at start of line
-  // Captures the hashes and the heading text
-  const headingRegex = /^(#{2,3})\s+(.+)$/gm;
-  let match;
+  let inFence = false;
+  const fenceRe = /^\s*(```|~~~)/;
+  const headingRe = /^(#{1,4})\s+(.+?)\s*#*\s*$/;
 
-  while ((match = headingRegex.exec(content)) !== null) {
-    const level = match[1].length as 2 | 3;
-    const text = match[2].trim();
+  for (const line of lines) {
+    if (fenceRe.test(line)) {
+      inFence = !inFence;
+      continue;
+    }
+    if (inFence) continue;
 
-    // Skip empty headings
+    const m = headingRe.exec(line);
+    if (!m) continue;
+
+    const level = m[1].length as 1 | 2 | 3 | 4;
+    const text = stripInline(m[2]);
     if (!text) continue;
 
-    headings.push({
-      level,
-      text,
-      slug: slugify(text),
-    });
+    const base = slugify(text);
+    if (!base) continue;
+
+    const n = seen.get(base) ?? 0;
+    const slug = n === 0 ? base : `${base}-${n}`;
+    seen.set(base, n + 1);
+
+    headings.push({ level, text, slug });
   }
 
   return headings;
