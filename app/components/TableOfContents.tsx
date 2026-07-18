@@ -82,13 +82,13 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
   const indicatorRef = useRef<HTMLSpanElement>(null);
   const [isMoving, setIsMoving] = useState(false);
   const [supportsAnchors, setSupportsAnchors] = useState(false);
-  const [topPosition, setTopPosition] = useState(140);
+  const [topPosition, setTopPosition] = useState(96);
   const [rightPosition, setRightPosition] = useState(16);
   const [isVisible, setIsVisible] = useState(true);
   const [pathData, setPathData] = useState("");
   const [progress, setProgress] = useState(0);
   const [copiedId, setCopiedId] = useState<string | null>(null);
-  const fixedTop = 140; // The fixed top position when scrolled
+  const fixedTop = 96; // The fixed top position when scrolled
 
 
   // Check for anchor positioning support on mount
