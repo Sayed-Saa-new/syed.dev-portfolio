@@ -1,7 +1,7 @@
 export const revalidate = 30;
 
 import { notFound } from "next/navigation";
-import { MDXContent } from "@/app/components/mdx";
+import { FumadocsMDX } from "@/app/components/FumadocsMDX";
 import { unstable_noStore as noStore } from "next/cache";
 import { SectionTitlePill } from "@/app/components/SectionTitlePill";
 import { HorizontalLine } from "@/app/components/HorizontalLine";
@@ -249,7 +249,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
 
       {/* Content */}
       <div className="wrapper z-10">
-        <MDXContent code={post.code} />
+        <FumadocsMDX code={post.code} />
       </div>
 
       {/* Similar Posts */}
