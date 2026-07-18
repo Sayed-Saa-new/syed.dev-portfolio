@@ -130,7 +130,7 @@ iframe {
   }
 }
 
-pre {
+.prose pre {
   @apply drama-shadow mb-12 rounded-xl;
 }
 
@@ -158,25 +158,14 @@ pre {
   @apply h-[10px] w-[10px] rounded-full bg-[#E2E3E5];
 }
 
-pre code {
+.prose pre code {
   @apply py-0.5 leading-7;
   counter-reset: sh-line-number;
   letter-spacing: 0.1em;
   font-size: 15px;
 }
 
-code:not(pre code) {
-  /* @apply bg-indigo-100 rounded-md px-1.5 py-0.5 whitespace-nowrap font-mono; */
-  /* --sh-class: #4f46e5;
-  --sh-identifier: #4f46e5;
-  --sh-sign: #4f46e5;
-  --sh-property: #4f46e5;
-  --sh-entity: #4f46e5;
-  --sh-jsxliterals: #4f46e5;
-  --sh-string: #4f46e5;
-  --sh-keyword: #4f46e5;
-  --sh-comment: #4f46e5; */
-
+.prose code:not(pre code) {
   font-size: 15px;
   font-variant-ligatures: none;
 
@@ -191,12 +180,12 @@ code:not(pre code) {
   --sh-comment: #0f172a;
 }
 
-code:not(pre code)::before,
-code:not(pre code)::after {
+.prose code:not(pre code)::before,
+.prose code:not(pre code)::after {
   content: "`";
 }
 
-pre code .sh__line::before {
+.prose pre code .sh__line::before {
   counter-increment: sh-line-number 1;
   content: counter(sh-line-number);
   margin-right: 24px;
@@ -215,8 +204,8 @@ pre code .sh__line::before {
 }
 
 .prose h2,
-h3,
-h4 {
+.prose h3,
+.prose h4 {
   @apply font-medium! tracking-tighter!;
 }
 
@@ -230,13 +219,13 @@ h4 {
   margin-bottom: 1.25em !important;
 }
 
-pre::-webkit-scrollbar {
+.prose pre::-webkit-scrollbar {
   display: none;
 }
 
-pre {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+.prose pre {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* Remove Safari input shadow on mobile */
@@ -252,7 +241,7 @@ input[type="email"] {
   font-weight: 500;
 }
 
-table {
+.prose table {
   display: block;
   max-width: fit-content;
   overflow-x: auto;
@@ -267,7 +256,7 @@ table {
   text-wrap: balance;
 }
 
-blockquote p {
+.prose blockquote p {
   margin: 0 !important;
 }
 
