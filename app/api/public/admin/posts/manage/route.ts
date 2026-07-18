@@ -54,7 +54,6 @@ type PostInput = {
 };
 
 function bustCaches(slug: string) {
-function bustCaches(slug: string) {
   revalidateTag("blog_posts");
   revalidatePath("/blog", "page");
   revalidatePath(`/blog/${slug}`, "page");
