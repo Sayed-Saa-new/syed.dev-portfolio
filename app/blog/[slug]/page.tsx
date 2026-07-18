@@ -58,18 +58,14 @@ function formatDate(date: string) {
 
 async function getPostFromParams(params: BlogPageProps["params"]) {
   const { slug } = await params;
-  const post = posts.find((post) => post.slug === slug);
-
-  if (!post) {
-    notFound();
-  }
-
+  const post = await getPostBySlug(slug);
+  if (!post) notFound();
   return post;
 }
 
 export default async function BlogPage({ params }: BlogPageProps) {
   const post = await getPostFromParams(params);
-  const similarPosts = getRelatedBlogPosts(post);
+  const similarPosts = await getRelatedBlogPosts(post);
 
   const readingTime = readingDuration(post.code, {
     wordsPerMinute: 200,
