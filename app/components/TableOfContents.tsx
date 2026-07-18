@@ -243,7 +243,25 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
       const top =
         element.getBoundingClientRect().top + window.scrollY - 120;
       window.scrollTo({ top, behavior: "smooth" });
-      window.history.pushState(null, "", `#${slug}`);
+      // replaceState keeps back-button behavior clean while still updating the URL.
+      window.history.replaceState(null, "", `#${slug}`);
+    }
+  };
+
+  // Copy deep-link (URL#slug) to clipboard.
+  const handleCopyLink = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    slug: string,
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      const url = `${window.location.origin}${window.location.pathname}#${slug}`;
+      await navigator.clipboard.writeText(url);
+      setCopiedId(slug);
+      setTimeout(() => setCopiedId((prev) => (prev === slug ? null : prev)), 1200);
+    } catch {
+      /* clipboard unavailable — silently ignore */
     }
   };
 
