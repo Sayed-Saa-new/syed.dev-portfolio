@@ -1,5 +1,6 @@
 import { compile } from "@mdx-js/mdx";
 import remarkGfm from "remark-gfm";
+import rehypeSlug from "rehype-slug";
 import { extractHeadingsFromMdx, TocHeading } from "@/app/lib/toc-utils";
 
 export type CompiledPost = {
@@ -18,6 +19,7 @@ export async function compileMdxToCode(source: string): Promise<CompiledPost> {
     outputFormat: "function-body",
     development: false,
     remarkPlugins: [remarkGfm],
+    rehypePlugins: [rehypeSlug],
   });
   return {
     code: String(compiled),
