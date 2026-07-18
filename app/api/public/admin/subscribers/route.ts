@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
   if (error) return Response.json({ ok: false, error: error.message }, { status: 400, headers: CORS });
 
   if (body.sendWelcome) {
-    const { subject, html } = welcomeEmail({ token: data.unsubscribe_token });
+    const { subject, html } = welcomeEmail({ email, token: data.unsubscribe_token });
     await sendMail({
       to: email,
       subject,
