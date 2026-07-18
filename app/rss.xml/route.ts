@@ -1,7 +1,8 @@
-import { posts } from "#site/content";
+import { getAllPosts } from "@/app/lib/blog/posts";
+import { resolveCoverUrl } from "@/app/lib/utils";
 import { siteMetadata } from "@/app/data/siteMetadata";
 
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic";
 export const revalidate = 3600; // regenerate hourly
 
 function escapeXml(unsafe: string): string {
@@ -20,17 +21,13 @@ function escapeXml(unsafe: string): string {
 export async function GET() {
   const site = siteMetadata.siteUrl;
 
-  const sorted = [...posts]
-    .filter((p) => !p.draft)
-    .sort(
-      (a, b) =>
-        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
-    );
+  const sorted = await getAllPosts();
 
   const items = sorted
     .map((post) => {
       const url = `${site}/blog/${post.slug}`;
-      const image = post.imageName ? `${site}/blog/${post.imageName}` : "";
+      const cover = resolveCoverUrl(post.imageName);
+      const image = cover.startsWith("http") ? cover : cover ? `${site}${cover}` : "";
       return `    <item>
       <title>${escapeXml(post.title)}</title>
       <link>${url}</link>
