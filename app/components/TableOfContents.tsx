@@ -100,18 +100,21 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
     const recalc = () => {
       const wrapperRect = contentWrapper.getBoundingClientRect();
       setTopPosition(Math.max(fixedTop, wrapperRect.top));
-      // `.wrapper` is a full-width CSS grid; measure the actual content
-      // column (its first child) so we can mirror its left inset on the right.
       const inner = contentWrapper.firstElementChild as HTMLElement | null;
       const innerRect = inner?.getBoundingClientRect();
       const contentLeft = innerRect ? innerRect.left : wrapperRect.left;
       const sidePadding = Math.max(16, contentLeft);
       setRightPosition(sidePadding);
-      // Hide the TOC once the article content has scrolled past the TOC's
-      // fixed top — otherwise it overlaps the newsletter / related posts.
       const tocHeight = navRef.current?.offsetHeight ?? 300;
       const bottomThreshold = Math.max(fixedTop, wrapperRect.top) + tocHeight;
       setIsVisible(wrapperRect.bottom > bottomThreshold);
+
+      // Reading progress: how far through the article we've scrolled.
+      const total = wrapperRect.height - window.innerHeight;
+      const scrolled = -wrapperRect.top;
+      const pct =
+        total > 0 ? Math.min(100, Math.max(0, (scrolled / total) * 100)) : 0;
+      setProgress(pct);
     };
 
 
