@@ -375,9 +375,27 @@ article.prose tbody tr:hover td {
 }
 
 /* Hide on smaller viewports - need enough space outside container */
-@media (max-width: 1279px) {
+@media (max-width: 1099px) {
   .toc-container {
     display: none !important;
+  }
+}
+
+/* When TOC is visible, shift blog article content to the left so the
+   content column no longer sits centered under the TOC. Left padding
+   matches the decorative border inset (48px); right padding reserves
+   room for the TOC (~200px wide + gap). */
+@media (min-width: 1100px) {
+  #article-content.wrapper {
+    display: block;
+    padding-left: 48px;
+    padding-right: 280px;
+    max-width: 100%;
+  }
+  #article-content.wrapper > * {
+    max-width: 75ch;
+    margin-left: 0;
+    margin-right: 0;
   }
 }
 
