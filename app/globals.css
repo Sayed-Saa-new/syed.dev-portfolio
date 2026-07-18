@@ -490,14 +490,34 @@ article.prose tbody tr:hover td {
    Section Label
    =========================================== */
 
+.toc-header {
+  margin-bottom: 16px;
+}
+
 .toc-label {
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--toc-text-tertiary);
-  margin-bottom: 16px;
+  margin: 0 0 8px 0;
   padding-left: 0;
+}
+
+/* Reading progress bar shown under the TOC label */
+.toc-progress {
+  height: 2px;
+  width: 100%;
+  background: var(--toc-border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.toc-progress-bar {
+  display: block;
+  height: 100%;
+  background: var(--toc-accent);
+  border-radius: 2px;
+  transition: width 120ms linear;
 }
 
 /* ===========================================
