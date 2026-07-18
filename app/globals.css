@@ -543,7 +543,6 @@ article.prose tbody tr:hover td {
 }
 
 /* Focus state for accessibility */
-/* Focus state for accessibility */
 .toc-link:focus-visible {
   outline: 2px solid var(--toc-accent);
   outline-offset: 3px;
