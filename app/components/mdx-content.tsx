@@ -182,35 +182,56 @@ function Pre({ children }: any) {
 function StyledTable({ children }: any) {
   return (
     <MdxReveal blur={12} y={18}>
-      <div className="mb-8 overflow-x-auto rounded-xl border border-border-primary">
-        <table className="w-full border-collapse text-left text-sm">
-          {children}
-        </table>
+      <div className="group/table relative mb-10 -mx-2 sm:mx-0">
+        {/* soft outer glow */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -inset-px rounded-2xl bg-gradient-to-br from-indigo-400/20 via-transparent to-fuchsia-400/20 opacity-60 blur-[6px] transition-opacity duration-500 group-hover/table:opacity-100 dark:from-indigo-500/25 dark:to-fuchsia-500/20"
+        />
+        <div className="relative overflow-hidden rounded-2xl border border-border-primary bg-bg-primary/80 shadow-sm ring-1 ring-black/[0.02] backdrop-blur-sm dark:bg-neutral-950/60 dark:ring-white/[0.04]">
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse text-left text-[0.925rem]">
+              {children}
+            </table>
+          </div>
+        </div>
       </div>
     </MdxReveal>
   );
 }
 function Thead({ children }: any) {
   return (
-    <thead className="bg-neutral-50 dark:bg-neutral-900">{children}</thead>
+    <thead className="bg-gradient-to-b from-neutral-50 to-neutral-100/70 text-text-primary dark:from-neutral-900 dark:to-neutral-900/40">
+      {children}
+    </thead>
   );
+}
+function Tbody({ children }: any) {
+  return <tbody className="divide-y divide-border-primary/60">{children}</tbody>;
 }
 function Th({ children }: any) {
   return (
-    <th className="border-b border-border-primary px-4 py-2 font-medium text-text-primary">
+    <th
+      scope="col"
+      className="border-b border-border-primary px-5 py-3.5 text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-text-primary/80 first:pl-6 last:pr-6"
+    >
       {children}
     </th>
   );
 }
 function Td({ children }: any) {
   return (
-    <td className="border-b border-dashed border-border-primary px-4 py-2 text-text-secondary">
+    <td className="px-5 py-3.5 align-top leading-relaxed text-text-secondary first:pl-6 last:pr-6">
       {children}
     </td>
   );
 }
 function Tr({ children }: any) {
-  return <tr>{children}</tr>;
+  return (
+    <tr className="transition-colors duration-200 odd:bg-transparent even:bg-neutral-50/60 hover:bg-indigo-50/50 dark:even:bg-neutral-900/40 dark:hover:bg-indigo-500/[0.07]">
+      {children}
+    </tr>
+  );
 }
 
 function Blockquote({ children }: any) {
@@ -319,7 +340,7 @@ const sharedComponents = {
   pre: Pre,
   table: StyledTable,
   thead: Thead,
-  tbody: (props: any) => <tbody {...props} />,
+  tbody: Tbody,
   tr: Tr,
   th: Th,
   td: Td,
