@@ -141,7 +141,7 @@ export default async function RootLayout({
         />
       </head>
       <body className="flex min-h-screen flex-col font-sans md:max-w-7xl lg:mx-auto lg:flex-row">
-        <RootProvider>
+        <RootProvider theme={{ enabled: false, forcedTheme: "light", defaultTheme: "light" }}>
           <main
             className={cx(
               "relative flex min-w-0 flex-1 flex-col overflow-x-clip border-x border-border-primary/50",
