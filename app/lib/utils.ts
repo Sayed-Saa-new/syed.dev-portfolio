@@ -1,5 +1,4 @@
 import { Blog, Changelog, changelogItems, posts } from "#site/content";
-import { getAllPosts } from "@/app/lib/blog/posts";
 
 /**
  * Resolve a post cover image reference. DB-stored posts hold a full https://
