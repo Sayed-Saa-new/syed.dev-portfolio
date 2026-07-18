@@ -36,8 +36,8 @@ type Sub = { email: string; unsubscribe_token: string };
 async function sendPostToSubscribers(slug: string) {
   const supabase = await createSupabaseAdminClient();
 
-  const post = posts.find((p) => p.slug === slug && !p.draft);
-  if (!post) return { slug, error: "post_not_found", sent: 0, skipped: 0, failed: 0 };
+  const post = await getPostBySlug(slug);
+  if (!post || post.draft) return { slug, error: "post_not_found", sent: 0, skipped: 0, failed: 0 };
 
   const { data: subs, error: subsErr } = await supabase
     .from("blog_subscribers")
