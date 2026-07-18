@@ -5,7 +5,8 @@ import { SectionTitlePill } from "@/app/components/SectionTitlePill";
 import { HorizontalLine } from "@/app/components/HorizontalLine";
 import { NewsletterSignUp } from "@/app/components/NewsletterSignUp";
 import { posts } from "#site/content";
-import { getRelatedBlogPosts } from "@/app/lib/utils";
+import { getRelatedBlogPosts, resolveCoverUrl } from "@/app/lib/utils";
+import { getPostBySlug } from "@/app/lib/blog/posts";
 import { FeaturedBlogCard } from "@/app/components/FeaturedBlogCard";
 import { BgGradient } from "@/app/components/BgGradient";
 import readingDuration from "reading-duration";
@@ -58,18 +59,14 @@ function formatDate(date: string) {
 
 async function getPostFromParams(params: BlogPageProps["params"]) {
   const { slug } = await params;
-  const post = posts.find((post) => post.slug === slug);
-
-  if (!post) {
-    notFound();
-  }
-
+  const post = await getPostBySlug(slug);
+  if (!post) notFound();
   return post;
 }
 
 export default async function BlogPage({ params }: BlogPageProps) {
   const post = await getPostFromParams(params);
-  const similarPosts = getRelatedBlogPosts(post);
+  const similarPosts = await getRelatedBlogPosts(post);
 
   const readingTime = readingDuration(post.code, {
     wordsPerMinute: 200,
@@ -109,7 +106,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
         <div
           className="drama-shadow flex h-[350px] w-full flex-col justify-end rounded-2xl bg-cover bg-center bg-no-repeat p-8 md:mb-16 md:h-[600px] md:p-16"
           style={{
-            backgroundImage: `linear-gradient(to top, rgba(99, 102, 241, 1) 0%, rgba(99, 102, 241, 0.1) 30%, transparent 35%), url('/blog/${post.imageName}')`,
+            backgroundImage: `linear-gradient(to top, rgba(99, 102, 241, 1) 0%, rgba(99, 102, 241, 0.1) 30%, transparent 35%), url('${resolveCoverUrl(post.imageName)}')`,
           }}
         >
           <div className="mt-auto">
@@ -304,7 +301,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const slug = (await params).slug;
 
-  const post = posts.find((post) => post.slug === slug);
+  const post = await getPostBySlug(slug);
 
   if (!post) {
     return {

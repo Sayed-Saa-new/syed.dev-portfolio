@@ -1,10 +1,11 @@
 import { NextRequest } from "next/server";
 import { createSupabaseAdminClient } from "@/app/lib/supabase/server";
-import { posts } from "#site/content";
+import { getAllPosts, getPostBySlug } from "@/app/lib/blog/posts";
 import { siteMetadata } from "@/app/data/siteMetadata";
 import { sendMail } from "@/app/lib/email/smtp";
 import { newPostEmail } from "@/emails/new-post";
 import { unsubscribeUrl } from "@/emails/base";
+import { resolveCoverUrl } from "@/app/lib/utils";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -35,8 +36,8 @@ type Sub = { email: string; unsubscribe_token: string };
 async function sendPostToSubscribers(slug: string) {
   const supabase = await createSupabaseAdminClient();
 
-  const post = posts.find((p) => p.slug === slug && !p.draft);
-  if (!post) return { slug, error: "post_not_found", sent: 0, skipped: 0, failed: 0 };
+  const post = await getPostBySlug(slug);
+  if (!post || post.draft) return { slug, error: "post_not_found", sent: 0, skipped: 0, failed: 0 };
 
   const { data: subs, error: subsErr } = await supabase
     .from("blog_subscribers")
@@ -58,7 +59,10 @@ async function sendPostToSubscribers(slug: string) {
 
   const site = siteMetadata.siteUrl;
   const url = `${site}/blog/${post.slug}`;
-  const coverImage = post.imageName ? `${site}/blog/${post.imageName}` : undefined;
+  const resolvedCover = resolveCoverUrl(post.imageName);
+  const coverImage = resolvedCover
+    ? (resolvedCover.startsWith("http") ? resolvedCover : `${site}${resolvedCover}`)
+    : undefined;
   const publishedAt = new Date(post.publishedAt).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
@@ -105,13 +109,7 @@ export async function GET(req: NextRequest) {
   if (!authorize(req)) return new Response("Unauthorized", { status: 401 });
 
   // Only the newest published post — daily cron only sends the freshest post.
-  const recent = [...posts]
-    .filter((p) => !p.draft)
-    .sort(
-      (a, b) =>
-        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
-    )
-    .slice(0, 3);
+  const recent = (await getAllPosts()).slice(0, 3);
 
   const results: Awaited<ReturnType<typeof sendPostToSubscribers>>[] = [];
   for (const post of recent) {

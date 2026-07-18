@@ -1,6 +1,6 @@
 import {
   extractUniqueBlogCategories,
-  fetchAndSortBlogPosts,
+  fetchAndSortBlogPostsAsync,
 } from "app/lib/utils";
 import { NewsletterSignUp } from "@/app/components/NewsletterSignUp";
 import { BlogPostList } from "@/app/components/BlogPostList";
@@ -33,7 +33,7 @@ export default async function BlogPage({
 }: {
   searchParams: Promise<{ category?: string }>;
 }) {
-  const allPublishedBlogPosts = fetchAndSortBlogPosts();
+  const allPublishedBlogPosts = await fetchAndSortBlogPostsAsync();
   const categories = Array.from(
     extractUniqueBlogCategories(allPublishedBlogPosts),
   );

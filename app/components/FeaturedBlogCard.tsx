@@ -43,7 +43,7 @@ export function FeaturedBlogCard({
         <div className="overflow-hidden rounded-2xl">
           <img
             src={
-              `/blog/${imageName}` ||
+              (/^https?:\/\//i.test(imageName) ? imageName : `/blog/${imageName}`) ||
               "https://image.isu.pub/190918160849-8822f46c79620853d26cb2aad7175839/jpg/page_1_thumb_large.jpg"
             }
             alt=""

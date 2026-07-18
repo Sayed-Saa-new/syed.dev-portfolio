@@ -1,4 +1,16 @@
 import { Blog, Changelog, changelogItems, posts } from "#site/content";
+import { getAllPosts } from "@/app/lib/blog/posts";
+
+/**
+ * Resolve a post cover image reference. DB-stored posts hold a full https://
+ * URL (Supabase Storage). Legacy MDX posts hold just a filename (served from
+ * /public/blog/). Empty → empty (caller decides fallback).
+ */
+export function resolveCoverUrl(imageName: string | null | undefined): string {
+  if (!imageName) return "";
+  if (/^https?:\/\//i.test(imageName)) return imageName;
+  return `/blog/${imageName}`;
+}
 import { unstable_noStore as noStore } from "next/cache";
 import { notFound } from "next/navigation";
 import { ClassValue, clsx } from "clsx";
@@ -69,25 +81,32 @@ export function fetchAndSortChangelogEntrees(): Changelog[] {
   }
 }
 
+
 export function fetchAndSortBlogPosts(): Blog[] {
+  // Legacy sync accessor — MDX files only. Prefer fetchAndSortBlogPostsAsync
+  // in server components; that source merges Supabase-stored posts too.
   try {
-    const allPosts = posts; // Assuming 'posts' is a promise or async call
-    return allPosts
-      .filter((post) => !post.draft)
+    return [...posts]
+      .filter((p) => !p.draft)
       .sort(
         (a, b) =>
           new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
       );
-  } catch (error) {
-    notFound();
+  } catch {
+    return [];
   }
 }
 
-export function getRelatedBlogPosts(
+/** Preferred: merges Supabase posts + legacy MDX files, published only. */
+export async function fetchAndSortBlogPostsAsync(): Promise<Blog[]> {
+  return getAllPosts();
+}
+
+export async function getRelatedBlogPosts(
   currentPost: Blog,
   maxResults: number = 3,
-): Blog[] {
-  const allPosts = fetchAndSortBlogPosts().filter(
+): Promise<Blog[]> {
+  const allPosts = (await fetchAndSortBlogPostsAsync()).filter(
     (post) => post.slug !== currentPost.slug,
   );
 
