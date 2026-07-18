@@ -1,3 +1,5 @@
+export const revalidate = 30;
+
 import { notFound } from "next/navigation";
 import { MDXContent } from "@/app/components/mdx";
 import { unstable_noStore as noStore } from "next/cache";

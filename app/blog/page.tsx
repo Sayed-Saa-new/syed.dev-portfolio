@@ -1,3 +1,5 @@
+export const revalidate = 30;
+
 import { extractUniqueBlogCategories } from "app/lib/utils";
 import { fetchAndSortBlogPostsAsync } from "@/app/lib/blog/posts";
 import { NewsletterSignUp } from "@/app/components/NewsletterSignUp";
