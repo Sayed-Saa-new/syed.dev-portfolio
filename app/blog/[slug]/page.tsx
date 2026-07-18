@@ -1,7 +1,9 @@
 export const revalidate = 30;
 
+import "katex/dist/katex.min.css";
 import { notFound } from "next/navigation";
 import { FumadocsMDX } from "@/app/components/FumadocsMDX";
+
 import { unstable_noStore as noStore } from "next/cache";
 import { SectionTitlePill } from "@/app/components/SectionTitlePill";
 import { HorizontalLine } from "@/app/components/HorizontalLine";
