@@ -59,7 +59,10 @@ async function sendPostToSubscribers(slug: string) {
 
   const site = siteMetadata.siteUrl;
   const url = `${site}/blog/${post.slug}`;
-  const coverImage = post.imageName ? `${site}/blog/${post.imageName}` : undefined;
+  const resolvedCover = resolveCoverUrl(post.imageName);
+  const coverImage = resolvedCover
+    ? (resolvedCover.startsWith("http") ? resolvedCover : `${site}${resolvedCover}`)
+    : undefined;
   const publishedAt = new Date(post.publishedAt).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
