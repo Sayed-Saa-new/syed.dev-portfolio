@@ -81,7 +81,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
       {/* Table of Contents - fixed position, outside content flow */}
       <TableOfContents headings={post.headings} />
 
-      <article className={`${poemSerif.variable} space-y-6 md:space-y-8`}>
+      <article className={`${poemSerif.variable} space-y-3 md:space-y-8`}>
         {/* Article Banner Image */}
       <div className="relative">
         {/* Lines */}
@@ -107,7 +107,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
         <span className="absolute bottom-[44.5px] right-[48px] z-20 hidden h-2 w-px bg-white md:block"></span>
 
         <div
-          className="drama-shadow flex h-[350px] w-full flex-col justify-end rounded-2xl bg-cover bg-center bg-no-repeat p-8 md:h-[600px] md:p-16"
+          className="drama-shadow flex h-[320px] w-full flex-col justify-end rounded-2xl bg-cover bg-center bg-no-repeat p-5 sm:h-[380px] sm:p-8 md:h-[600px] md:p-16"
           style={{
             backgroundImage: `linear-gradient(to top, rgba(15, 15, 25, 0.95) 0%, rgba(15, 15, 25, 0.85) 30%, rgba(15, 15, 25, 0.55) 55%, rgba(15, 15, 25, 0.25) 80%, rgba(15, 15, 25, 0.15) 100%), url('${resolveCoverUrl(post.imageName)}')`,
           }}
@@ -123,8 +123,8 @@ export default async function BlogPage({ params }: BlogPageProps) {
                 </div>
               ))}
             </div>
-            <div className="mb-4 space-y-4 text-balance">
-              <h1 className="max-w-2xl text-4xl font-medium leading-[45px] tracking-tight text-white md:text-5xl md:leading-[60px]">
+            <div className="mb-3 space-y-2 text-balance md:mb-4 md:space-y-4">
+              <h1 className="max-w-2xl text-[22px] font-semibold leading-tight tracking-tight text-white sm:text-3xl md:text-5xl md:font-medium md:leading-[60px]">
                 {post.title}
               </h1>
               <p className="hidden max-w-3xl leading-8 text-slate-100 md:block">
