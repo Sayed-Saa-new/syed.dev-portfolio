@@ -18,25 +18,30 @@ export async function GET(request: NextRequest) {
 
     // Read the blog image (validate to prevent path traversal)
     let blogImageSrc = "";
-    const safeName = path.basename(imageName);
-    const isSafe =
-      !!safeName &&
-      safeName === imageName &&
-      !imageName.includes("..") &&
-      !imageName.includes("/") &&
-      !imageName.includes("\\") &&
-      /^[a-zA-Z0-9._-]+\.(jpg|jpeg|png|webp|gif)$/i.test(safeName);
-    if (isSafe) {
-      const blogDir = path.join(publicDir, "blog");
-      const blogImagePath = path.resolve(blogDir, safeName);
-      if (
-        blogImagePath.startsWith(path.resolve(blogDir) + path.sep) &&
-        fs.existsSync(blogImagePath)
-      ) {
-        const blogImageBuffer = fs.readFileSync(blogImagePath);
-        const ext = path.extname(imageName).toLowerCase().slice(1);
-        const mimeType = ext === "jpg" ? "jpeg" : ext;
-        blogImageSrc = `data:image/${mimeType};base64,${blogImageBuffer.toString("base64")}`;
+    if (/^https?:\/\//i.test(imageName)) {
+      // Full URL (e.g. Supabase Storage) — use directly; ImageResponse fetches it.
+      blogImageSrc = imageName;
+    } else {
+      const safeName = path.basename(imageName);
+      const isSafe =
+        !!safeName &&
+        safeName === imageName &&
+        !imageName.includes("..") &&
+        !imageName.includes("/") &&
+        !imageName.includes("\\") &&
+        /^[a-zA-Z0-9._-]+\.(jpg|jpeg|png|webp|gif)$/i.test(safeName);
+      if (isSafe) {
+        const blogDir = path.join(publicDir, "blog");
+        const blogImagePath = path.resolve(blogDir, safeName);
+        if (
+          blogImagePath.startsWith(path.resolve(blogDir) + path.sep) &&
+          fs.existsSync(blogImagePath)
+        ) {
+          const blogImageBuffer = fs.readFileSync(blogImagePath);
+          const ext = path.extname(imageName).toLowerCase().slice(1);
+          const mimeType = ext === "jpg" ? "jpeg" : ext;
+          blogImageSrc = `data:image/${mimeType};base64,${blogImageBuffer.toString("base64")}`;
+        }
       }
     }
 
