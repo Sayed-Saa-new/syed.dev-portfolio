@@ -57,8 +57,15 @@ export async function POST(req: NextRequest) {
     return Response.json({ ok: false, error: "file field required" }, { status: 400, headers: CORS });
   }
   const slug = (form.get("slug") as string | null)?.replace(/[^a-z0-9-_]/gi, "") || "cover";
+  const folderRaw = (form.get("folder") as string | null) || "covers";
+  // Allow only safe folder names like "covers", "inline", "inline/my-slug"
+  const folder = folderRaw
+    .split("/")
+    .map((s) => s.replace(/[^a-z0-9-_]/gi, ""))
+    .filter(Boolean)
+    .join("/") || "covers";
   const ext = safeExt(file.name, file.type);
-  const key = `${slug}-${Date.now()}.${ext}`;
+  const key = `${folder}/${slug}-${Date.now()}.${ext}`;
 
   const supabase = await createSupabaseAdminClient();
   const buf = new Uint8Array(await file.arrayBuffer());
