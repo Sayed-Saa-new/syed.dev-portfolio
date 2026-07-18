@@ -113,7 +113,7 @@ export async function GET(req: NextRequest) {
     )
     .slice(0, 3);
 
-  const results = [];
+  const results: Awaited<ReturnType<typeof sendPostToSubscribers>>[] = [];
   for (const post of recent) {
     results.push(await sendPostToSubscribers(post.slug));
   }
