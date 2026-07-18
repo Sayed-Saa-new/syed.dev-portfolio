@@ -1,6 +1,6 @@
 import {
   extractUniqueBlogCategories,
-  fetchAndSortBlogPosts,
+  fetchAndSortBlogPostsAsync,
 } from "app/lib/utils";
 import { NewsletterSignUp } from "@/app/components/NewsletterSignUp";
 import { BlogPostList } from "@/app/components/BlogPostList";
