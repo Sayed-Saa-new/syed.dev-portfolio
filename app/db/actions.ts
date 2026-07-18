@@ -228,87 +228,63 @@ export async function toggleReaction(slug: string, reactionType: ReactionType) {
 
 export async function createContact(
   email: string,
-  honeypot?: string
+  honeypot?: string,
 ): Promise<CreateContactResponse> {
-  // If honeypot field is filled, it's likely a bot - silently reject
-  // Return success to fool the bot, but don't actually create the contact
-  if (honeypot) {
-    return { success: true };
+  // Bot honeypot — silently succeed.
+  if (honeypot) return { success: true };
+
+  const clean = email.trim().toLowerCase();
+  if (!clean || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clean)) {
+    return { success: false, error: "Invalid email" };
   }
 
   try {
-    const apiKey = process.env.LOOPS_API_KEY;
-    const welcomeTemplateId = process.env.LOOPS_WELCOME_TEMPLATE_ID;
+    const supabase = await createSupabaseAdminClient();
 
-    if (!apiKey) {
-      console.error("[newsletter] Missing LOOPS_API_KEY env var");
-      return { success: false, error: "Server misconfiguration" };
+    // Upsert subscriber. Generate token via SQL default OR here as fallback.
+    const token =
+      typeof crypto !== "undefined" && "randomUUID" in crypto
+        ? crypto.randomUUID().replace(/-/g, "") + crypto.randomUUID().replace(/-/g, "").slice(0, 16)
+        : Math.random().toString(36).slice(2) + Date.now().toString(36);
+
+    const { data, error } = await supabase
+      .from("blog_subscribers")
+      .upsert(
+        { email: clean, status: "active", unsubscribed_at: null },
+        { onConflict: "email" },
+      )
+      .select("email, unsubscribe_token")
+      .maybeSingle();
+
+    if (error) {
+      console.error("[newsletter] upsert failed:", error.message);
+      return { success: false, error: "Could not save subscription" };
     }
 
-    const authHeader = {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-    };
-
-    // 1) Add contact to Loops audience.
-    const contactRes = await fetch(
-      "https://app.loops.so/api/v1/contacts/create",
-      {
-        method: "POST",
-        headers: authHeader,
-        body: JSON.stringify({
-          email,
-          userGroup: "Blogfolio",
-          source: "syed.flinkeo.online",
-        }),
-      },
-    );
-
-    if (!contactRes.ok) {
-      const body = await contactRes.text().catch(() => "");
-      console.error(
-        `[newsletter] Loops contacts/create failed: ${contactRes.status} ${body}`,
-      );
-      throw new Error("Failed to create contact");
-    }
-
-    // 2) Fire the welcome transactional email explicitly when a template ID is set.
-    //    If not configured, rely on Loops Audience/Event automation instead.
-    if (welcomeTemplateId) {
-      try {
-        const welcomeRes = await fetch(
-          "https://app.loops.so/api/v1/transactional",
-          {
-            method: "POST",
-            headers: authHeader,
-            body: JSON.stringify({
-              transactionalId: welcomeTemplateId,
-              email,
-              dataVariables: {
-                site: "syed.flinkeo.online",
-              },
-            }),
-          },
-        );
-        if (!welcomeRes.ok) {
-          const body = await welcomeRes.text().catch(() => "");
-          console.warn(
-            `[newsletter] Loops welcome send failed: ${welcomeRes.status} ${body}`,
-          );
-        }
-      } catch (mailErr) {
-        console.warn("[newsletter] Welcome email error:", mailErr);
-      }
-    }
-
-    // 3) Persist subscriber locally so the RSS-to-Loops cron can email them.
-    try {
-      const supabase = await createSupabaseAdminClient();
+    let subscriberToken = data?.unsubscribe_token as string | null | undefined;
+    if (!subscriberToken) {
+      // Token column may exist without default in older DBs — write one.
       await supabase
         .from("blog_subscribers")
-        .upsert({ email }, { onConflict: "email" });
-    } catch (dbErr) {
-      console.warn("[newsletter] Failed to store subscriber locally:", dbErr);
+        .update({ unsubscribe_token: token })
+        .eq("email", clean);
+      subscriberToken = token;
+    }
+
+    // Fire welcome email via SMTP. Non-blocking failure.
+    try {
+      const { sendMail } = await import("@/app/lib/email/smtp");
+      const { welcomeEmail } = await import("@/emails/welcome");
+      const { unsubscribeUrl } = await import("@/emails/base");
+      const { subject, html } = welcomeEmail({ email: clean, token: subscriberToken });
+      await sendMail({
+        to: clean,
+        subject,
+        html,
+        unsubscribeUrl: unsubscribeUrl(subscriberToken),
+      });
+    } catch (mailErr) {
+      console.warn("[newsletter] welcome send failed:", mailErr);
     }
 
     return { success: true };

@@ -1,8 +1,8 @@
 {
   "crons": [
     {
-      "path": "/api/public/rss-to-loops",
-      "schedule": "0 * * * *"
+      "path": "/api/public/send-blog-emails",
+      "schedule": "0 3 * * *"
     }
   ]
 }
