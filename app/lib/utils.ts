@@ -5,8 +5,10 @@ import { Blog, Changelog, changelogItems, posts } from "#site/content";
  * URL (Supabase Storage). Legacy MDX posts hold just a filename (served from
  * /public/blog/). Empty → empty (caller decides fallback).
  */
+export const DEFAULT_BLOG_COVER = "/blog/default-cover.svg";
+
 export function resolveCoverUrl(imageName: string | null | undefined): string {
-  if (!imageName) return "";
+  if (!imageName || !imageName.trim()) return DEFAULT_BLOG_COVER;
   if (/^https?:\/\//i.test(imageName)) return imageName;
   return `/blog/${imageName}`;
 }
