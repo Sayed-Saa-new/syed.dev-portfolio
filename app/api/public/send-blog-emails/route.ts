@@ -1,10 +1,11 @@
 import { NextRequest } from "next/server";
 import { createSupabaseAdminClient } from "@/app/lib/supabase/server";
-import { posts } from "#site/content";
+import { getAllPosts, getPostBySlug } from "@/app/lib/blog/posts";
 import { siteMetadata } from "@/app/data/siteMetadata";
 import { sendMail } from "@/app/lib/email/smtp";
 import { newPostEmail } from "@/emails/new-post";
 import { unsubscribeUrl } from "@/emails/base";
+import { resolveCoverUrl } from "@/app/lib/utils";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
