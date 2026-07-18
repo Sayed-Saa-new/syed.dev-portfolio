@@ -404,7 +404,7 @@ article.prose tbody tr:hover td {
 /* The content wrapper */
 .toc-content {
   position: relative;
-  padding-left: 20px;
+  padding-left: 28px;
 }
 
 /* SVG container for the path line */
