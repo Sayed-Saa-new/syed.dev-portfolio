@@ -91,8 +91,9 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
   // Track scroll position + horizontal alignment so TOC side padding
   // matches the content column's side padding from the page border.
   useEffect(() => {
-    const contentWrapper = document.querySelector("article .wrapper.z-10");
+    const contentWrapper = document.getElementById("article-content");
     if (!contentWrapper) return;
+
 
     const recalc = () => {
       const wrapperRect = contentWrapper.getBoundingClientRect();
