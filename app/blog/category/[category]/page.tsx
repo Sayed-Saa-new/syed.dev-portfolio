@@ -1,13 +1,33 @@
 export const revalidate = 30;
 
+import type { Metadata } from "next";
 import { extractUniqueBlogCategories } from "app/lib/utils";
 import { fetchAndSortBlogPostsAsync } from "@/app/lib/blog/posts";
 import { NewsletterSignUp } from "@/app/components/NewsletterSignUp";
-import { BlogPostList } from "@/app/components/BlogPostList";
-import { CategorySelect } from "@/app/components/CategorySelect";
+import { MotionFadeIn } from "@/app/components/MotionFadeIn";
 import { createSupabaseAdminClient } from "@/app/lib/supabase/server";
+import { PortfolioBlogHeader } from "@/app/components/blog/portfolio-blog-header";
+import { PortfolioBlogGrid } from "@/app/components/blog/portfolio-blog-grid";
 
-async function getViewCountsForSlugs(slugs: string[]): Promise<Record<string, number>> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ category: string }>;
+}): Promise<Metadata> {
+  const { category } = await params;
+  const decoded = decodeURIComponent(category);
+  const capitalized = decoded.charAt(0).toUpperCase() + decoded.slice(1);
+
+  return {
+    title: `${capitalized} Articles | Syed`,
+    description: `Deep dives, articles, and engineering notes about ${decoded} by Syed.`,
+    alternates: { canonical: `/blog/category/${encodeURIComponent(category)}` },
+  };
+}
+
+async function getViewCountsForSlugs(
+  slugs: string[],
+): Promise<Record<string, number>> {
   if (slugs.length === 0) return {};
   try {
     const supabase = await createSupabaseAdminClient();
@@ -34,9 +54,8 @@ export default async function CategoryPage({
     extractUniqueBlogCategories(allPublishedBlogPosts),
   );
 
-  const category = (await params).category
-    ? (await params).category.toLowerCase()
-    : "";
+  const rawCategory = (await params).category || "";
+  const category = decodeURIComponent(rawCategory).toLowerCase();
 
   const categoryPosts = allPublishedBlogPosts.filter((post) => {
     return (
@@ -52,20 +71,27 @@ export default async function CategoryPage({
   );
 
   return (
-    <div className="mt-[100px] w-full space-y-[80px]">
-      <title>{category} Articles</title>
-      <h1 className="mx-auto max-w-2xl text-center text-4xl font-medium leading-tight tracking-tighter text-text-primary md:text-6xl md:leading-[64px]">
-        {`Articles about ${category || "Unknown Category"}`}
-      </h1>
-
-      <CategorySelect categories={categories} currentCategory={category} />
-
-      <BlogPostList posts={categoryPosts} viewCounts={viewCounts} />
-      <NewsletterSignUp
-        title={`Stay updated on ${category} articles`}
-        description={`Sign up to receive notifications about new blog posts, insights, and exclusive content directly in your inbox.`}
-        buttonText="Get Notified"
+    <div className="space-y-12 pb-16 pt-6 sm:space-y-16 sm:pb-24 sm:pt-10">
+      {/* Header with RenderX-style spring category pills & mobile menu */}
+      <PortfolioBlogHeader
+        categories={categories}
+        currentCategory={category}
       />
+
+      {/* Blog Grid with Framer Motion staggered spring entrance & 1:1 RenderX cards */}
+      <PortfolioBlogGrid
+        posts={categoryPosts}
+        viewCounts={viewCounts}
+      />
+
+      {/* Newsletter Section */}
+      <MotionFadeIn delay={0.1} y={30}>
+        <NewsletterSignUp
+          title={`Stay updated on ${category} articles`}
+          description={`Sign up to receive notifications about new blog posts, insights, and exclusive content directly in your inbox.`}
+          buttonText="Get Notified"
+        />
+      </MotionFadeIn>
     </div>
   );
 }
