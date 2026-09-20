@@ -62,31 +62,39 @@ export function Resume() {
     <div>
       <div className="mx-auto max-w-6xl px-4">
         <div className="relative">
-          <div className="divide-y divide-gray-100">
+          <div className="divide-y divide-border-primary/50">
             {resumeData.experiences.map((experience) => (
               <div
                 key={experience.company}
-                className="grid grid-cols-[1fr,5fr] gap-6 py-12 first:pt-0 last:pb-0 md:grid-cols-[2fr,1fr,4fr]"
+                className="grid grid-cols-1 gap-6 py-12 first:pt-0 last:pb-0 md:grid-cols-[2fr,1fr,4fr]"
               >
+                {/* Desktop Company & Period */}
                 <div className="hidden md:block">
-                  <h3 className="text-xl font-bold">{experience.company}</h3>
-                  <p className="text-sm text-gray-600">{experience.period}</p>
+                  <h3 className="text-xl font-bold text-text-primary">{experience.company}</h3>
+                  <p className="text-sm text-text-secondary">{experience.period}</p>
                 </div>
 
-                <div />
+                {/* Timeline Spacer (Desktop) */}
+                <div className="hidden md:block" />
 
                 <div className="space-y-6">
+                  {/* Mobile Company & Period */}
+                  <div className="border-b border-border-primary/40 pb-3 md:hidden">
+                    <h3 className="text-xl font-bold text-text-primary">{experience.company}</h3>
+                    <p className="text-sm text-text-secondary">{experience.period}</p>
+                  </div>
+
                   {experience.positions.map((position, index) => (
                     <div
                       key={`${experience.company}-${index}`}
                       className="space-y-4"
                     >
-                      <h4 className="text-lg font-semibold">
+                      <h4 className="text-lg font-semibold text-text-primary">
                         {position.title}
                       </h4>
                       <div className="space-y-3">
                         {position.description.map((desc, i) => (
-                          <p key={i} className="text-gray-600">
+                          <p key={i} className="text-text-secondary leading-relaxed">
                             {desc}
                           </p>
                         ))}
@@ -98,28 +106,29 @@ export function Resume() {
             ))}
           </div>
 
-          <div className="absolute top-0 h-full w-8 md:left-[calc(28%_-_1rem)]">
+          <div className="hidden md:block absolute top-0 h-full w-8 left-[calc(28%_-_1rem)]">
             <Timeline avatarUrl={resumeData.avatarUrl} />
           </div>
         </div>
 
         {resumeData.education && resumeData.education.length > 0 && (
-          <div className="mt-20 border-t border-gray-100 pt-12">
-            <h3 className="mb-8 text-2xl font-bold">Education</h3>
+          <div className="mt-20 border-t border-border-primary/50 pt-12">
+            <h3 className="mb-8 text-2xl font-bold text-text-primary">Education</h3>
             <div className="space-y-8">
               {resumeData.education.map((edu) => (
                 <div
                   key={edu.school}
-                  className="grid grid-cols-1 gap-4 md:grid-cols-[2fr,4fr]"
+                  className="grid grid-cols-1 gap-4 md:grid-cols-[2fr,1fr,4fr]"
                 >
                   <div>
-                    <h4 className="text-xl font-bold">{edu.school}</h4>
-                    <p className="text-sm text-gray-600">{edu.period}</p>
+                    <h4 className="text-xl font-bold text-text-primary">{edu.school}</h4>
+                    <p className="text-sm text-text-secondary">{edu.period}</p>
                   </div>
+                  <div className="hidden md:block" />
                   <div>
-                    <p className="text-lg font-semibold">{edu.degree}</p>
+                    <p className="text-lg font-semibold text-text-primary">{edu.degree}</p>
                     {edu.description && (
-                      <p className="mt-2 text-gray-600">{edu.description}</p>
+                      <p className="mt-2 text-text-secondary">{edu.description}</p>
                     )}
                   </div>
                 </div>

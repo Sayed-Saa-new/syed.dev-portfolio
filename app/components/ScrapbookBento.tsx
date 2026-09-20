@@ -187,16 +187,16 @@ export function ScrapbookBento({ className }: { className?: string }) {
     <BentoCard
       colSpan={9}
       rowSpan={4}
-      height="h-[220px]"
+      height="h-auto min-h-[220px] lg:h-[220px]"
       showHoverGradient={false}
       hideOverflow={false}
     >
       <h2 className="mb-2 font-medium">Scrapbook</h2>
-      <div className="absolute top-0 h-[220px] w-full overflow-hidden bg-[radial-gradient(#e5e7eb_1px,transparent_2px)] [background-size:14px_14px] [mask-image:radial-gradient(ellipse_80%_70%_at_50%_50%,black_40%,transparent_100%)]"></div>
+      <div className="absolute top-0 h-full w-full overflow-hidden bg-[radial-gradient(#e5e7eb_1px,transparent_2px)] [background-size:14px_14px] [mask-image:radial-gradient(ellipse_80%_70%_at_50%_50%,black_40%,transparent_100%)]"></div>
       <div
         key={resetIndex}
         className={cn(
-          "bg-secondary @container xs:max-h-none w-full rounded-3xl p-6",
+          "bg-secondary @container xs:max-h-none w-full rounded-3xl p-4 sm:p-6",
           className,
         )}
       >
@@ -204,7 +204,7 @@ export function ScrapbookBento({ className }: { className?: string }) {
           variants={container}
           initial="hidden"
           animate="shown"
-          className="-mt-8 grid h-full w-full grid-cols-4 items-center gap-4"
+          className="-mt-4 sm:-mt-8 grid h-full w-full grid-cols-2 sm:grid-cols-4 items-center justify-items-center gap-4"
         >
           <Sticker
             caption="Late-night chai fuels most of my code. If it's past midnight and something's shipping, there's a cup next to my keyboard."

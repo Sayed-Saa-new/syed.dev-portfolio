@@ -1,6 +1,18 @@
 import type { Metadata } from "next";
+import React from "react";
 import { NewsletterSignUp } from "@/app/components/NewsletterSignUp";
-import { HorizontalLine } from "@/app/components/HorizontalLine";
+import { getTimeOfDayGreeting } from "@/app/lib/utils";
+import { CurrentlyPlayingBento } from "@/app/components/CurrentlyPlayingBento";
+import { ConnectionsBento } from "@/app/components/ConnectionsBento";
+import { ScrapbookBento } from "@/app/components/ScrapbookBento";
+import { ShadowBox } from "@/app/components/ShadowBox";
+import { Resume } from "@/app/components/Resume";
+import { StatsBento } from "@/app/components/StatsBento";
+import { CurrentlyReadingBento } from "@/app/components/CurrentlyReadingBento";
+import { GridWrapper } from "@/app/components/GridWrapper";
+import { AboutTrackPattern } from "@/app/components/AboutTrackPattern";
+import { Photo } from "@/app/components/Photo";
+import { MotionFadeIn } from "@/app/components/MotionFadeIn";
 
 export const metadata: Metadata = {
   title: "About Syed — Software & AI Engineer from Bangladesh",
@@ -15,19 +27,6 @@ export const metadata: Metadata = {
     type: "profile",
   },
 };
-import { getTimeOfDayGreeting } from "app/lib/utils";
-import React from "react";
-import { CurrentlyPlayingBento } from "@/app/components/CurrentlyPlayingBento";
-import { ConnectionsBento } from "@/app/components/ConnectionsBento";
-import { ScrapbookBento } from "@/app/components/ScrapbookBento";
-import { ShadowBox } from "@/app/components/ShadowBox";
-import { Resume } from "app/components/Resume";
-import { StatsBento } from "@/app/components/StatsBento";
-import { CurrentlyReadingBento } from "@/app/components/CurrentlyReadingBento";
-import { GridWrapper } from "@/app/components/GridWrapper";
-import { AboutTrackPattern } from "@/app/components/AboutTrackPattern";
-import { Photo } from "@/app/components/Photo";
-import { MotionFadeIn } from "@/app/components/MotionFadeIn";
 
 export default function AboutPage() {
   const timeOfDayGreeting = getTimeOfDayGreeting();
@@ -52,8 +51,7 @@ export default function AboutPage() {
                 <div className="relative grid grid-cols-3">
                   <div className="relative z-20 -translate-y-2">
                     <Photo
-                      width={140}
-                      height={140}
+                      className="w-[105px] h-[105px] sm:w-[125px] sm:h-[125px] md:w-[140px] md:h-[140px]"
                       src="/syed_headshot_2.webp"
                       alt="Syed speaking at an event"
                       direction="left"
@@ -61,8 +59,7 @@ export default function AboutPage() {
                   </div>
                   <div className="relative z-30">
                     <Photo
-                      width={140}
-                      height={140}
+                      className="w-[105px] h-[105px] sm:w-[125px] sm:h-[125px] md:w-[140px] md:h-[140px]"
                       src="/syed_headshot_1.webp"
                       alt="Syed"
                       direction="right"
@@ -70,8 +67,7 @@ export default function AboutPage() {
                   </div>
                   <div className="relative z-20 translate-y-4">
                     <Photo
-                      width={140}
-                      height={140}
+                      className="w-[105px] h-[105px] sm:w-[125px] sm:h-[125px] md:w-[140px] md:h-[140px]"
                       src="/syed_headshot_3.webp"
                       alt="Syed"
                       direction="left"
@@ -83,19 +79,13 @@ export default function AboutPage() {
           </div>
         </GridWrapper>
 
-        <span className="absolute left-1/2 top-40 -translate-y-1/2 translate-x-1/2">
-          <HorizontalLine />
-        </span>
-
         {/* About */}
         <div className="relative space-y-8 text-center">
-          <MotionFadeIn className="space-y-4">
-            <GridWrapper>
+          <MotionFadeIn>
+            <GridWrapper className="space-y-3 py-6">
               <div className="text-center text-sm font-medium text-indigo-600">
                 <span>About</span>
               </div>
-            </GridWrapper>
-            <GridWrapper>
               <h2 className="mx-auto max-w-xl text-balance text-3xl font-medium leading-[40px] tracking-tighter text-text-primary">
                 Here&apos;s a quick intro about me and what I love to do
               </h2>
@@ -108,7 +98,7 @@ export default function AboutPage() {
 
             {/* Section 1 */}
             <MotionFadeIn y={30}>
-            <div className="grid grid-cols-1 gap-8 py-12 pr-12 lg:grid-cols-2 lg:items-center lg:justify-between lg:py-32 lg:pb-20 xl:py-32">
+            <div className="grid grid-cols-1 gap-8 py-16 px-4 lg:px-0 lg:pr-12 lg:grid-cols-2 lg:items-center lg:justify-between lg:py-24 xl:py-32">
               <div className="flex flex-col items-center text-left lg:order-2 lg:items-start">
                 <div className="mb-8 lg:hidden">
                   <div className="relative mx-auto w-fit">
@@ -147,7 +137,7 @@ export default function AboutPage() {
 
             {/* Section 2 */}
             <MotionFadeIn y={30}>
-            <div className="grid grid-cols-1 gap-8 py-24 lg:grid-cols-2 lg:items-center lg:justify-between lg:pl-12">
+            <div className="grid grid-cols-1 gap-8 py-16 px-4 lg:px-0 lg:pl-12 lg:grid-cols-2 lg:items-center lg:justify-between lg:py-24 xl:py-32">
               <div className="flex flex-col items-center text-left lg:items-start">
                 <div className="mb-8 lg:hidden">
                   <div className="relative mx-auto w-fit">
@@ -185,7 +175,7 @@ export default function AboutPage() {
 
             {/* Section 3 */}
             <MotionFadeIn y={30}>
-            <div className="grid grid-cols-1 gap-8 pr-12 lg:grid-cols-2 lg:items-center lg:justify-between xl:py-24">
+            <div className="grid grid-cols-1 gap-8 py-16 px-4 lg:px-0 lg:pr-12 lg:grid-cols-2 lg:items-center lg:justify-between lg:py-24 xl:py-32">
               <div className="flex flex-col items-center text-left lg:order-2 lg:items-start">
                 <div className="mb-8 lg:hidden">
                   <div className="relative mx-auto w-fit">
@@ -211,7 +201,7 @@ export default function AboutPage() {
                   and stay curious about how the world is changing around AI.
                 </p>
               </div>
-              <div className="hidden lg:block">
+              <div className="hidden lg:order-1 lg:block">
                 <div className="relative mx-auto w-fit">
                   <ShadowBox width={188} height={278}></ShadowBox>
                   <img
@@ -226,7 +216,7 @@ export default function AboutPage() {
 
             {/* Section 4 */}
             <MotionFadeIn y={30}>
-            <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-center lg:justify-between lg:py-32 lg:pl-12 xl:py-24">
+            <div className="grid grid-cols-1 gap-8 py-16 px-4 lg:px-0 lg:pl-12 lg:grid-cols-2 lg:items-center lg:justify-between lg:py-24 xl:py-32">
               <div className="flex flex-col items-center text-left lg:items-start">
                 <div className="mb-8 lg:hidden">
                   <div className="relative mx-auto w-fit">
@@ -268,20 +258,16 @@ export default function AboutPage() {
           </div>
         </div>
 
-        {/* About */}
-        <MotionFadeIn className="relative space-y-8 text-center">
-          <div className="space-y-4">
-            <GridWrapper>
-              <div className="text-center text-sm font-medium text-indigo-600">
-                <span>Experience</span>
-              </div>
-            </GridWrapper>
-            <GridWrapper>
-              <h2 className="mx-auto max-w-lg text-balance text-3xl font-medium leading-[40px] tracking-tighter text-text-primary">
-                My work history and achievements timeline.
-              </h2>
-            </GridWrapper>
-          </div>
+        {/* Experience */}
+        <MotionFadeIn className="relative text-center">
+          <GridWrapper className="space-y-3 py-6">
+            <div className="text-center text-sm font-medium text-indigo-600">
+              <span>Experience</span>
+            </div>
+            <h2 className="mx-auto max-w-lg text-balance text-3xl font-medium leading-[40px] tracking-tighter text-text-primary">
+              My work history and achievements timeline.
+            </h2>
+          </GridWrapper>
         </MotionFadeIn>
         <MotionFadeIn delay={0.1} y={30}>
           <div className="space-y-16">
@@ -292,14 +278,12 @@ export default function AboutPage() {
         </MotionFadeIn>
 
         <section className="relative space-y-16">
-          <MotionFadeIn className="space-y-4">
-            <GridWrapper>
+          <MotionFadeIn>
+            <GridWrapper className="space-y-3 py-6">
               <div className="text-center text-sm font-medium text-indigo-600">
                 <span>More</span>
               </div>
-            </GridWrapper>
 
-            <GridWrapper>
               <h2 className="mx-auto max-w-lg text-balance text-center text-3xl font-medium leading-10 tracking-tight text-text-primary">
                 Here&apos;s what sets me apart and makes me unique
               </h2>
@@ -309,14 +293,14 @@ export default function AboutPage() {
           {/* About Grid */}
           <MotionFadeIn delay={0.1} y={30}>
             <GridWrapper>
-              <div className="grid grid-cols-1 gap-2 lg:grid-cols-12">
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:gap-2">
                 <div className="lg:col-span-3 lg:row-span-6">
                   <CurrentlyPlayingBento />
                 </div>
-                <div className="hidden lg:col-span-7 lg:row-span-5 lg:block">
+                <div className="lg:col-span-7 lg:row-span-5">
                   <ScrapbookBento />
                 </div>
-                <div className="hidden lg:col-span-2 lg:col-start-11 lg:row-span-10 lg:block lg:min-h-[50px]">
+                <div className="lg:col-span-2 lg:col-start-11 lg:row-span-10">
                   <CurrentlyReadingBento />
                 </div>
                 <div className="lg:col-span-7 lg:row-span-8">

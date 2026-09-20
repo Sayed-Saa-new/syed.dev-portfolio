@@ -17,27 +17,40 @@ export function AboutTrackPattern() {
   const [position, setPosition] = useState({ x: 145, y: 0 });
 
   useEffect(() => {
-    if (!pathRef.current && !verticalPathRef.current) return;
-    const length =
-      pathRef.current?.getTotalLength() ||
-      verticalPathRef.current?.getTotalLength() ||
-      0;
-    setPathLength(length);
+    const updateLength = () => {
+      try {
+        if (pathRef.current) {
+          const length = pathRef.current.getTotalLength?.() || 0;
+          if (length > 0) {
+            setPathLength(length);
+          }
+        }
+      } catch {
+        // SVG element may be hidden
+      }
+    };
+
+    updateLength();
+    window.addEventListener("resize", updateLength);
+    return () => window.removeEventListener("resize", updateLength);
   }, []);
 
   useEffect(() => {
-    if ((!pathRef.current && !verticalPathRef.current) || !pathLength) return;
+    if (!pathRef.current || !pathLength) return;
 
     return scrollYProgress.on("change", (latest) => {
       const clampedProgress = Math.max(0, Math.min(latest, 1));
       if (latest > 0) {
-        // Get the active path based on screen size
-        const activePath =
-          window.innerWidth >= 1024 ? pathRef.current : verticalPathRef.current;
+        if (window.innerWidth < 1024) return;
+        const activePath = pathRef.current;
         if (!activePath) return;
 
-        const point = activePath.getPointAtLength(pathLength * clampedProgress);
-        setPosition({ x: point.x, y: point.y });
+        try {
+          const point = activePath.getPointAtLength(pathLength * clampedProgress);
+          setPosition({ x: point.x, y: point.y });
+        } catch {
+          // Ignore SVG point calculation error if element is unmounted
+        }
       }
     });
   }, [pathLength, scrollYProgress]);

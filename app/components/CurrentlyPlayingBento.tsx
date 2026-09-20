@@ -53,20 +53,37 @@ export function CurrentlyPlayingBento() {
             <p className="max-h-[150px] overflow-hidden text-base text-text-secondary">
               <span className="line-clamp-4 text-ellipsis">
                 I&apos;m listening to{" "}
-                <a className="font-semibold" href={currentTrack.songUrl}>
+                <a
+                  className="font-semibold underline decoration-border-primary/50 underline-offset-2 hover:decoration-indigo-500"
+                  href={currentTrack.songUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   {currentTrack.title}
                 </a>{" "}
                 by{" "}
                 <a
-                  className="font-semibold"
-                  href={`https://open.spotify.com/artist/${currentTrack.artistId}`}
+                  className="font-semibold underline decoration-border-primary/50 underline-offset-2 hover:decoration-indigo-500"
+                  href={
+                    currentTrack.artistId
+                      ? `https://open.spotify.com/artist/${currentTrack.artistId}`
+                      : currentTrack.songUrl
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   {currentTrack.artist}
                 </a>{" "}
                 from the album{" "}
                 <a
-                  className="font-semibold"
-                  href={`https://open.spotify.com/album/${currentTrack.albumId}`}
+                  className="font-semibold underline decoration-border-primary/50 underline-offset-2 hover:decoration-indigo-500"
+                  href={
+                    currentTrack.albumId
+                      ? `https://open.spotify.com/album/${currentTrack.albumId}`
+                      : currentTrack.songUrl
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   {currentTrack.albumName}
                 </a>

@@ -2,7 +2,7 @@ import { BentoCard } from "./BentoCard";
 
 export function CurrentlyReadingBento() {
   return (
-    <BentoCard height="h-full" className="group">
+    <BentoCard height="h-[220px] lg:h-full" className="group">
       <h2 className="mb-2 font-medium">Currently Reading</h2>
       <div className="relative h-full">
         <div className="absolute left-10 top-6 h-full origin-bottom-left transition-transform duration-300 ease-in-out group-hover:-rotate-3">
