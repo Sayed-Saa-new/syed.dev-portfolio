@@ -44,6 +44,15 @@ async function rowToBlog(row: DbRow): Promise<Blog> {
   };
 }
 
+async function safeRowToBlog(row: DbRow): Promise<Blog | null> {
+  try {
+    return await rowToBlog(row);
+  } catch (err) {
+    console.error(`[blog/posts] Failed to compile post "${row.slug}":`, err);
+    return null;
+  }
+}
+
 const getSupabasePublishedPosts = unstable_cache(
   async (): Promise<Blog[]> => {
     try {
@@ -55,8 +64,12 @@ const getSupabasePublishedPosts = unstable_cache(
         .lte("published_at", new Date().toISOString())
         .order("published_at", { ascending: false });
       if (error || !data) return [];
-      return await Promise.all(data.map((r) => rowToBlog(r as DbRow)));
-    } catch {
+      const results = await Promise.all(
+        data.map((r) => safeRowToBlog(r as DbRow)),
+      );
+      return results.filter((p): p is Blog => p !== null);
+    } catch (err) {
+      console.error("[blog/posts] Failed to fetch published posts:", err);
       return [];
     }
   },
@@ -109,10 +122,13 @@ export async function getAllPostsIncludingDrafts(): Promise<Blog[]> {
       .select("*")
       .order("updated_at", { ascending: false });
     const dbPosts = data
-      ? await Promise.all((data as DbRow[]).map(rowToBlog))
+      ? (await Promise.all((data as DbRow[]).map(safeRowToBlog))).filter(
+          (p): p is Blog => p !== null,
+        )
       : [];
     return dbPosts;
-  } catch {
+  } catch (err) {
+    console.error("[blog/posts] Failed to fetch all posts:", err);
     return [];
   }
 }

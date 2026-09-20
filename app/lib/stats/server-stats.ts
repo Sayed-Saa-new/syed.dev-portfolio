@@ -2,7 +2,6 @@
 
 import { unstable_cache } from "next/cache";
 import { createSupabaseAdminClient } from "../supabase/server";
-import { posts } from "#site/content";
 import type { ServerStats, ReactionType, ArticleMetric } from "./types";
 
 const VALID_REACTIONS: ReactionType[] = [
@@ -62,13 +61,25 @@ export const getServerStats = unstable_cache(
         0
       );
 
+      // Get blog post titles & covers from Supabase
+      const { data: blogPostsData } = await supabase
+        .from("blog_posts")
+        .select("slug, title, cover_image_url");
+
+      const postsMap = new Map(
+        blogPostsData?.map((p) => [
+          p.slug,
+          { title: p.title, imageName: p.cover_image_url || undefined },
+        ]) ?? [],
+      );
+
       // Top 5 most viewed articles
       const topViewedRaw =
         viewsData
           ?.sort((a, b) => b.view_count - a.view_count)
           .slice(0, 5)
           .map((item) => {
-            const post = posts.find((p) => p.slug === item.slug);
+            const post = postsMap.get(item.slug);
             return {
               slug: item.slug,
               title: post?.title || item.slug,
@@ -88,7 +99,7 @@ export const getServerStats = unstable_cache(
         .sort(([, a], [, b]) => b - a)
         .slice(0, 5)
         .map(([slug, count]) => {
-          const post = posts.find((p) => p.slug === slug);
+          const post = postsMap.get(slug);
           return {
             slug,
             title: post?.title || slug,

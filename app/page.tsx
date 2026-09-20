@@ -1,7 +1,7 @@
 import { BgGradient } from "./components/BgGradient";
 import { NewsletterSignUp } from "./components/NewsletterSignUp";
 import { ChangelogBento } from "./components/ChangelogBento";
-import { fetchAndSortBlogPosts } from "./lib/utils";
+import { fetchAndSortBlogPostsAsync } from "./lib/blog/posts";
 import { SpeakingBento } from "./components/SpeakingBento";
 import { CommunityWallBento } from "./components/CommunityWallBento";
 import { CalendarBento } from "./components/CalendarBento";
@@ -18,7 +18,7 @@ import { MotionFadeIn } from "./components/MotionFadeIn";
 import clsx from "clsx";
 
 export default async function Home() {
-  const allPublishedBlogPosts = await fetchAndSortBlogPosts();
+  const allPublishedBlogPosts = await fetchAndSortBlogPostsAsync();
   const featuredArticles = allPublishedBlogPosts.slice(0, 4);
 
   const PROFILE_DELAY = 0;

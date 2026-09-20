@@ -14,8 +14,18 @@ export type CompiledPost = {
  * Velite's `s.mdx()`. This lets the existing <MDXContent /> render Supabase-
  * stored posts with zero UI changes.
  */
+function sanitizeMdxSource(source: string): string {
+  // Self-close void HTML elements that aren't self-closed (e.g. <img ...>, <br>, <hr>)
+  return source
+    .replace(/<img\b([^>]*?)(?<!\/)>/gi, "<img$1 />")
+    .replace(/<br\b([^>]*?)(?<!\/)>/gi, "<br$1 />")
+    .replace(/<hr\b([^>]*?)(?<!\/)>/gi, "<hr$1 />")
+    .replace(/<input\b([^>]*?)(?<!\/)>/gi, "<input$1 />");
+}
+
 export async function compileMdxToCode(source: string): Promise<CompiledPost> {
-  const compiled = await compile(source, {
+  const sanitized = sanitizeMdxSource(source);
+  const compiled = await compile(sanitized, {
     outputFormat: "function-body",
     development: false,
     remarkPlugins: [remarkGfm],
@@ -23,6 +33,6 @@ export async function compileMdxToCode(source: string): Promise<CompiledPost> {
   });
   return {
     code: String(compiled),
-    headings: extractHeadingsFromMdx(source),
+    headings: extractHeadingsFromMdx(sanitized),
   };
 }

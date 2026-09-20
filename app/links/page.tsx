@@ -18,12 +18,12 @@ import { GridWrapper } from "@/app/components/GridWrapper";
 import { ProfilePicture } from "@/app/components/ProfilePicture";
 import { Button } from "@/app/components/Button";
 import { siteMetadata } from "@/app/data/siteMetadata";
-import { fetchAndSortBlogPosts } from "@/app/lib/utils";
+import { fetchAndSortBlogPostsAsync } from "@/app/lib/blog/posts";
 import { FeaturedBlogCard } from "@/app/components/FeaturedBlogCard";
 import clsx from "clsx";
 
 export default async function LinksPage() {
-  const allPublishedBlogPosts = await fetchAndSortBlogPosts();
+  const allPublishedBlogPosts = await fetchAndSortBlogPostsAsync();
   const featuredArticles = allPublishedBlogPosts.slice(0, 4);
 
   return (
